@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
+    <title>AirStream – No ads, pure stream</title>
+    <meta name="description" content="Watch YouTube videos ad-free with AirStream — no interruptions, just pure streaming. Trends, downloads, no shorts.">
+    <meta name="theme-color" content="#0055ff">
+    <link rel="icon" href="icon.png">
+    
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "AirStream – No‑ad YouTube",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Android",
+        "offers": {"@type": "Offer","price": "0","priceCurrency": "USD"},
+        "softwareVersion": "0.30.0",
+        "downloadUrl": "https://pub-7a8e5324b36d4aab9880ac5b50e5d126.r2.dev/AirStream_v0.30.0_beta.apk",
+        "author": {"@type": "Organization","name": "AirStream"}
+    }
+    </script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    
+    <style>
+        :root {
+            --air-color: #00e5ff;
+            --stream-color: #ffaa00;
+            --primary: #0055ff;
+            --bg: #0a0e1a;
+            --surface: #151f2c;
+            --surface-light: #1f2c3c;
+            --text: #f0f9ff;
+            --text-muted: #b0d0f0;
+            --border: rgba(255,255,255,0.05);
+            --radius: 28px;
+            --shadow: 0 20px 40px rgba(0,0,0,0.8);
+            --maxw: 1200px;
+            --gradient-blue: linear-gradient(145deg, #0055ff, #0030bb);
+            --gradient-orange: linear-gradient(145deg, #ffaa00, #ff5500);
+            --gradient-pink: linear-gradient(145deg, #ff4d6d, #c9184a);
+            --gradient-secret: linear-gradient(145deg, #ff758f, #ff4d6d, #c9184a);
+        }
+        [data-theme="light"] {
+            --bg: #f5fbff;
+            --surface: #ffffff;
+            --surface-light: #eaf0fa;
+            --text: #0a1a2c;
+            --text-muted: #2a405c;
+            --border: rgba(0,0,0,0.06);
+        }
+        
+        /* ----- DISABLE TEXT SELECTION & LINK PREVIEWS ON HOLD ----- */
+        * {
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            -khtml-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            user-select: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+        }
+        
+        /* Allow selection only on input fields if any (none in this design) */
+        input, textarea {
+            -webkit-user-select: auto !important;
+            -khtml-user-select: auto !important;
+            -moz-user-select: auto !important;
+            -ms-user-select: auto !important;
+            user-select: auto !important;
+        }
+        
+        /* Disable link context menu on long press */
+        a {
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            user-select: none !important;
+        }
+        
+        /* Additional protection for images */
+        img {
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            user-select: none !important;
+            pointer-events: none;
+        }
+        
+        /* Allow click events on specific interactive elements while keeping no-select */
+        .btn, .dev-card, .screenshot-frame, .fab, .theme-toggle, .version-download-small {
+            pointer-events: auto !important;
+        }
+        
+        /* Ensure images inside clickable areas still don't show context menu */
+        .dev-card img, .screenshot-frame img {
+            pointer-events: none !important;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        .container {
+            width: 100%;
+            max-width: var(--maxw);
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        section { padding: 4rem 0; position: relative; }
+        .video-background-wrapper {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            margin: 1.5rem 0 2rem;
+            border-radius: 44px;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(0,85,255,0.4);
+            border: 1px solid rgba(0,229,255,0.3);
+            background: #000;
+        }
+        #streamVideo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+        .app-logo {
+            width: 160px; 
+            height: 160px;
+            background: transparent;
+            object-fit: contain;
+            transition: 0.3s;
+            border: none;
+            outline: none;
+            box-shadow: none;
+            pointer-events: auto !important;
+        }
+        .app-logo:hover { transform: scale(1.06) rotate(-2deg); }
+        .dual-title {
+            font-size: clamp(2.8rem, 7vw, 5rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            margin-bottom: 0.8rem;
+        }
+        .air-part {
+            background: linear-gradient(145deg, #00e5ff, #0095ff);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+            filter: drop-shadow(0 0 12px rgba(0,229,255,0.5));
+        }
+        .stream-part {
+            background: linear-gradient(145deg, #ffaa00, #ff5500);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+            filter: drop-shadow(0 0 12px rgba(255,170,0,0.5));
+        }
+        .stream-description {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 800px;
+            margin: 1rem auto 1.5rem;
+            font-weight: 400;
+            background: transparent;
+            padding: 0.2rem 0;
+            border: none;
+            backdrop-filter: none;
+        }
+        .btns {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            align-items: center;
+            margin: 2rem 0 0.5rem;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            border-radius: 60px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: 0.25s;
+            text-decoration: none;
+            box-shadow: 0 12px 24px rgba(0,0,0,0.4);
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            user-select: none !important;
+        }
+        .btn-download {
+            background: var(--gradient-blue);
+            color: white;
+            padding: 0.9rem 2.2rem;
+            font-size: 1.1rem;
+        }
+        .btn-download:hover { transform: translateY(-4px); box-shadow: 0 20px 30px #0055ffb0; }
+        .btn-small {
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 0.6rem 1.4rem;
+            font-size: 0.95rem;
+        }
+        .btn-small:hover {
+            background: var(--surface-light);
+            transform: translateY(-3px);
+        }
+        
+        /* ----- HORIZONTAL SCROLLABLE FEATURE CARDS ----- */
+        .features-scroller {
+            display: flex;
+            gap: 1.5rem;
+            overflow-x: auto;
+            padding: 1rem 0.5rem 2rem;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) var(--surface);
+        }
+        .features-scroller::-webkit-scrollbar {
+            height: 8px;
+        }
+        .features-scroller::-webkit-scrollbar-track {
+            background: var(--surface);
+            border-radius: 10px;
+        }
+        .features-scroller::-webkit-scrollbar-thumb {
+            background: var(--gradient-blue);
+            border-radius: 10px;
+        }
+        .feature-card {
+            flex: 0 0 300px;
+            scroll-snap-align: start;
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 1.8rem 1.5rem;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            transition: 0.2s;
+            backdrop-filter: blur(4px);
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+        }
+        .feature-card:hover { 
+            transform: translateY(-6px); 
+            background: var(--surface-light);
+        }
+        .feature-icon {
+            width: 64px; height: 64px; border-radius: 20px;
+            background: linear-gradient(145deg, var(--primary), #0099ff);
+            display: flex; align-items: center; justify-content: center; margin-bottom: 1.4rem;
+            font-size: 1.8rem; color: white;
+        }
+        
+        .version-solo-card {
+            background: var(--surface-light);
+            border-radius: 30px;
+            padding: 1.2rem 1.8rem;
+            max-width: 600px;
+            margin: 0 auto;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+        .version-badge {
+            background: var(--gradient-orange);
+            color: white; padding: 0.2rem 1rem; border-radius: 60px;
+            font-weight: 700; display: inline-block; margin-bottom: 0.5rem;
+            font-size: 0.85rem; letter-spacing: 0.5px;
+        }
+        .version-meta { display: flex; gap: 1.2rem; color: var(--text-muted); margin: 0.4rem 0 0.8rem; font-size: 0.85rem; }
+        .changelist { list-style: none; margin: 0.8rem 0 1rem; font-size: 0.9rem; }
+        .changelist li { margin-bottom: 0.4rem; padding-left: 1.6rem; position: relative; color: var(--text-muted); }
+        .changelist li:before { content: "▶"; color: var(--stream-color); left: 0; position: absolute; font-size: 0.8rem; }
+        .version-download-small {
+            display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1.5rem;
+            background: var(--gradient-blue); color: white; border-radius: 60px;
+            text-decoration: none; font-weight: 600; font-size: 0.9rem;
+            margin-top: 0.2rem;
+        }
+        .dev-compact-grid {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        .dev-card {
+            background: var(--surface);
+            border-radius: 36px;
+            padding: 1.2rem 2rem;
+            width: 290px;
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            border: 1px solid var(--border);
+            transition: 0.2s;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            user-select: none !important;
+        }
+        .dev-card:hover {
+            transform: translateY(-5px);
+            background: var(--surface-light);
+            border-color: var(--air-color);
+        }
+        .dev-avatar {
+            width: 70px; height: 70px; border-radius: 50%;
+            border: 3px solid var(--primary); object-fit: cover;
+            pointer-events: none !important;
+        }
+        .dev-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.2rem;
+            color: var(--text);
+        }
+        .dev-role { color: var(--text-muted); font-weight: 500; font-size: 0.95rem; }
+        
+        /* ----- BEAUTIFUL SECRET TOAST - LARGE, ELEGANT, 0x5H4NG GLOWING ----- */
+        .secret-toast {
+            background: linear-gradient(145deg, #0f0a1f, #1a1025) !important;
+            color: #ffe6f0 !important;
+            border-left: 10px solid #ff4d6d !important;
+            border-radius: 60px !important;
+            font-family: 'Inter', sans-serif !important;
+            font-weight: 500 !important;
+            font-size: 1.4rem !important;
+            padding: 1.8rem 3rem !important;
+            box-shadow: 0 20px 60px rgba(255, 77, 109, 0.7) !important;
+            backdrop-filter: blur(20px) !important;
+            border: 1px solid rgba(255, 107, 139, 0.5) !important;
+            width: auto !important;
+            min-width: 550px !important;
+            max-width: 90vw !important;
+            letter-spacing: 0.8px;
+        }
+        .beating-heart {
+            display: inline-block;
+            color: #ff8aa1;
+            font-size: 2.2rem;
+            margin: 0 12px;
+            animation: heartbeat 1.2s ease-in-out infinite;
+            vertical-align: middle;
+            filter: drop-shadow(0 0 15px rgba(255, 77, 109, 0.9));
+            line-height: 1;
+        }
+        @keyframes heartbeat {
+            0%, 100% { 
+                transform: scale(1);
+                opacity: 0.95;
+            }
+            25% { 
+                transform: scale(1.4);
+                opacity: 1;
+                filter: drop-shadow(0 0 20px rgba(255, 77, 109, 1));
+            }
+            45% { 
+                transform: scale(1.25);
+                opacity: 1;
+                filter: drop-shadow(0 0 25px rgba(255, 77, 109, 1));
+            }
+        }
+        .secret-message-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .secret-message-line {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(145deg, #fff0f5, #ffe6f0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(255, 182, 193, 0.6);
+        }
+        .secret-message-sub {
+            font-size: 1.2rem;
+            color: #ffc2d1;
+            font-style: italic;
+            letter-spacing: 1.5px;
+            font-weight: 400;
+            text-shadow: 0 0 10px rgba(255, 192, 203, 0.4);
+        }
+        .secret-code-wrapper {
+            margin-top: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+        .secret-code {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(145deg, #ff4d6d, #c9184a);
+            color: white;
+            padding: 0.6rem 2rem;
+            border-radius: 60px;
+            font-weight: 800;
+            font-size: 1.8rem;
+            letter-spacing: 6px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 30px rgba(255, 77, 109, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            display: inline-block;
+            transform: scale(1);
+            transition: 0.2s;
+            animation: glow 2s infinite alternate;
+        }
+        @keyframes glow {
+            from { box-shadow: 0 0 20px rgba(255, 77, 109, 0.6); }
+            to { box-shadow: 0 0 40px rgba(255, 77, 109, 1); }
+        }
+        
+        .install-steps { max-width: 800px; margin: 2rem auto; }
+        .step { display: flex; align-items: center; background: var(--surface-light); padding: 1.2rem; border-radius: 40px; margin-bottom: 1rem; border-left: 6px solid var(--stream-color); flex-wrap: wrap; }
+        .step-number { background: var(--air-color); color: black; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; margin-right: 1rem; flex-shrink: 0; }
+        .screenshot-section {
+            text-align: center;
+            margin-top: 2rem;
+        }
+        .screenshot-frame {
+            max-width: 320px;
+            margin: 0 auto;
+            border-radius: 36px;
+            overflow: hidden;
+            background: transparent;
+            border: none;
+            outline: none;
+            box-shadow: none;
+            transition: transform 0.3s ease;
+            cursor: zoom-in;
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            user-select: none !important;
+        }
+        .screenshot-frame img {
+            width: 100%;
+            height: auto;
+            display: block;
+            background: transparent;
+            border: none;
+            outline: none;
+            pointer-events: none !important;
+        }
+        .screenshot-frame.zoomed {
+            transform: scale(1.5);
+            cursor: zoom-out;
+        }
+        .screenshot-caption {
+            margin-top: 1rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px; width: 48px; height: 48px; border-radius: 50%;
+            background: var(--surface); border: 1px solid var(--border); color: var(--text);
+            display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10000;
+        }
+        .fab {
+            position: fixed; bottom: 20px; right: 20px; width: 56px; height: 56px; border-radius: 50%;
+            background: var(--gradient-orange); color: black; display: flex; align-items: center; justify-content: center;
+            font-size: 1.6rem; box-shadow: 0 0 30px #ffaa00; cursor: pointer; border: none; z-index: 10000;
+        }
+        .toast {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: var(--surface); color: var(--text); padding: 0.9rem 2rem; border-radius: 60px;
+            border: 1px solid var(--border); z-index: 11000; opacity: 0; transition: 0.3s;
+            display: flex; align-items: center; gap: 0.8rem; white-space: nowrap;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        .reveal { opacity: 0; transform: translateY(30px); transition: 0.7s; }
+        .reveal.show { opacity: 1; transform: translateY(0); }
+        @media (max-width: 640px) {
+            .container { padding: 0 1.2rem; }
+            .btns { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+            .btn-download { width: 100%; max-width: 300px; }
+            .btn-small { padding: 0.6rem 1.2rem; }
+            .dev-card { width: 100%; max-width: 350px; }
+            .version-solo-card { padding: 1rem 1.2rem; }
+            .toast { white-space: normal; max-width: 90%; }
+            .stream-description { font-size: 1.1rem; }
+            .screenshot-frame.zoomed { transform: scale(1.2); }
+            .app-logo { width: 140px; height: 140px; }
+            .feature-card { flex: 0 0 280px; }
+            .secret-toast { 
+                min-width: 90% !important; 
+                padding: 1.5rem 1.8rem !important; 
+                font-size: 1.2rem !important;
+            }
+            .secret-message-line { font-size: 1.5rem; }
+            .secret-message-sub { font-size: 1rem; }
+            .secret-code { font-size: 1.4rem; padding: 0.4rem 1.2rem; }
+            .beating-heart { font-size: 1.8rem; }
+        }
+        @media (max-width: 480px) {
+            .dev-card { flex-direction: column; text-align: center; padding: 1.5rem; }
+            .dev-avatar { margin-right: 0; }
+            .video-background-wrapper { height: 160px; }
+            .screenshot-frame.zoomed { transform: scale(1.1); }
+            .app-logo { width: 130px; height: 130px; }
+            .feature-card { flex: 0 0 260px; }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" id="themeToggle"><i class="bi bi-moon-stars"></i></button>
+
+    <header id="top">
+        <div class="container" style="text-align: center;">
+            <img src="icon.png" class="app-logo" alt="AirStream icon" id="appLogo">
+            
+            <div class="dual-title">
+                <span class="air-part">Air</span><span class="stream-part">Stream</span>
+            </div>
+            
+            <div class="stream-description reveal">
+                Watch YouTube videos ad-free with AirStream — no interruptions, just pure streaming.
+            </div>
+            
+            <div class="btns">
+                <a href="https://github.com/drkvenom786/AirStream-/releases/download/v0.30.0/AirStream_v0.30.0.apk" class="btn btn-download" id="downloadBtn">
+                    <i class="bi bi-download"></i> Download Latest Apk
+                </a>
+                <button class="btn btn-small" id="copyLinkBtn"><i class="bi bi-link-45deg"></i> Copy</button>
+                <button class="btn btn-small" id="shareBtn"><i class="bi bi-share"></i> Share</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="video-background-wrapper reveal">
+            <video id="streamVideo" autoplay loop muted playsinline>
+                <source src="stream.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+
+    <section id="features">
+        <div class="container">
+            <h2 class="features-title reveal"><i class="bi bi-camera-reels"></i> pure stream, zero ads</h2>
+            <div class="features-scroller">
+                <div class="feature-card reveal">
+                    <div class="feature-icon"><i class="bi bi-play-circle"></i></div>
+                    <h3>No video ads</h3>
+                    <p>YouTube without pre‑roll, mid‑roll, or overlay ads. Instant playback.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon"><i class="bi bi-graph-up-arrow"></i></div>
+                    <h3>Trending feed</h3>
+                    <p>See what's hot – no shorts, only real trends. Customize your stream.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon"><i class="bi bi-cloud-arrow-down"></i></div>
+                    <h3>Download any video</h3>
+                    <p>Save lectures, vlogs, music. 720p/1080p, offline always.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon"><i class="bi bi-bar-chart"></i></div>
+                    <h3>Trend explorer</h3>
+                    <p>Discover by region, category – no algorithm manipulation.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon"><i class="bi bi-speedometer2"></i></div>
+                    <h3>Playback tweaks</h3>
+                    <p>Speed, PIP, background play. Perfect for multitasking.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="feature-icon"><i class="bi bi-shield-check"></i></div>
+                    <h3>Light & private</h3>
+                    <p>No tracking, 10.2 MB APK, runs on any Android device.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="version-solo">
+        <div class="container">
+            <h2 class="features-title reveal"><i class="bi bi-tag"></i> current version</h2>
+            <div class="version-solo-card reveal">
+                <span class="version-badge"><i class="bi bi-rocket-takeoff"></i> v0.30.0 – trends update</span>
+                <div class="version-meta">
+                    <span><i class="bi bi-calendar3"></i> Feb 2026</span>
+                    <span><i class="bi bi-file-zip"></i> 10.23 MB</span>
+                </div>
+                <ul class="changelist">
+                    <li>Full ad‑blocker for YouTube (all formats)</li>
+                    <li>Trends tab – no shorts, viral & educational</li>
+                    <li>Download accelerator – 2x faster</li>
+                    <li>Background playback + notifications</li>
+                    <li>Memory optimizations</li>
+                </ul>
+                <a href="https://github.com/drkvenom786/AirStream-/releases/download/v0.30.0/AirStream_v0.30.0.apk" class="version-download-small">
+                    <i class="bi bi-download"></i> Download v0.30.0
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="install">
+        <div class="container">
+            <h2 class="features-title reveal"><i class="bi bi-rocket"></i> start streaming</h2>
+            <div class="install-steps">
+                <div class="step reveal"><div class="step-number"><i class="bi bi-download"></i></div><div><h4>Download APK</h4><p class="note" style="margin:0;">AirStream v0.30.0 · 10.2 MB</p></div></div>
+                <div class="step reveal"><div class="step-number"><i class="bi bi-shield-check"></i></div><div><h4>Allow install</h4><p class="note" style="margin:0;">enable 'unknown apps' – one time</p></div></div>
+                <div class="step reveal"><div class="step-number"><i class="bi bi-play-circle"></i></div><div><h4>Open & enjoy</h4><p class="note" style="margin:0;">ad-free YouTube, trends & downloads</p></div></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="screenshots">
+        <div class="container">
+            <h2 class="features-title reveal"><i class="bi bi-images"></i> screenshots</h2>
+            <div class="screenshot-section">
+                <div class="screenshot-frame reveal" id="screenshotFrame">
+                    <img src="screenshot.png" alt="AirStream app screenshot" id="screenshotImage" loading="lazy">
+                </div>
+                <div class="screenshot-caption"><i class="bi bi-phone"></i> AirStream player – no ads, download button, trends tab</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="team">
+        <div class="container">
+            <h2 class="features-title reveal" id="developersTitle"><i class="bi bi-code-square"></i> Developers</h2>
+            <div class="dev-compact-grid">
+                <a href="https://t.me/scarface_786" target="_blank" class="dev-card reveal" id="venomCard">
+                    <img src="https://avatars.githubusercontent.com/u/227567962" class="dev-avatar" alt="Venom">
+                    <div class="dev-info">
+                        <h3>Venom</h3>
+                        <div class="dev-role"><i class="bi bi-bug"></i> Developer</div>
+                    </div>
+                </a>
+                <a href="https://t.me/thedarkagain" target="_blank" class="dev-card reveal" id="darkboyCard">
+                    <img src="https://avatars.githubusercontent.com/u/218248866" class="dev-avatar" alt="DarkBoy">
+                    <div class="dev-info">
+                        <h3>DarkBoy</h3>
+                        <div class="dev-role"><i class="bi bi-code-slash"></i> Developer</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer style="padding: 2.5rem 0; text-align:center; border-top:1px solid var(--border);">
+        <p class="note"><i class="bi bi-c-circle"></i> 2026 AirStream · <i class="bi bi-slash-circle"></i> No ads, <i class="bi bi-collection-play"></i> no shorts, just stream</p>
+    </footer>
+
+    <button class="fab" id="backToTop"><i class="bi bi-arrow-up-short"></i></button>
+    <div class="toast" id="toast"><i class="bi bi-check-circle-fill"></i><span id="toastMessage">Link copied</span></div>
+
+    <script>
+        (function(){
+            const LATEST_APK = "https://github.com/drkvenom786/AirStream-/releases/download/v0.30.0/AirStream_v0.30.0.apk";
+            const themeToggle = document.getElementById('themeToggle');
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMessage');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const copyBtn = document.getElementById('copyLinkBtn');
+            const shareBtn = document.getElementById('shareBtn');
+            const backTop = document.getElementById('backToTop');
+            const screenshotFrame = document.getElementById('screenshotFrame');
+
+            // Disable context menu on all links and images
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                return false;
+            });
+
+            // Additional protection for touch devices - prevent long press menu
+            document.addEventListener('touchstart', function(e) {
+                if (e.touches.length > 0) {
+                    // Allow touch events but prevent default only for long press
+                    let el = e.target;
+                    if (el.tagName === 'IMG' || el.tagName === 'A' || el.closest('a') || el.closest('img')) {
+                        // Don't prevent default immediately, but we'll handle it in touchend
+                    }
+                }
+            });
+
+            document.addEventListener('touchcancel', function(e) {
+                // Prevent link preview on long press
+                e.preventDefault();
+            });
+
+            // Prevent default drag behavior on images
+            document.querySelectorAll('img').forEach(img => {
+                img.addEventListener('dragstart', (e) => e.preventDefault());
+            });
+
+            function setTheme(theme) {
+                document.documentElement.setAttribute('data-theme', theme);
+                localStorage.setItem('airstream_theme', theme);
+                themeToggle.innerHTML = theme === 'dark' ? '<i class="bi bi-sun"></i>' : '<i class="bi bi-moon-stars"></i>';
+            }
+            const savedTheme = localStorage.getItem('airstream_theme') || (window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light');
+            setTheme(savedTheme);
+            themeToggle.addEventListener('click', ()=>{
+                const cur = document.documentElement.getAttribute('data-theme');
+                setTheme(cur === 'dark' ? 'light' : 'dark');
+                showToast(`theme: ${cur === 'dark' ? 'light' : 'dark'}`, 'info');
+            });
+
+            function showToast(msg, type='success', extraClass = '') {
+                toastMsg.innerText = msg;
+                toast.className = 'toast ' + extraClass;
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2500);
+            }
+
+            downloadBtn.addEventListener('click', ()=> showToast('⬇️ Downloading AirStream v0.30.0', 'success'));
+            copyBtn.addEventListener('click', ()=> {
+                navigator.clipboard.writeText(LATEST_APK).then(()=> showToast('📋 APK link copied', 'success'));
+            });
+            shareBtn.addEventListener('click', async ()=> {
+                if(navigator.share) await navigator.share({title:'AirStream', text:'No‑ads YouTube + trends, download v0.30.0', url:window.location.href}).catch(()=>{});
+                else { navigator.clipboard.writeText(window.location.href); showToast('link copied','info'); }
+            });
+
+            window.addEventListener('scroll', ()=> backTop.style.display = window.scrollY > 400 ? 'flex' : 'none');
+            backTop.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+
+            const reveals = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries)=> entries.forEach(e => e.isIntersecting ? e.target.classList.add('show') : null), {threshold:0.1});
+            reveals.forEach(r => observer.observe(r));
+
+            const devTitle = document.getElementById('developersTitle');
+            if (devTitle) {
+                devTitle.addEventListener('dblclick', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const secretToast = document.getElementById('toast');
+                    const secretMsg = document.getElementById('toastMessage');
+                    
+                    secretMsg.innerHTML = `
+                        <span class="beating-heart">❤️</span>
+                        <div class="secret-message-container">
+                            <span class="secret-message-line">Sarangeyo.</span>
+                            <span class="secret-message-sub">Today, tomorrow, and forever.</span>
+                            <div class="secret-code-wrapper">
+                                <span class="secret-code">0x5H4NG</span>
+                            </div>
+                        </div>
+                        <span class="beating-heart">❤️</span>
+                    `;
+                    
+                    toast.className = 'toast secret-toast';
+                    toast.classList.add('show');
+                    
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                        toastMsg.innerHTML = 'Link copied';
+                        toast.className = 'toast';
+                    }, 5000);
+                });
+            }
+
+            if (screenshotFrame) {
+                screenshotFrame.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    this.classList.toggle('zoomed');
+                    showToast(this.classList.contains('zoomed') ? 'screenshot zoomed' : 'screenshot normal', 'info');
+                });
+            }
+        })();
+    </script>
+</body>
+</html>
