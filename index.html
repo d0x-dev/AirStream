@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <title>AirStream – Watch YouTube Anywhere</title>
+    <meta name="description" content="Official AirStream Android app. Download APK v1.0.0 and enjoy YouTube videos ad-free, with background play & picture-in-picture.">
+    <meta name="theme-color" content="#34C759">
+    <!-- Favicon (local icon.png) -->
+    <link rel="icon" href="icon.png" type="image/png">
+    
+    <!-- SEO JSON-LD -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "AirStream – Video Player for YouTube",
+        "applicationCategory": "VideoApplication",
+        "operatingSystem": "Android",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "softwareVersion": "1.0.0",
+        "downloadUrl": "https://github.com/example/AirStream/releases/v1.0.0/AirStream_v1.0.0.apk",
+        "author": {
+            "@type": "Organization",
+            "name": "AirStream Team"
+        }
+    }
+    </script>
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    
+    <style>
+        /* --- PARROT GREEN THEME --- */
+        :root {
+            --primary: #34C759;          /* Parrot Green */
+            --primary-dark: #2A9D45;
+            --accent: #34C759;
+            --accent-dark: #2A9D45;
+            --accent-2: #FFD60A;         /* subtle contrast */
+            --bg: #0a0e17;
+            --surface: #141a26;
+            --surface-light: #1e2535;
+            --text: #f0f4ff;
+            --text-muted: #a0b3d6;
+            --border: rgba(255, 255, 255, 0.08);
+            --radius: 18px;
+            --shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+            --shadow-glow: 0 0 30px rgba(52, 199, 89, 0.3); /* green glow */
+            --maxw: 1200px;
+            --gradient: linear-gradient(135deg, #34C759 0%, #5AC8FA 100%); /* green to light blue */
+            --gradient-rainbow: linear-gradient(90deg, #34C759, #FFD60A, #5AC8FA, #34C759);
+            --section-spacing: 5rem;
+        }
+        
+        [data-theme="light"] {
+            --bg: #f5f7ff;
+            --surface: #ffffff;
+            --surface-light: #f0f4ff;
+            --text: #0a0e17;
+            --text-muted: #5a6780;
+            --border: rgba(0, 0, 0, 0.08);
+            --shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+            --shadow-glow: 0 0 30px rgba(52, 199, 89, 0.25);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        html, body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: var(--maxw);
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        section {
+            padding: var(--section-spacing) 0;
+            position: relative;
+        }
+        
+        /* Decorative blobs with parrot green tint */
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            z-index: 0;
+            animation: float 20s infinite alternate ease-in-out;
+        }
+        
+        .blob-1 {
+            width: 400px;
+            height: 400px;
+            top: -100px;
+            left: -150px;
+            background: #34C759;
+            animation-delay: 0s;
+        }
+        
+        .blob-2 {
+            width: 350px;
+            height: 350px;
+            bottom: -100px;
+            right: -100px;
+            background: #5AC8FA;
+            animation-delay: 2s;
+        }
+        
+        .blob-3 {
+            width: 250px;
+            height: 250px;
+            top: 40%;
+            right: 20%;
+            background: #FFD60A;
+            animation-delay: 4s;
+        }
+        
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(60px, -60px) scale(1.1); }
+        }
+        
+        /* Header & Hero */
+        header {
+            position: relative;
+            padding: 6rem 0 4rem;
+            overflow: hidden;
+            text-align: center;
+        }
+        
+        .logo-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        
+        .app-logo {
+            width: 140px;
+            height: 140px;
+            border-radius: 28px;
+            object-fit: cover;
+            box-shadow: var(--shadow-glow), 0 20px 60px rgba(0, 0, 0, 0.5);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+        
+        .app-logo:hover {
+            transform: scale(1.05) rotate(5deg);
+        }
+        
+        .logo-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 160px;
+            height: 160px;
+            background: radial-gradient(circle, #34C759 0%, transparent 70%);
+            filter: blur(20px);
+            opacity: 0.5;
+            z-index: -1;
+        }
+        
+        /* Two‑color app name: Air in white, Stream in Parrot Green */
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+        }
+        
+        .hero-title .air {
+            color: white;
+        }
+        
+        .hero-title .stream {
+            color: #34C759; /* Parrot Green */
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 800px;
+            margin: 0 auto 2.5rem;
+        }
+        
+        /* Buttons with parrot green */
+        .btns {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none !important;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #34C759, #2A9D45);
+            color: white;
+            box-shadow: 0 0 30px rgba(52, 199, 89, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(52, 199, 89, 0.4);
+        }
+        
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--surface-light);
+            transform: translateY(-3px);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: #34C759;
+            border: 2px solid #34C759;
+        }
+        
+        .btn-outline:hover {
+            background: #34C759;
+            color: white;
+        }
+        
+        .note {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        /* Theme Toggle (still works) */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+        }
+        
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Cards */
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 1.8rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .features-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 3rem;
+            color: var(--text);
+        }
+        
+        .features-scroller {
+            display: grid;
+            grid-auto-flow: column;
+            grid-auto-columns: 85%;
+            gap: 1.5rem;
+            overflow-x: auto;
+            padding: 1rem 0.5rem 2rem;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .features-scroller::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .features-scroller::-webkit-scrollbar-track {
+            background: var(--surface);
+            border-radius: 10px;
+        }
+        
+        .features-scroller::-webkit-scrollbar-thumb {
+            background: linear-gradient(90deg, #34C759, #5AC8FA);
+            border-radius: 10px;
+        }
+        
+        .feature-card {
+            scroll-snap-align: center;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #34C759, #5AC8FA);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.2rem;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+        }
+        
+        /* ----- VERSION HISTORY – SINGLE v1.0.0 ----- */
+        .changelog-section {
+            margin-top: 2rem;
+        }
+        
+        .accordion {
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            box-shadow: var(--shadow);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .accordion-item {
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .accordion-header {
+            cursor: pointer;
+            padding: 1.2rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 600;
+            user-select: none;
+            background: var(--surface);
+            transition: all 0.3s ease;
+        }
+        
+        .accordion-header:hover {
+            background: var(--surface-light);
+        }
+        
+        .accordion-header .version-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+        
+        .version-tag {
+            background: linear-gradient(135deg, #34C759, #2A9D45);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .version-title {
+            font-size: 1.1rem;
+            color: var(--text);
+        }
+        
+        .version-date {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        .accordion-header i {
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: #34C759;
+        }
+        
+        .accordion-item.open .accordion-header i {
+            transform: rotate(180deg);
+        }
+        
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 0 1.5rem;
+            background: var(--surface);
+        }
+        
+        .accordion-item.open .accordion-content {
+            padding: 0 1.5rem 1.5rem;
+        }
+        
+        .version-content {
+            padding-top: 1rem;
+        }
+        
+        .version-features-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin-bottom: 1.5rem;
+        }
+        
+        .version-features-list li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.8rem;
+            position: relative;
+            line-height: 1.5;
+            color: var(--text-muted);
+        }
+        
+        .version-features-list li:before {
+            content: "✓";
+            color: #34C759;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        
+        .version-download-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed var(--border);
+        }
+        
+        .version-size {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .version-download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.5rem;
+            background: linear-gradient(135deg, #34C759, #2A9D45);
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .version-download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(52, 199, 89, 0.3);
+        }
+        
+        .version-download-btn.outline {
+            background: transparent;
+            border: 2px solid #34C759;
+            color: #34C759;
+        }
+        
+        .version-download-btn.outline:hover {
+            background: #34C759;
+            color: white;
+        }
+        
+        /* Developer Section */
+        .dev-section {
+            margin-top: 4rem;
+        }
+        
+        .dev-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .dev-card {
+            padding: 2rem;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .dev-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .dev-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-right: 1.5rem;
+            border: 3px solid #34C759;
+            padding: 3px;
+            background: var(--surface-light);
+            object-fit: cover;
+        }
+        
+        .dev-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.3rem;
+            cursor: pointer;
+            transition: color 0.3s;
+            color: var(--text);
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .dev-info h3:hover {
+            color: #34C759;
+        }
+        
+        .dev-role {
+            color: #34C759;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .dev-bio {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .dev-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: auto;
+        }
+        
+        .skill-tag {
+            background: var(--surface-light);
+            color: var(--text-muted);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            border: 1px solid var(--border);
+        }
+        
+        /* Visualizer (retuned for green) */
+        .visualizer-section {
+            padding: 2rem 0;
+        }
+        
+        .visualizer-container {
+            height: 150px;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            border-radius: var(--radius);
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 4px;
+            padding: 0 10px;
+        }
+        
+        .visualizer-bar {
+            background: linear-gradient(to top, #34C759, #5AC8FA);
+            border-radius: 3px 3px 0 0;
+            transition: height 0.2s ease-out;
+            min-width: 4px;
+            flex: 1;
+            max-width: 8px;
+        }
+        
+        /* Screenshot section - using local preview.png */
+        .screenshot-section {
+            text-align: center;
+            margin-top: 4rem;
+        }
+        
+        .screenshot-container {
+            max-width: 300px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .screenshot-frame {
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 80px rgba(52, 199, 89, 0.2);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            background: var(--surface);
+        }
+        
+        .screenshot-frame:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 35px 70px rgba(0, 0, 0, 0.6), 0 0 100px rgba(52, 199, 89, 0.3);
+        }
+        
+        .screenshot-frame img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 24px;
+        }
+        
+        .screenshot-label {
+            margin-top: 1.5rem;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        
+        /* Footer */
+        footer {
+            padding: 4rem 0 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            margin-top: 4rem;
+        }
+        
+        .fab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #34C759, #2A9D45);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 0 30px rgba(52, 199, 89, 0.3);
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s;
+            border: none;
+        }
+        
+        .fab:hover {
+            transform: scale(1.1);
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--surface);
+            color: var(--text);
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            z-index: 10000;
+            opacity: 0;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        
+        .reveal.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .install-steps {
+            max-width: 800px;
+            margin: 3rem auto 0;
+            text-align: left;
+        }
+        
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            background: var(--surface-light);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            border-left: 4px solid #34C759;
+        }
+        
+        .step-number {
+            background: linear-gradient(135deg, #34C759, #2A9D45);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .step-content h4 {
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        
+        .step-content p {
+            color: var(--text-muted);
+            margin: 0;
+        }
+        
+        /* Rhythm / Audio Player – keep but repurpose? Actually keep for fun */
+        .rhythm-player {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #34C759;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            z-index: 999;
+            transition: all 0.3s;
+            border: none;
+            opacity: 0;
+            transform: scale(0) translateY(20px);
+        }
+        
+        .rhythm-player.show {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+        
+        .rhythm-player.playing {
+            background: #34C759;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @media (max-width: 768px) {
+            .visualizer-container { height: 120px; }
+            .hero-title { font-size: 2.8rem; }
+            .btns { flex-direction: column; align-items: center; }
+            .btn { width: 100%; max-width: 300px; }
+            .dev-header { flex-direction: column; text-align: center; }
+            .dev-avatar { margin-right: 0; margin-bottom: 1rem; }
+        }
+        
+        @media (min-width: 768px) {
+            .features-scroller { grid-auto-columns: calc(33.333% - 1rem); }
+            .screenshot-container { max-width: 350px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Toggle (still works, but default dark with parrot green) -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <i class="bi bi-moon-stars"></i>
+    </button>
+    
+    <!-- Hidden Audio Player (Easter egg) -->
+    <audio id="secretAudio" preload="auto" loop style="display: none;">
+        <source src="rhythm.mp3" type="audio/mpeg">
+    </audio>
+    
+    <button class="rhythm-player" id="rhythmPlayer" aria-label="Control rhythm music">
+        <i class="bi bi-pause-fill" id="rhythmIcon"></i>
+    </button>
+    
+    <!-- Header -->
+    <header id="top">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+        
+        <div class="container">
+            <div class="logo-container">
+                <div class="logo-glow"></div>
+                <!-- Local icon.png -->
+                <img src="icon.png" class="app-logo" alt="AirStream Logo" id="appLogo">
+            </div>
+            
+            <!-- Two‑color name: Air (white) + Stream (parrot green) -->
+            <h1 class="hero-title">
+                <span class="air">Air</span><span class="stream">Stream</span>
+            </h1>
+            <p class="hero-subtitle">Seamless YouTube video player. Watch, background play, picture-in-picture. Ad-free experience, v1.0.0 ready.</p>
+            
+            <div class="btns">
+                <a href="https://github.com/example/AirStream/releases/v1.0.0/AirStream_v1.0.0.apk" class="btn btn-primary" id="downloadBtn" style="text-decoration: none;">
+                    <i class="bi bi-download"></i> Download v1.0.0 APK
+                </a>
+                <button class="btn btn-secondary" id="copyLinkBtn">
+                    <i class="bi bi-link-45deg"></i> Copy Link
+                </button>
+                <button class="btn btn-secondary" id="shareBtn">
+                    <i class="bi bi-share"></i> Share
+                </button>
+            </div>
+            
+            <div class="note">Android 8.0+ · Secure APK · Fresh Release: v1.0.0</div>
+        </div>
+    </header>
+    
+    <!-- Visualizer (green) -->
+    <section class="visualizer-section">
+        <div class="container">
+            <div class="visualizer-container" id="visualizer"></div>
+        </div>
+    </section>
+    
+    <!-- Features -->
+    <section id="features">
+        <div class="container">
+            <h2 class="features-title reveal">YouTube, Reimagined</h2>
+            <div class="features-scroller">
+                <div class="card feature-card reveal">
+                    <div class="feature-icon">
+                        <i class="bi bi-youtube"></i>
+                    </div>
+                    <h3>Unlimited YouTube</h3>
+                    <p>Watch any YouTube video, ad-free. Background play and picture-in-picture.</p>
+                </div>
+                <div class="card feature-card reveal">
+                    <div class="feature-icon">
+                        <i class="bi bi-pip"></i>
+                    </div>
+                    <h3>Picture-in-Picture</h3>
+                    <p>Keep watching while using other apps. Resize and move the player anywhere.</p>
+                </div>
+                <div class="card feature-card reveal">
+                    <div class="feature-icon">
+                        <i class="bi bi-headphones"></i>
+                    </div>
+                    <h3>Background Audio</h3>
+                    <p>Listen to music from YouTube with screen off or while multitasking.</p>
+                </div>
+                <div class="card feature-card reveal">
+                    <div class="feature-icon">
+                        <i class="bi bi-download"></i>
+                    </div>
+                    <h3>Offline Queue</h3>
+                    <p>Smart caching for videos you watch often — works offline.</p>
+                </div>
+                <div class="card feature-card reveal">
+                    <div class="feature-icon">
+                        <i class="bi bi-sliders2"></i>
+                    </div>
+                    <h3>Playback Speed</h3>
+                    <p>Control speed from 0.25x to 2.0x, with fine tuning for lectures or music.</p>
+                </div>
+                <div class="card feature-card reveal">
+                    <div class="feature-icon">
+                        <i class="bi bi-subtitles"></i>
+                    </div>
+                    <h3>Multi‑language Subs</h3>
+                    <p>Support for YouTube captions and auto-translate in over 50 languages.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- VERSION HISTORY – SINGLE v1.0.0 (exact same style, only one version) -->
+    <section id="versions">
+        <div class="container">
+            <h2 class="features-title reveal">Release</h2>
+            <div class="changelog-section">
+                <div class="accordion reveal" id="versionAccordion">
+                    <div class="accordion-item open">
+                        <div class="accordion-header">
+                            <div class="version-info">
+                                <span class="version-tag">v1.0.0</span>
+                                <span class="version-title">Initial release – AirStream</span>
+                                <span class="version-date">February 2026</span>
+                            </div>
+                            <i class="bi bi-chevron-down"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="version-content">
+                                <ul class="version-features-list">
+                                    <li>Full YouTube video playback, ad‑free</li>
+                                    <li>Picture‑in‑Picture mode</li>
+                                    <li>Background audio play</li>
+                                    <li>Offline caching for frequent videos</li>
+                                    <li>Playback speed controls</li>
+                                    <li>Subtitles & multi‑language support</li>
+                                    <li>Material You design, parrot green theme</li>
+                                </ul>
+                                <div class="version-download-area">
+                                    <div class="version-size">
+                                        <i class="bi bi-hdd"></i> APK Size: 9.2 MB
+                                    </div>
+                                    <a href="https://github.com/example/AirStream/releases/v1.0.0/AirStream_v1.0.0.apk" class="version-download-btn">
+                                        <i class="bi bi-download"></i> Download v1.0.0
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Installation Steps -->
+    <section id="installation">
+        <div class="container">
+            <h2 class="features-title reveal">How to Install</h2>
+            <div class="install-steps">
+                <div class="step reveal">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Download the APK</h4>
+                        <p>Click the green "Download v1.0.0 APK" button to get the AirStream installer.</p>
+                    </div>
+                </div>
+                <div class="step reveal">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Enable Unknown Sources</h4>
+                        <p>Settings → Security → Unknown Sources (temporary). AirStream is safe.</p>
+                    </div>
+                </div>
+                <div class="step reveal">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Install the App</h4>
+                        <p>Open the downloaded APK and tap Install. Done in seconds.</p>
+                    </div>
+                </div>
+                <div class="step reveal">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h4>Launch & Stream</h4>
+                        <p>Open AirStream, search any YouTube video, and enjoy premium features.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- PREVIEW IMAGE – professional, local preview.png -->
+    <section id="screenshot">
+        <div class="container">
+            <h2 class="features-title reveal">App Preview</h2>
+            <div class="screenshot-section">
+                <div class="screenshot-container reveal">
+                    <div class="screenshot-frame">
+                        <img src="preview.png" alt="AirStream YouTube Player Interface" loading="lazy">
+                    </div>
+                    <div class="screenshot-label">AirStream – YouTube client with PiP</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Developer Section (same team, green) -->
+    <section id="developers">
+        <div class="container">
+            <h2 class="features-title reveal">Meet The Team</h2>
+            <div class="dev-grid">
+                <div class="card dev-card reveal">
+                    <div class="dev-header">
+                        <img src="https://avatars.githubusercontent.com/u/218248866" class="dev-avatar" alt="DarkBoy">
+                        <div class="dev-info">
+                            <a href="https://t.me/thedarkagain" target="_blank" style="text-decoration: none;">
+                                <h3>DarkBoy</h3>
+                            </a>
+                            <div class="dev-role">Lead Developer</div>
+                            <div class="dev-bio">
+                                Architect of AirStream's core video engine. Expert in Android media frameworks and YouTube API integration.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dev-skills">
+                        <span class="skill-tag">Kotlin</span>
+                        <span class="skill-tag">ExoPlayer</span>
+                        <span class="skill-tag">YouTube API</span>
+                        <span class="skill-tag">PiP</span>
+                    </div>
+                </div>
+                
+                <div class="card dev-card reveal">
+                    <div class="dev-header">
+                        <img src="https://avatars.githubusercontent.com/u/227567962" class="dev-avatar" alt="Venom">
+                        <div class="dev-info">
+                            <a href="https://t.me/scarface_786" target="_blank" style="text-decoration: none;">
+                                <h3>Venom</h3>
+                            </a>
+                            <div class="dev-role">UI/UX Specialist</div>
+                            <div class="dev-bio">
+                                Designed the intuitive, smooth interface. Focus on video-first experience, parrot green identity, and accessibility.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dev-skills">
+                        <span class="skill-tag">UI Design</span>
+                        <span class="skill-tag">Motion</span>
+                        <span class="skill-tag">Figma</span>
+                        <span class="skill-tag">Material You</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <p class="note">© 2026 AirStream. All Rights Reserved.</p>
+            <p class="note">Made with <i class="bi bi-heart-fill" style="color: #34C759;"></i> by DarkBoy & Venom</p>
+        </div>
+    </footer>
+    
+    <button class="fab" id="backToTop" aria-label="Back to top">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+    
+    <div class="toast" id="toast">
+        <i class="bi bi-check-circle-fill" id="toastIcon"></i>
+        <span id="toastMessage">Link copied to clipboard!</span>
+    </div>
+    
+    <script>
+        // PARROT GREEN THEME — AirStream edition
+        const themeToggle = document.getElementById('themeToggle');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const copyLinkBtn = document.getElementById('copyLinkBtn');
+        const shareBtn = document.getElementById('shareBtn');
+        const backToTop = document.getElementById('backToTop');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+        const toastIcon = document.getElementById('toastIcon');
+        const visualizer = document.getElementById('visualizer');
+        const secretAudio = document.getElementById('secretAudio');
+        const rhythmPlayer = document.getElementById('rhythmPlayer');
+        const rhythmIcon = document.getElementById('rhythmIcon');
+        const appLogo = document.getElementById('appLogo');
+        
+        const LATEST_APK_LINK = "https://github.com/example/AirStream/releases/v1.0.0/AirStream_v1.0.0.apk";
+        const LATEST_VERSION = "1.0.0";
+        
+        // Audio state
+        let isPlaying = false;
+        let audioLoaded = false;
+        let isLooping = true;
+        
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            themeToggle.innerHTML = theme === 'dark' ? '<i class="bi bi-sun"></i>' : '<i class="bi bi-moon-stars"></i>';
+        }
+        const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        setTheme(savedTheme);
+        
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+            showToast(`Switched to ${newTheme} theme`);
+        });
+        
+        function showToast(message, type = 'success') {
+            toastMessage.textContent = message;
+            toastIcon.className = type === 'success' ? 'bi bi-check-circle-fill' : type === 'error' ? 'bi bi-x-circle-fill' : 'bi bi-info-circle-fill';
+            if (type === 'success') toastIcon.style.color = '#34C759';
+            else if (type === 'error') toastIcon.style.color = '#FF3B30';
+            else toastIcon.style.color = '#FFD60A';
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+        
+        downloadBtn.addEventListener('click', (e) => {
+            showToast(`Downloading AirStream v${LATEST_VERSION}...`, 'info');
+        });
+        
+        copyLinkBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(LATEST_APK_LINK)
+                .then(() => showToast(`AirStream v1.0.0 link copied!`, 'success'))
+                .catch(() => showToast('Failed to copy link', 'error'));
+        });
+        
+        shareBtn.addEventListener('click', async () => {
+            const shareData = {
+                title: 'AirStream – YouTube player',
+                text: 'Watch YouTube ad-free with picture-in-picture and background play!',
+                url: window.location.href
+            };
+            try {
+                if (navigator.share) await navigator.share(shareData);
+                else { await navigator.clipboard.writeText(shareData.url); showToast('Link copied!', 'success'); }
+            } catch (err) {}
+        });
+        
+        backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        window.addEventListener('scroll', () => backToTop.style.display = window.scrollY > 500 ? 'flex' : 'none');
+        
+        // Accordion (single version, open by default)
+        document.querySelectorAll('.accordion').forEach(acc => {
+            acc.querySelectorAll('.accordion-item').forEach(item => {
+                const header = item.querySelector('.accordion-header');
+                const content = item.querySelector('.accordion-content');
+                header.addEventListener('click', () => {
+                    if (item.classList.contains('open')) {
+                        item.classList.remove('open');
+                        content.style.maxHeight = 0;
+                    } else {
+                        item.classList.add('open');
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                    }
+                });
+                // Ensure first is open
+                if (acc.id === 'versionAccordion') {
+                    setTimeout(() => {
+                        item.classList.add('open');
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                    }, 100);
+                }
+            });
+        });
+        
+        // Audio easter egg (double click logo)
+        function loadAudio() { if (!audioLoaded) { secretAudio.load(); audioLoaded = true; } }
+        function playRhythm() {
+            loadAudio();
+            secretAudio.play().then(() => {
+                isPlaying = true;
+                rhythmPlayer.classList.add('show', 'playing');
+                rhythmIcon.className = 'bi bi-pause-fill';
+                appLogo.classList.add('logo-playing');
+                showToast('🎵 Stream rhythm activated!', 'success');
+            }).catch(() => showToast('🔇 Click anywhere to enable audio', 'error'));
+        }
+        function pauseRhythm() { secretAudio.pause(); isPlaying = false; rhythmPlayer.classList.remove('playing'); appLogo.classList.remove('logo-playing'); rhythmIcon.className = 'bi bi-play-fill'; showToast('⏸️ Paused', 'info'); }
+        function toggleRhythm() { isPlaying ? pauseRhythm() : playRhythm(); }
+        appLogo.addEventListener('click', function(e) { if (e.detail === 2) { e.preventDefault(); toggleRhythm(); } });
+        rhythmPlayer.addEventListener('click', toggleRhythm);
+        
+        // Visualizer
+        function createVisualizer() {
+            visualizer.innerHTML = '';
+            const barCount = window.innerWidth < 480 ? 25 : window.innerWidth < 768 ? 35 : window.innerWidth < 1024 ? 45 : 55;
+            for (let i = 0; i < barCount; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'visualizer-bar';
+                bar.style.animation = 'visualizerPulse 2s infinite alternate';
+                visualizer.appendChild(bar);
+            }
+        }
+        function animateVisualizer() {
+            const bars = document.querySelectorAll('.visualizer-bar');
+            const time = Date.now() * 0.002;
+            bars.forEach((bar, index) => {
+                const wave = Math.sin(time + index * 0.3) * 0.5 + 0.5;
+                let audioBoost = isPlaying ? Math.sin(secretAudio.currentTime * 4) * 0.5 + 0.5 * 30 : 0;
+                bar.style.height = `${10 + wave * (80 + audioBoost)}%`;
+            });
+            requestAnimationFrame(animateVisualizer);
+        }
+        createVisualizer();
+        window.addEventListener('resize', () => { clearTimeout(window.resizeTimer); window.resizeTimer = setTimeout(createVisualizer, 250); });
+        animateVisualizer();
+        
+        // Reveal animations
+        function initRevealAnimations() {
+            const observer = new IntersectionObserver((entries) => { entries.forEach(e => e.isIntersecting && e.target.classList.add('show')); }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+        document.addEventListener('DOMContentLoaded', initRevealAnimations);
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            if (e.key.toLowerCase() === 't') { e.preventDefault(); themeToggle.click(); }
+            if (e.key.toLowerCase() === 'd') { e.preventDefault(); downloadBtn.click(); }
+            if (e.key === ' ') { e.preventDefault(); toggleRhythm(); }
+        });
+        
+        // Click to zoom preview
+        document.querySelector('.screenshot-frame')?.addEventListener('click', function() {
+            this.classList.toggle('zoomed');
+            showToast(this.classList.contains('zoomed') ? 'Preview zoomed' : 'Preview normal', 'info');
+        });
+    </script>
+</body>
+</html>
