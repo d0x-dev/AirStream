@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:attr/colorBackground">
+
+    <LinearLayout
+        android:id="@+id/splashContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:scaleX="0.9"
+        android:scaleY="0.9"
+        android:alpha="0">
+
+        <!-- Logo -->
+        <ImageView
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:src="@mipmap/ic_launcher_round"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Gradient Text -->
+        <TextView
+            android:id="@+id/tvSplashText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="AirStream"
+            android:textSize="42sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.05" />
+
+    </LinearLayout>
+</FrameLayout>
