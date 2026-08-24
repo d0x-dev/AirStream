@@ -777,7 +777,7 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
             popup.show()
         }
 
-        binding.playerChannel.setOnClickListener {
+        binding.playerChannelImage.setOnClickListener {
             if (!this::streams.isInitialized) return@setOnClickListener
 
             NavigationHelper.navigateChannel(requireContext(), streams.uploaderUrl)
@@ -1254,7 +1254,7 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
             streams.relatedStreams.filter { !it.title.isNullOrBlank() }
         }
 
-        binding.relatedRecView.adapter = com.github.airstream.ui.adapters.VideosAdapter().also { adapter ->
+        binding.relatedRecView.adapter = com.github.airstream.ui.adapters.VideoCardsAdapter().also { adapter ->
             adapter.submitList(relatedStreams)
         }
     }
