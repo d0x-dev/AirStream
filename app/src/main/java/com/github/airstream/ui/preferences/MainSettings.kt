@@ -19,12 +19,10 @@ class MainSettings : Fragment(R.layout.fragment_custom_settings) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.onSystemInsets { v, insets ->
-            v.updatePadding( top = insets.top, bottom = insets.bottom)
+            v.updatePadding(bottom = insets.bottom)
         }
         
-        view.findViewById<View>(R.id.btnBack)?.setOnClickListener {
-            requireActivity().onBackPressedDispatcher.onBackPressed()
-        }
+        
         
         listOf(
             R.id.opt_general to R.id.action_global_generalSettings,
