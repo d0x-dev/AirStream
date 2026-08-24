@@ -38,7 +38,7 @@ class MainSettings : Fragment(R.layout.fragment_custom_settings) {
             }
         }
         
-        view.findViewById<TextView>(R.id.tv_update_summary)?.text = "v$"{BuildConfig.VERSION_NAME}"
+        view.findViewById<TextView>(R.id.tv_update_summary)?.text = "v${BuildConfig.VERSION_NAME}"
         view.findViewById<View>(R.id.opt_update)?.setOnClickListener {
             lifecycleScope.launch(Dispatchers.IO) {
                 UpdateChecker(requireContext()).checkUpdate(true)

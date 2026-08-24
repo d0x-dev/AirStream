@@ -25,7 +25,7 @@ class AboutActivity : BaseActivity() {
             onBackPressedDispatcher.onBackPressed()
         }
 
-        binding.tvVersion.text = "Version "$""
+        binding.tvVersion.text = "Version ${BuildConfig.VERSION_NAME}"
 
         binding.cardDarkboy.setOnClickListener {
             IntentHelper.openLinkFromHref(this, supportFragmentManager, "https://github.com/d0x-dev")
