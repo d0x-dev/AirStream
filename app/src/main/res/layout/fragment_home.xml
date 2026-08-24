@@ -196,49 +196,48 @@
 
     </com.github.airstream.ui.views.CustomSwipeToRefresh>
 
-    <LinearLayout
+    
+
+
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/nothing_here"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:orientation="vertical"
+        android:layout_marginHorizontal="20dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="2dp"
+        app:strokeWidth="0dp"
+        app:cardBackgroundColor="?attr/colorSurface"
         android:visibility="gone">
 
-        <ImageView
-            android:id="@+id/listIV"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="16dp"
-            android:src="@drawable/ic_list" />
-
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/emptyList"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:gravity="center">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/refresh_button"
-            style="@style/Widget.Material3Expressive.Button"
-            android:layout_width="150dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:text="@string/retry" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Try searching to get started"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:gravity="center" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/change_instance"
-            style="@style/Widget.Material3Expressive.Button"
-            android:layout_width="150dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="5dp"
-            android:text="@string/change_instance" />
-    </LinearLayout>
-
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Start watching videos to help us build a feed of videos that you'll love."
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="14sp"
+                android:gravity="center" />
+                
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
     <com.google.android.material.loadingindicator.LoadingIndicator
         android:id="@+id/progress"
         android:layout_width="wrap_content"

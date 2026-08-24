@@ -123,14 +123,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 }
             }
         }
-
-        binding.refreshButton.setOnClickListener {
-            fetchHomeFeed()
-        }
-
-        binding.changeInstance.setOnClickListener {
-            redirectToIntentSettings()
-        }
     }
 
     override fun onResume() {
