@@ -26,8 +26,12 @@ class UpdateChecker(private val context: Context) {
             val update = response.name.filter { it.isDigit() }.toInt()
 
             if (currentAppVersion != update) {
+                // Find the specific APK asset URL, fallback to htmlUrl if not found
+                val apkAsset = response.assets.find { it.name.endsWith("_signed.apk") && it.name.startsWith("AirStream_v") }
+                val downloadUrl = apkAsset?.browserDownloadUrl ?: response.htmlUrl
+                
                 withContext(Dispatchers.Main) {
-                    showUpdateAvailableDialog(response.body, response.htmlUrl)
+                    showUpdateAvailableDialog(response.body, downloadUrl)
                 }
                 Log.i(TAG(), response.toString())
             } else if (isManualCheck) {
@@ -58,13 +62,5 @@ class UpdateChecker(private val context: Context) {
     private fun sanitizeChangelog(changelog: String): String {
         return changelog.substringBeforeLast("**Full Changelog**")
             .replace(Regex("in https://github\\.com/\\S+"), "")
-            .lines().joinToString("\n") { line ->
-                if (line.startsWith("##")) line.uppercase(Locale.ROOT) + " :" else line
-            }
-            .replace("## ", "")
-            .replace(">", "")
-            .replace("*", "•")
-            .lines()
-            .joinToString("\n") { it.trim() }
     }
 }
