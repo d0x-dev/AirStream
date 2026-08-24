@@ -22,8 +22,6 @@ class MainSettings : Fragment(R.layout.fragment_custom_settings) {
             v.updatePadding(bottom = insets.bottom)
         }
         
-        
-        
         listOf(
             R.id.opt_general to R.id.action_global_generalSettings,
             R.id.opt_instance to R.id.action_global_instanceSettings,
@@ -40,11 +38,14 @@ class MainSettings : Fragment(R.layout.fragment_custom_settings) {
             }
         }
         
-        view.findViewById<TextView>(R.id.tv_update_summary)?.text = "v${BuildConfig.VERSION_NAME}"
+        view.findViewById<TextView>(R.id.tv_update_summary)?.text = "v$"{BuildConfig.VERSION_NAME}"
         view.findViewById<View>(R.id.opt_update)?.setOnClickListener {
             lifecycleScope.launch(Dispatchers.IO) {
                 UpdateChecker(requireContext()).checkUpdate(true)
             }
+        }
+        view.findViewById<View>(R.id.opt_about)?.setOnClickListener {
+            startActivity(android.content.Intent(requireContext(), com.github.airstream.ui.activities.AboutActivity::class.java))
         }
     }
 }

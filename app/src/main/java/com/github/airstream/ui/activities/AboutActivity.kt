@@ -1,19 +1,15 @@
 package com.github.airstream.ui.activities
 
 import android.annotation.SuppressLint
-import android.content.res.Resources
-import android.os.Build
 import android.os.Bundle
 import androidx.core.text.HtmlCompat
 import androidx.core.text.parseAsHtml
+import com.github.airstream.BuildConfig
 import com.github.airstream.R
 import com.github.airstream.databinding.ActivityAboutBinding
-import com.github.airstream.helpers.ClipboardHelper
 import com.github.airstream.helpers.IntentHelper
 import com.github.airstream.ui.base.BaseActivity
-import com.google.android.material.card.MaterialCardView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 
 class AboutActivity : BaseActivity() {
     private lateinit var binding: ActivityAboutBinding
@@ -29,49 +25,27 @@ class AboutActivity : BaseActivity() {
             onBackPressedDispatcher.onBackPressed()
         }
 
-        setupCard(binding.donate, DONATE_URL)
-        setupCard(binding.website, WEBSITE_URL)
-        setupCard(binding.piped, PIPED_GITHUB_URL)
-        setupCard(binding.translate, WEBLATE_URL)
-        setupCard(binding.github, GITHUB_URL)
+        binding.tvVersion.text = "Version "$""
 
-        binding.license.setOnClickListener {
+        binding.cardDarkboy.setOnClickListener {
+            IntentHelper.openLinkFromHref(this, supportFragmentManager, "https://github.com/d0x-dev")
+        }
+
+        binding.cardVenom.setOnClickListener {
+            IntentHelper.openLinkFromHref(this, supportFragmentManager, "https://github.com/drkvenom786")
+        }
+
+        binding.btnRepo.setOnClickListener {
+            IntentHelper.openLinkFromHref(this, supportFragmentManager, GITHUB_URL)
+        }
+
+        binding.btnTelegram.setOnClickListener {
+            IntentHelper.openLinkFromHref(this, supportFragmentManager, "https://t.me/songpy")
+        }
+
+        binding.btnLicense.setOnClickListener {
             showLicense()
         }
-        binding.license.setOnLongClickListener {
-            onLongClick(LICENSE_URL)
-            true
-        }
-
-        binding.device.setOnClickListener {
-            showDeviceInfo()
-        }
-    }
-
-    private fun setupCard(card: MaterialCardView, link: String) {
-        card.setOnClickListener {
-            IntentHelper.openLinkFromHref(this, supportFragmentManager, link)
-        }
-        card.setOnLongClickListener {
-            onLongClick(link)
-            true
-        }
-    }
-
-    private fun onLongClick(href: String) {
-        // copy the link to the clipboard
-        ClipboardHelper.save(this, text = href)
-        // show the snackBar with open action
-        Snackbar.make(
-            binding.root,
-            R.string.copied_to_clipboard,
-            Snackbar.LENGTH_LONG
-        )
-            .setAction(R.string.open_copied) {
-                IntentHelper.openLinkFromHref(this, supportFragmentManager, href)
-            }
-            .setAnimationMode(Snackbar.ANIMATION_MODE_FADE)
-            .show()
     }
 
     private fun showLicense() {
@@ -87,33 +61,7 @@ class AboutActivity : BaseActivity() {
             .show()
     }
 
-    private fun showDeviceInfo() {
-        val metrics = Resources.getSystem().displayMetrics
-
-        val text = "Manufacturer: ${Build.MANUFACTURER}\n" +
-                "Board: ${Build.BOARD}\n" +
-                "Arch: ${Build.SUPPORTED_ABIS[0]}\n" +
-                "Android SDK: ${Build.VERSION.SDK_INT}\n" +
-                "OS: Android ${Build.VERSION.RELEASE}\n" +
-                "Display: ${metrics.widthPixels}x${metrics.heightPixels}\n" +
-                "Font scale: ${Resources.getSystem().configuration.fontScale}"
-
-        MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.device_info)
-            .setMessage(text)
-            .setNegativeButton(R.string.copy_tooltip) { _, _ ->
-                ClipboardHelper.save(this@AboutActivity, text = text)
-            }
-            .setPositiveButton(R.string.okay, null)
-            .show()
-    }
-
     companion object {
-        const val DONATE_URL = "https://github.com/d0x-dev/AirStream#donate"
-        private const val WEBSITE_URL = "https://airstream.dev"
         const val GITHUB_URL = "https://github.com/d0x-dev/AirStream"
-        private const val PIPED_GITHUB_URL = "https://github.com/TeamPiped/Piped"
-        private const val WEBLATE_URL = "https://hosted.weblate.org/projects/airstream/airstream/"
-        private const val LICENSE_URL = "https://gnu.org/"
     }
 }
