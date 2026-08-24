@@ -109,9 +109,9 @@ class AboutActivity : BaseActivity() {
     }
 
     companion object {
-        const val DONATE_URL = "https://github.com/libre-tube/Airstream#donate"
+        const val DONATE_URL = "https://github.com/d0x-dev/AirStream#donate"
         private const val WEBSITE_URL = "https://airstream.dev"
-        const val GITHUB_URL = "https://github.com/libre-tube/Airstream"
+        const val GITHUB_URL = "https://github.com/d0x-dev/AirStream"
         private const val PIPED_GITHUB_URL = "https://github.com/TeamPiped/Piped"
         private const val WEBLATE_URL = "https://hosted.weblate.org/projects/airstream/airstream/"
         private const val LICENSE_URL = "https://gnu.org/"
