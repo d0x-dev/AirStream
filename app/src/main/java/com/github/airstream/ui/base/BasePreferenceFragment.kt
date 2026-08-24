@@ -26,11 +26,48 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
      */
     var isDialogVisible = false
 
+        override fun onCreateView(
+        inflater: android.view.LayoutInflater,
+        container: android.view.ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val originalView = super.onCreateView(inflater, container, savedInstanceState)
+        val wrapper = android.widget.LinearLayout(requireContext())
+        wrapper.orientation = android.widget.LinearLayout.VERTICAL
+        wrapper.setBackgroundColor(android.graphics.Color.parseColor("#F2F2F7"))
+        
+        val header = inflater.inflate(com.github.airstream.R.layout.layout_settings_header, wrapper, false)
+        wrapper.addView(header)
+        
+        val lp = android.widget.LinearLayout.LayoutParams(
+            android.view.ViewGroup.LayoutParams.MATCH_PARENT, 
+            0, 
+            1f
+        )
+        originalView.layoutParams = lp
+        wrapper.addView(originalView)
+        
+        return wrapper
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        (requireActivity() as? androidx.appcompat.app.AppCompatActivity)?.supportActionBar?.show()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // add bottom padding to the list, to ensure that the last item is not overlapped by the system bars
-        listView.onSystemInsets { v, systemInsets ->
-            v.updatePadding(bottom = v.paddingBottom + systemInsets.bottom)
+        
+        view.findViewById<android.widget.TextView>(com.github.airstream.R.id.tvHeaderTitle)?.text = preferenceScreen?.title ?: "Settings"
+        view.findViewById<android.view.View>(com.github.airstream.R.id.btnBack)?.setOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
+        
+        (requireActivity() as? androidx.appcompat.app.AppCompatActivity)?.supportActionBar?.hide()
+
+        view.onSystemInsets { v, systemInsets ->
+            v.updatePadding(top = systemInsets.top)
+            listView.updatePadding(bottom = listView.paddingBottom + systemInsets.bottom)
         }
     }
 

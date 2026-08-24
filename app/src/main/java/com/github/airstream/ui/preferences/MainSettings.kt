@@ -8,6 +8,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.github.airstream.BuildConfig
 import com.github.airstream.R
+import com.github.airstream.ui.extensions.onSystemInsets
+import androidx.core.view.updatePadding
 import com.github.airstream.ui.activities.MainActivity
 import com.github.airstream.util.UpdateChecker
 import kotlinx.coroutines.Dispatchers
@@ -16,6 +18,9 @@ import kotlinx.coroutines.launch
 class MainSettings : Fragment(R.layout.fragment_custom_settings) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        view.onSystemInsets { v, insets ->
+            v.updatePadding( top = insets.top, bottom = insets.bottom)
+        }
         
         (requireActivity() as? androidx.appcompat.app.AppCompatActivity)?.supportActionBar?.hide()
         
