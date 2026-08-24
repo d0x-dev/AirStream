@@ -17,7 +17,7 @@ class MainSettings : Fragment(R.layout.fragment_custom_settings) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        (activity as? MainActivity)?.findViewById<View>(R.id.toolbar)?.visibility = View.GONE
+        (requireActivity() as? androidx.appcompat.app.AppCompatActivity)?.supportActionBar?.hide()
         
         view.findViewById<View>(R.id.btnBack)?.setOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
@@ -49,6 +49,6 @@ class MainSettings : Fragment(R.layout.fragment_custom_settings) {
     
     override fun onDestroyView() {
         super.onDestroyView()
-        (activity as? MainActivity)?.findViewById<View>(R.id.toolbar)?.visibility = View.VISIBLE
+        (requireActivity() as? androidx.appcompat.app.AppCompatActivity)?.supportActionBar?.show()
     }
 }
