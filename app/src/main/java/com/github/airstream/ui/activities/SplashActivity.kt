@@ -8,7 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+
 import androidx.lifecycle.lifecycleScope
 import com.github.airstream.R
 import kotlinx.coroutines.delay
@@ -17,11 +17,11 @@ import kotlinx.coroutines.launch
 class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val splashScreen = installSplashScreen()
+        
         super.onCreate(savedInstanceState)
         
         // Disable native splash screen exit animation if possible so we seamlessly transition
-        splashScreen.setKeepOnScreenCondition { false }
+        
 
         setContentView(R.layout.activity_splash)
 

@@ -257,5 +257,11 @@
         <item name="popupMenuBackground">@drawable/pure_theme_popup_menu_background</item>
 
     </style>
+    <style name="Theme.NoNativeSplash" parent="BaseTheme">
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:windowSplashScreenBackground">@android:color/transparent</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/empty_splash</item>
+    </style>
+
 
 </resources>
