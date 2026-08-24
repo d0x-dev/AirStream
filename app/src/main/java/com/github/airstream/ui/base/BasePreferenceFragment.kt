@@ -69,6 +69,26 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
             v.updatePadding(top = systemInsets.top)
             listView.updatePadding(bottom = listView.paddingBottom + systemInsets.bottom)
         }
+
+        val horizontalMargin = (16 * view.resources.displayMetrics.density).toInt()
+        val verticalMargin = (6 * view.resources.displayMetrics.density).toInt()
+        
+        listView.addItemDecoration(object : androidx.recyclerview.widget.RecyclerView.ItemDecoration() {
+            override fun getItemOffsets(
+                outRect: android.graphics.Rect,
+                child: View,
+                parent: androidx.recyclerview.widget.RecyclerView,
+                state: androidx.recyclerview.widget.RecyclerView.State
+            ) {
+                // If it's clickable, it's a preference item. If not, it's likely a category header.
+                if (child.isClickable || child.isFocusable) {
+                    outRect.set(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin)
+                    child.background = androidx.core.content.ContextCompat.getDrawable(requireContext(), com.github.airstream.R.drawable.rounded_white_card)
+                    child.clipToOutline = true
+                    child.elevation = 0f
+                }
+            }
+        })
     }
 
     override fun onDisplayPreferenceDialog(preference: Preference) {

@@ -327,7 +327,18 @@ class MainActivity : AbstractPlayerHostActivity() {
         searchView = searchItem.actionView as SearchView
 
         // automatically set a different search icon in the playlists
-        navController.addOnDestinationChangedListener { _, destination, _ ->
+                navController.addOnDestinationChangedListener { _, destination, _ ->
+            val settingsIds = listOf(
+                R.id.mainSettings, R.id.generalSettings, R.id.instanceSettings,
+                R.id.appearanceSettings, R.id.audioVideoSettings, R.id.backupRestoreSettings,
+                R.id.historySettings, R.id.notificationSettings, R.id.playerSettings,
+                R.id.sponsorBlockSettings
+            )
+            if (destination.id in settingsIds) {
+                binding.toolbar.visibility = View.GONE
+            } else {
+                binding.toolbar.visibility = View.VISIBLE
+            }
             currentSearchType = when (destination.id) {
                 R.id.downloadsFragment -> SearchType.DOWNLOADS
                 R.id.playlistFragment -> SearchType.PLAYLIST
