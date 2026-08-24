@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:text="General"
                 android:textSize="14sp"
-                android:textColor="#666666"
+                android:textColor="?android:attr/textColorSecondary"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp" />
 
@@ -33,7 +33,7 @@
                 app:cardCornerRadius="16dp"
                 app:cardElevation="0dp"
                 app:strokeWidth="0dp"
-                app:cardBackgroundColor="#FFFFFF">
+                app:cardBackgroundColor="?attr/colorSurface">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -41,23 +41,23 @@
                     
                     <!-- General -->
                     <LinearLayout android:id="@+id/opt_general" android:layout_width="match_parent" android:layout_height="56dp" android:gravity="center_vertical" android:paddingHorizontal="16dp" android:orientation="horizontal" android:background="?selectableItemBackground">
-                        <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_marginEnd="16dp" android:src="@drawable/ic_settings" app:tint="#000" />
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="General" android:textColor="#000" android:textSize="15sp" />
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=">" android:textColor="#C5C5C7" android:textSize="18sp" />
+                        <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_marginEnd="16dp" android:src="@drawable/ic_settings" app:tint="?android:attr/textColorPrimary" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="General" android:textColor="?android:attr/textColorPrimary" android:textSize="15sp" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=">" android:textColor="?android:attr/textColorSecondary" android:textSize="18sp" />
                     </LinearLayout>
                     
                     <!-- Appearance -->
                     <LinearLayout android:id="@+id/opt_appearance" android:layout_width="match_parent" android:layout_height="56dp" android:gravity="center_vertical" android:paddingHorizontal="16dp" android:orientation="horizontal" android:background="?selectableItemBackground">
-                        <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_marginEnd="16dp" android:src="@drawable/ic_color" app:tint="#000" />
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Appearance" android:textColor="#000" android:textSize="15sp" />
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=">" android:textColor="#C5C5C7" android:textSize="18sp" />
+                        <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_marginEnd="16dp" android:src="@drawable/ic_color" app:tint="?android:attr/textColorPrimary" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Appearance" android:textColor="?android:attr/textColorPrimary" android:textSize="15sp" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=">" android:textColor="?android:attr/textColorSecondary" android:textSize="18sp" />
                     </LinearLayout>
 
                     <!-- Notifications -->
                     <LinearLayout android:id="@+id/opt_notifications" android:layout_width="match_parent" android:layout_height="56dp" android:gravity="center_vertical" android:paddingHorizontal="16dp" android:orientation="horizontal" android:background="?selectableItemBackground">
-                        <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_marginEnd="16dp" android:src="@drawable/ic_notification" app:tint="#000" />
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Notifications" android:textColor="#000" android:textSize="15sp" />
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=">" android:textColor="#C5C5C7" android:textSize="18sp" />
+                        <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_marginEnd="16dp" android:src="@drawable/ic_notification" app:tint="?android:attr/textColorPrimary" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Notifications" android:textColor="?android:attr/textColorPrimary" android:textSize="15sp" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=">" android:textColor="?android:attr/textColorSecondary" android:textSize="18sp" />
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -68,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:text="App &amp; Video"
                 android:textSize="14sp"
-                android:textColor="#666666"
+                android:textColor="?android:attr/textColorSecondary"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp" />
 
@@ -78,7 +78,7 @@
                 app:cardCornerRadius="16dp"
                 app:cardElevation="0dp"
                 app:strokeWidth="0dp"
-                app:cardBackgroundColor="#FFFFFF">
+                app:cardBackgroundColor="?attr/colorSurface">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -86,30 +86,30 @@
                     
                     <!-- Instance -->
                     <LinearLayout android:id="@+id/opt_instance" android:layout_width="match_parent" android:layout_height="56dp" android:gravity="center_vertical" android:paddingHorizontal="16dp" android:orientation="horizontal" android:background="?selectableItemBackground">
-                        <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_marginEnd="16dp" android:src="@drawable/ic_server" app:tint="#000" />
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Instance" android:textColor="#000" android:textSize="15sp" />
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=">" android:textColor="#C5C5C7" android:textSize="18sp" />
+                        <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_marginEnd="16dp" android:src="@drawable/ic_server" app:tint="?android:attr/textColorPrimary" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Instance" android:textColor="?android:attr/textColorPrimary" android:textSize="15sp" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=">" android:textColor="?android:attr/textColorSecondary" android:textSize="18sp" />
                     </LinearLayout>
                     
                     <!-- Player -->
                     <LinearLayout android:id="@+id/opt_player" android:layout_width="match_parent" android:layout_height="56dp" android:gravity="center_vertical" android:paddingHorizontal="16dp" android:orientation="horizontal" android:background="?selectableItemBackground">
-                        <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_marginEnd="16dp" android:src="@drawable/ic_play_filled" app:tint="#000" />
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Player" android:textColor="#000" android:textSize="15sp" />
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=">" android:textColor="#C5C5C7" android:textSize="18sp" />
+                        <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_marginEnd="16dp" android:src="@drawable/ic_play_filled" app:tint="?android:attr/textColorPrimary" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Player" android:textColor="?android:attr/textColorPrimary" android:textSize="15sp" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=">" android:textColor="?android:attr/textColorSecondary" android:textSize="18sp" />
                     </LinearLayout>
                     
                     <!-- Audio & Video -->
                     <LinearLayout android:id="@+id/opt_audio_video" android:layout_width="match_parent" android:layout_height="56dp" android:gravity="center_vertical" android:paddingHorizontal="16dp" android:orientation="horizontal" android:background="?selectableItemBackground">
-                        <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_marginEnd="16dp" android:src="@drawable/ic_movie" app:tint="#000" />
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Audio &amp; Video" android:textColor="#000" android:textSize="15sp" />
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=">" android:textColor="#C5C5C7" android:textSize="18sp" />
+                        <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_marginEnd="16dp" android:src="@drawable/ic_movie" app:tint="?android:attr/textColorPrimary" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Audio &amp; Video" android:textColor="?android:attr/textColorPrimary" android:textSize="15sp" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=">" android:textColor="?android:attr/textColorSecondary" android:textSize="18sp" />
                     </LinearLayout>
 
                     <!-- SponsorBlock -->
                     <LinearLayout android:id="@+id/opt_sponsorblock" android:layout_width="match_parent" android:layout_height="56dp" android:gravity="center_vertical" android:paddingHorizontal="16dp" android:orientation="horizontal" android:background="?selectableItemBackground">
-                        <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_marginEnd="16dp" android:src="@drawable/ic_block" app:tint="#000" />
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="SponsorBlock" android:textColor="#000" android:textSize="15sp" />
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=">" android:textColor="#C5C5C7" android:textSize="18sp" />
+                        <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_marginEnd="16dp" android:src="@drawable/ic_block" app:tint="?android:attr/textColorPrimary" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="SponsorBlock" android:textColor="?android:attr/textColorPrimary" android:textSize="15sp" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=">" android:textColor="?android:attr/textColorSecondary" android:textSize="18sp" />
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -120,7 +120,7 @@
                 android:layout_height="wrap_content"
                 android:text="Data &amp; Backup"
                 android:textSize="14sp"
-                android:textColor="#666666"
+                android:textColor="?android:attr/textColorSecondary"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp" />
 
@@ -130,7 +130,7 @@
                 app:cardCornerRadius="16dp"
                 app:cardElevation="0dp"
                 app:strokeWidth="0dp"
-                app:cardBackgroundColor="#FFFFFF">
+                app:cardBackgroundColor="?attr/colorSurface">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -138,24 +138,24 @@
                     
                     <!-- History -->
                     <LinearLayout android:id="@+id/opt_history" android:layout_width="match_parent" android:layout_height="56dp" android:gravity="center_vertical" android:paddingHorizontal="16dp" android:orientation="horizontal" android:background="?selectableItemBackground">
-                        <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_marginEnd="16dp" android:src="@drawable/ic_history_filled" app:tint="#000" />
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="History" android:textColor="#000" android:textSize="15sp" />
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=">" android:textColor="#C5C5C7" android:textSize="18sp" />
+                        <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_marginEnd="16dp" android:src="@drawable/ic_history_filled" app:tint="?android:attr/textColorPrimary" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="History" android:textColor="?android:attr/textColorPrimary" android:textSize="15sp" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=">" android:textColor="?android:attr/textColorSecondary" android:textSize="18sp" />
                     </LinearLayout>
 
                     <!-- Backup & Restore -->
                     <LinearLayout android:id="@+id/opt_backup_restore" android:layout_width="match_parent" android:layout_height="56dp" android:gravity="center_vertical" android:paddingHorizontal="16dp" android:orientation="horizontal" android:background="?selectableItemBackground">
-                        <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_marginEnd="16dp" android:src="@drawable/ic_backup" app:tint="#000" />
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Backup &amp; Restore" android:textColor="#000" android:textSize="15sp" />
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=">" android:textColor="#C5C5C7" android:textSize="18sp" />
+                        <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_marginEnd="16dp" android:src="@drawable/ic_backup" app:tint="?android:attr/textColorPrimary" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Backup &amp; Restore" android:textColor="?android:attr/textColorPrimary" android:textSize="15sp" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=">" android:textColor="?android:attr/textColorSecondary" android:textSize="18sp" />
                     </LinearLayout>
                     
                     <!-- Update -->
                     <LinearLayout android:id="@+id/opt_update" android:layout_width="match_parent" android:layout_height="56dp" android:gravity="center_vertical" android:paddingHorizontal="16dp" android:orientation="horizontal" android:background="?selectableItemBackground">
-                        <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_marginEnd="16dp" android:src="@drawable/ic_update" app:tint="#000" />
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Check for Updates" android:textColor="#000" android:textSize="15sp" />
-                        <TextView android:id="@+id/tv_update_summary" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="" android:textColor="#999999" android:textSize="14sp" android:layout_marginEnd="8dp" />
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=">" android:textColor="#C5C5C7" android:textSize="18sp" />
+                        <ImageView android:layout_width="24dp" android:layout_height="24dp" android:layout_marginEnd="16dp" android:src="@drawable/ic_update" app:tint="?android:attr/textColorPrimary" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Check for Updates" android:textColor="?android:attr/textColorPrimary" android:textSize="15sp" />
+                        <TextView android:id="@+id/tv_update_summary" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="" android:textColor="?android:attr/textColorSecondary" android:textSize="14sp" android:layout_marginEnd="8dp" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text=">" android:textColor="?android:attr/textColorSecondary" android:textSize="18sp" />
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
