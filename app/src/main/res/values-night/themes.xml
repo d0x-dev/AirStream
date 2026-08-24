@@ -18,11 +18,11 @@
         <item name="materialAlertDialogTheme">@style/AlertDialogTheme</item>
     </style>
 
-    <style name="StartupTheme" parent="Theme.SplashScreen">
-
-        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_round</item>
+        <style name="SplashScreenTheme" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenAnimatedIcon">@drawable/empty_splash</item>
         <item name="postSplashScreenTheme">@style/BaseTheme</item>
-
+        <item name="windowSplashScreenBackground">@android:color/transparent</item>
+        <item name="android:windowDisablePreview">true</item>
     </style>
 
     <style name="Theme.Red" parent="BaseTheme">
