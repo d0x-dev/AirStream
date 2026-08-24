@@ -30,11 +30,11 @@ AirStream delivers an entirely ad-free, deeply polished video viewing experience
 ## 📱 Screenshots
 
 <div align="center">
-  <img width="32%" alt="Home Screen" src="https://github.com/user-attachments/assets/f667b7d6-28f4-4a13-8815-a41a8a75b1a6" />
+  <img width="48%" alt="Home Screen" src="https://github.com/user-attachments/assets/f667b7d6-28f4-4a13-8815-a41a8a75b1a6" />
   &nbsp;
-  <img width="32%" alt="Player Screen" src="https://github.com/user-attachments/assets/fb1a6c51-c922-4b3c-84c3-af087ac85cdc" />
+  <img width="24%" alt="Player Screen" src="https://github.com/user-attachments/assets/fb1a6c51-c922-4b3c-84c3-af087ac85cdc" />
   &nbsp;
-  <img width="32%" alt="Settings Screen" src="https://github.com/user-attachments/assets/57be9c28-dae7-46f6-9c1d-a622d822e147" />
+  <img width="24%" alt="Settings Screen" src="https://github.com/user-attachments/assets/57be9c28-dae7-46f6-9c1d-a622d822e147" />
 </div>
 
 > *A flawless, card-based interface tailored for visual perfection.*
