@@ -20,7 +20,6 @@
             android:layout_width="160dp"
             android:layout_height="160dp"
             android:src="@drawable/mono_cr"
-            app:tint="?attr/colorPrimary"
             android:layout_marginBottom="16dp" />
 
         <!-- Gradient Text -->
