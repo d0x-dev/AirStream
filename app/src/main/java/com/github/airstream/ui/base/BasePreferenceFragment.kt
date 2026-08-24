@@ -50,11 +50,6 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
         return wrapper
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        (requireActivity() as? androidx.appcompat.app.AppCompatActivity)?.supportActionBar?.show()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
@@ -62,8 +57,6 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat() {
         view.findViewById<android.view.View>(com.github.airstream.R.id.btnBack)?.setOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
-        
-        (requireActivity() as? androidx.appcompat.app.AppCompatActivity)?.supportActionBar?.hide()
 
         view.onSystemInsets { v, systemInsets ->
             v.updatePadding(top = systemInsets.top)

@@ -22,8 +22,6 @@ class MainSettings : Fragment(R.layout.fragment_custom_settings) {
             v.updatePadding( top = insets.top, bottom = insets.bottom)
         }
         
-        (requireActivity() as? androidx.appcompat.app.AppCompatActivity)?.supportActionBar?.hide()
-        
         view.findViewById<View>(R.id.btnBack)?.setOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
@@ -50,10 +48,5 @@ class MainSettings : Fragment(R.layout.fragment_custom_settings) {
                 UpdateChecker(requireContext()).checkUpdate(true)
             }
         }
-    }
-    
-    override fun onDestroyView() {
-        super.onDestroyView()
-        (requireActivity() as? androidx.appcompat.app.AppCompatActivity)?.supportActionBar?.show()
     }
 }
