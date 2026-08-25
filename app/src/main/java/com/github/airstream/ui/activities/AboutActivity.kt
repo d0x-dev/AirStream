@@ -25,17 +25,17 @@ class AboutActivity : BaseActivity() {
             onBackPressedDispatcher.onBackPressed()
         }
 
-        binding.tvVersion.text = "Version ${BuildConfig.VERSION_NAME}"
+        binding.appVersion.text = "Version ${BuildConfig.VERSION_NAME}"
 
-        binding.cardDarkboy.setOnClickListener {
+        binding.devDarkboy.setOnClickListener {
             IntentHelper.openLinkFromHref(this, supportFragmentManager, "https://github.com/d0x-dev")
         }
 
-        binding.cardVenom.setOnClickListener {
+        binding.devVenom.setOnClickListener {
             IntentHelper.openLinkFromHref(this, supportFragmentManager, "https://github.com/drkvenom786")
         }
 
-        binding.btnRepo.setOnClickListener {
+        binding.btnSourceCode.setOnClickListener {
             IntentHelper.openLinkFromHref(this, supportFragmentManager, GITHUB_URL)
         }
 
