@@ -133,13 +133,36 @@ class MainActivity : AbstractPlayerHostActivity() {
                             paddingBottom
                         )
                     }
-                    with(binding.bottomNav) {
-                        setPadding(
-                            paddingLeft,
-                            paddingTop,
-                            paddingRight,
-                            systemBarInsets.bottom
-                        )
+                    val isPill = PreferenceHelper.getBoolean(PreferenceKeys.PILL_SHAPED_NAV_BAR, false)
+                    val marginPx = (16 * resources.displayMetrics.density).toInt()
+                    
+                    if (isPill) {
+                        val navLayoutParams = binding.bottomNav.layoutParams as android.view.ViewGroup.MarginLayoutParams
+                        navLayoutParams.setMargins(marginPx, 0, marginPx, systemBarInsets.bottom + marginPx)
+                        binding.bottomNav.layoutParams = navLayoutParams
+                        
+                        val shapeDrawable = com.google.android.material.shape.MaterialShapeDrawable()
+                        shapeDrawable.shapeAppearanceModel = shapeDrawable.shapeAppearanceModel.toBuilder()
+                            .setAllCorners(com.google.android.material.shape.CornerFamily.ROUNDED, 100f * resources.displayMetrics.density)
+                            .build()
+                        
+                        val typedValue = android.util.TypedValue()
+                        theme.resolveAttribute(com.google.android.material.R.attr.colorSurfaceContainer, typedValue, true)
+                        val color = if (typedValue.resourceId != 0) androidx.core.content.ContextCompat.getColor(this@MainActivity, typedValue.resourceId) else typedValue.data
+                        shapeDrawable.fillColor = android.content.res.ColorStateList.valueOf(color)
+                        
+                        shapeDrawable.elevation = binding.bottomNav.elevation
+                        binding.bottomNav.background = shapeDrawable
+                        binding.bottomNav.setPadding(0, 0, 0, 0)
+                    } else {
+                        with(binding.bottomNav) {
+                            setPadding(
+                                paddingLeft,
+                                paddingTop,
+                                paddingRight,
+                                systemBarInsets.bottom
+                            )
+                        }
                     }
                     binding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }

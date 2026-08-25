@@ -37,6 +37,12 @@
             android:icon="@drawable/ic_home"
             app:key="navbar_items"
             app:title="@string/navigation_bar" />
+            
+        <SwitchPreferenceCompat
+            android:icon="@drawable/ic_grid"
+            app:defaultValue="false"
+            app:key="pill_shape_nav_bar"
+            app:title="@string/pill_shape_nav_bar" />
 
         <MultiSelectListPreference
             android:entries="@array/homeTabItems"

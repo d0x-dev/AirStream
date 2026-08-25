@@ -22,7 +22,7 @@
     <string name="loggedout">Logged out.</string>
     <string name="registered">Registered. Now you can subscribe to channels.</string>
     <string name="already_logged_in">Already logged in. You may log out of your account.</string>
-    <string name="instances">Choose…</string>
+    <string name="instances">Chooseâ€¦</string>
     <string name="customInstance">Custom</string>
     <string name="region">Region</string>
     <string name="login_register">Log in/register</string>
@@ -63,8 +63,8 @@
     <string name="customization">Adjustments</string>
     <string name="website">Website</string>
     <string name="donate">Donate</string>
-    <string name="uploaderAndVideoCount">%1$s • %2$d videos</string>
-    <string name="subscriberAndVideoCounts">%1$s subscribers • %2$d videos</string>
+    <string name="uploaderAndVideoCount">%1$s â€¢ %2$d videos</string>
+    <string name="subscriberAndVideoCounts">%1$s subscribers â€¢ %2$d videos</string>
     <string name="videoCount">%1$d videos</string>
     <string name="noInternet">Connect to the Internet first.</string>
     <string name="retry">Retry</string>
@@ -147,7 +147,7 @@
     <string name="flameIcon">Flying flame</string>
     <string name="birdIcon">Boosted bird</string>
     <string name="instance_summary">Piped, login, and account</string>
-    <string name="customInstance_summary">Add…</string>
+    <string name="customInstance_summary">Addâ€¦</string>
     <string name="instance_name">Instance name</string>
     <string name="instance_api_url">URL to instance API</string>
     <string name="addInstance">Add Instance</string>
@@ -165,7 +165,7 @@
     <string name="no_subtitle">No subtitle</string>
     <string name="audio">Audio</string>
     <string name="video">Video</string>
-    <string name="downloading">Downloading…</string>
+    <string name="downloading">Downloadingâ€¦</string>
     <string name="download_paused">Download paused</string>
     <string name="download_completed">Download completed</string>
     <string name="concurrent_downloads">Max concurrent downloads</string>
@@ -201,7 +201,7 @@
     <string name="landscape">Landscape</string>
     <string name="portrait">Portrait</string>
     <string name="turnInternetOn">Please turn on Wi-Fi or mobile data to connect to the Internet.</string>
-    <string name="open">Open…</string>
+    <string name="open">Openâ€¦</string>
     <string name="chapters">Chapters</string>
     <string name="require_restart">App restart required</string>
     <string name="require_restart_message">Restart the app to use the new changes.</string>
@@ -237,7 +237,7 @@
     <string name="notify_new_streams_summary">Display notifications for new streams from creators you follow</string>
     <string name="show_stream_thumbnails">Show stream thumbnails</string>
     <string name="show_stream_thumbnails_summary">Show the thumbnails of new streams. Enabling this will consume additional data</string>
-    <string name="checking_frequency">Checking every …</string>
+    <string name="checking_frequency">Checking every â€¦</string>
     <string name="checking_frequency_15_minutes">15 minutes</string>
     <string name="checking_frequency_30_minutes">30 minutes</string>
     <string name="checking_frequency_60_minutes">60 minutes</string>
@@ -365,10 +365,10 @@
     <string name="export_playlist">Export playlist</string>
     <string name="import_watch_history">Import watch history</string>
     <string name="app_backup">App backup</string>
-    <string name="backup_restore_summary">Import and export subscriptions, playlists, …</string>
+    <string name="backup_restore_summary">Import and export subscriptions, playlists, â€¦</string>
     <string name="exportsuccess">Exported.</string>
     <string name="privacy_alert">Privacy alert</string>
-    <string name="username_email">Using an email address as a username isn’t recommended. Proceed anyway?</string>
+    <string name="username_email">Using an email address as a username isnâ€™t recommended. Proceed anyway?</string>
     <string name="proceed">Proceed</string>
     <string name="play_latest_videos">Play latest videos</string>
     <string name="nothing_selected">Nothing selected!</string>
@@ -535,7 +535,7 @@
     <string name="local_feed_extraction">Local feed extraction</string>
     <string name="local_feed_extraction_summary">Directly fetch the feed from YouTube. This may be significantly slower.</string>
     <string name="show_upcoming_videos">Show upcoming videos</string>
-    <string name="updating_feed">Updating feed …</string>
+    <string name="updating_feed">Updating feed â€¦</string>
     <string name="full_local_mode">Full local mode</string>
     <string name="full_local_mode_desc">Directly fetch everything from YouTube, without using Piped.</string>
     <string name="authentication">Authentication</string>
@@ -587,4 +587,5 @@
     <string name="import_temp_playlist_summary">Do you want to create a new playlist named \'%1$s\'? The playlist will contain %2$d videos.</string>
     <string name="comment_verified">Verified</string>
     <string name="comment_pinned">Pinned</string>
+    <string name="pill_shape_nav_bar">Pill shape nav bar</string>
 </resources>
