@@ -175,6 +175,17 @@ class MainActivity : AbstractPlayerHostActivity() {
                         
                         shapeDrawable.elevation = binding.bottomNav.elevation
                         binding.bottomNav.background = shapeDrawable
+                        
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                            if (com.github.airstream.helpers.ThemeHelper.isDarkMode(this@MainActivity)) {
+                                binding.bottomNav.outlineAmbientShadowColor = android.graphics.Color.parseColor("#40FFFFFF")
+                                binding.bottomNav.outlineSpotShadowColor = android.graphics.Color.parseColor("#40FFFFFF")
+                            } else {
+                                binding.bottomNav.outlineAmbientShadowColor = android.graphics.Color.BLACK
+                                binding.bottomNav.outlineSpotShadowColor = android.graphics.Color.BLACK
+                            }
+                        }
+
                         val verticalPadding = (6 * resources.displayMetrics.density).toInt()
                         binding.bottomNav.setPadding(0, verticalPadding, 0, verticalPadding)
                     } else {
