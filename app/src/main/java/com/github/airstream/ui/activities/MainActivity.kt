@@ -135,7 +135,8 @@ class MainActivity : AbstractPlayerHostActivity() {
                     }
                     val isPill = PreferenceHelper.getBoolean(PreferenceKeys.PILL_SHAPED_NAV_BAR, false)
                     val marginPx = (24 * resources.displayMetrics.density).toInt()
-                      val bottomMargin = if (isPill) systemBarInsets.bottom + marginPx else 0
+                      val bottomMarginPx = (12 * resources.displayMetrics.density).toInt()
+                      val bottomMargin = if (isPill) systemBarInsets.bottom + bottomMarginPx else 0
                       val sideMargin = if (isPill) marginPx else 0
 
                       val startSet = binding.root.getConstraintSet(R.id.start)
@@ -223,7 +224,7 @@ class MainActivity : AbstractPlayerHostActivity() {
                 for (key in keyFrame.getKeyFramesForView(binding.container.id)) {
                     if (key.framePosition == 100) key.setValue(
                         Key.TRANSLATION_Y,
-                        -(binding.bottomNav.height + (if (PreferenceHelper.getBoolean(PreferenceKeys.PILL_SHAPED_NAV_BAR, false)) ((androidx.core.view.ViewCompat.getRootWindowInsets(binding.root)?.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())?.bottom ?: 0) + (24 * resources.displayMetrics.density).toInt()) else 0)).toFloat()
+                        -(binding.bottomNav.height + (if (PreferenceHelper.getBoolean(PreferenceKeys.PILL_SHAPED_NAV_BAR, false)) ((androidx.core.view.ViewCompat.getRootWindowInsets(binding.root)?.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())?.bottom ?: 0) + (12 * resources.displayMetrics.density).toInt()) else 0)).toFloat()
                     )
                 }
             }
