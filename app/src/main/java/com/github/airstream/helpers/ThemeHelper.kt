@@ -17,42 +17,12 @@ import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.MaterialColors
 
 object ThemeHelper {
-    /**
-     * Set the theme, including accent color and night mode
+        /**
+     * Set the theme to pure monochrome (black and white)
      */
     fun updateTheme(activity: AppCompatActivity) {
-        var accentColor = PreferenceHelper.getString(PreferenceKeys.ACCENT_COLOR, "")
-        if (accentColor.isEmpty()) {
-            accentColor = if (DynamicColors.isDynamicColorAvailable()) "my" else "blue"
-            PreferenceHelper.putString(PreferenceKeys.ACCENT_COLOR, accentColor)
-        }
-
-        activity.setTheme(getTheme(accentColor))
-        if (accentColor == "my") DynamicColors.applyToActivityIfAvailable(activity)
-
-        val pureThemeEnabled = PreferenceHelper.getBoolean(
-            PreferenceKeys.PURE_THEME,
-            false
-        )
-        if (pureThemeEnabled) activity.theme.applyStyle(R.style.Pure, true)
-    }
-
-    /**
-     * Update the accent color of the app and apply dynamic colors if needed
-     */
-    private fun getTheme(accentColor: String): Int {
-        return when (accentColor) {
-            // set the accent color, use the pure black/white theme if enabled
-            "my" -> R.style.BaseTheme
-            "red" -> R.style.Theme_Red
-            "blue" -> R.style.Theme_Blue
-            "yellow" -> R.style.Theme_Yellow
-            "green" -> R.style.Theme_Green
-            "purple" -> R.style.Theme_Purple
-            "monochrome" -> R.style.Theme_Monochrome
-            "violet" -> R.style.Theme_Violet
-            else -> throw IllegalArgumentException()
-        }
+        activity.setTheme(R.style.Theme_Monochrome)
+        activity.theme.applyStyle(R.style.Pure, true)
     }
 
     fun applyDialogActivityTheme(activity: Activity) {
