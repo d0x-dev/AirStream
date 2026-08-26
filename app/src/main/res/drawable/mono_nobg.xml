@@ -4,11 +4,69 @@
     android:height="192dp"
     android:viewportWidth="192"
     android:viewportHeight="192">
+
+    <!-- Outer frame -->
     <path
+        android:fillColor="@android:color/transparent"
         android:strokeColor="#000000"
-        android:strokeWidth="12"
-        android:pathData="M168.356 92.58 48.073 19.68C45.407 18.066 42 19.985 42 23.103v30.645a4 4 0 0 0 1.927 3.42l58.429 35.412c2.569 1.557 2.569 5.285 0 6.842l-58.43 35.411a4 4 0 0 0-1.926 3.42v30.645c0 3.118 3.407 5.037 6.073 3.421l120.283-72.898c2.569-1.557 2.569-5.285 0-6.842Z" />
+        android:strokeWidth="7"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="
+            M50,65
+            C55,56 70,53 96,53
+            C119,53 137,54 143,61
+            C149,69 151,81 151,96
+            C151,111 149,123 143,131
+            C137,138 119,139 96,139
+            C70,139 55,136 50,127" />
+
+    <!-- Top speed line - longer -->
     <path
         android:fillColor="#000000"
-        android:pathData="M36 113.449V78.551c0-1.559 1.704-2.518 3.037-1.71l28.79 17.449c1.285.778 1.285 2.642 0 3.42l-28.79 17.45c-1.333.807-3.037-.152-3.037-1.711Z" />
+        android:pathData="
+            M40,76
+            H65
+            C67.5,76 69,77.8 69,80
+            C69,82.2 67.5,84 65,84
+            H40
+            C37.5,84 36,82.2 36,80
+            C36,77.8 37.5,76 40,76 Z" />
+
+    <!-- Middle speed line - longer -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="
+            M29,89
+            H65
+            C67.5,89 69,90.8 69,93
+            C69,95.2 67.5,97 65,97
+            H29
+            C26.5,97 25,95.2 25,93
+            C25,90.8 26.5,89 29,89 Z" />
+
+    <!-- Bottom speed line - longer -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="
+            M36,102
+            H68
+            C70.5,102 72,103.8 72,106
+            C72,108.2 70.5,110 68,110
+            H36
+            C33.5,110 32,108.2 32,106
+            C32,103.8 33.5,102 36,102 Z" />
+
+    <!-- Play button -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="
+            M80,76
+            C78,75 77,77 77,80
+            V112
+            C77,115 78,117 80,116
+            L112,98
+            C116,96 116,93 112,91
+            Z" />
+
 </vector>

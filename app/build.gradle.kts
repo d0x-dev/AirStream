@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import com.google.protobuf.gradle.id
 
 plugins {
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlin.serialization)
@@ -103,6 +104,7 @@ android {
     }
 
     buildFeatures {
+        compose = true
         buildConfig = true
         resValues = true
     }
@@ -123,6 +125,11 @@ android {
 }
 
 dependencies {
+    implementation("io.coil-kt.coil3:coil-compose:3.4.0")
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.ui.tooling.preview)
     /* Android Core */
     implementation(libs.androidx.activity)
     implementation(libs.androidx.appcompat)
