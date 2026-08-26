@@ -182,13 +182,7 @@
                         android:orientation="vertical"
                         android:padding="16dp">
 
-                        <ImageView
-                            android:layout_width="76dp"
-                            android:layout_height="76dp"
-                            android:background="@drawable/circle_bg"
-                            android:padding="16dp"
-                            android:src="@drawable/ic_person"
-                            app:tint="?attr/colorOnSurfaceVariant" />
+                        <ImageView android:id="@+id/imgDarkboy" android:layout_width="76dp" android:layout_height="76dp" android:background="@drawable/circle_bg" android:scaleType="centerCrop" android:src="@drawable/ic_person" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -283,13 +277,7 @@
                         android:orientation="vertical"
                         android:padding="16dp">
 
-                        <ImageView
-                            android:layout_width="76dp"
-                            android:layout_height="76dp"
-                            android:background="@drawable/circle_bg"
-                            android:padding="16dp"
-                            android:src="@drawable/ic_person"
-                            app:tint="?attr/colorOnSurfaceVariant" />
+                        <ImageView android:id="@+id/imgVenom" android:layout_width="76dp" android:layout_height="76dp" android:background="@drawable/circle_bg" android:scaleType="centerCrop" android:src="@drawable/ic_person" />
 
                         <TextView
                             android:layout_width="wrap_content"

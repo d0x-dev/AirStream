@@ -2,7 +2,10 @@ package com.github.airstream.ui.activities
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import coil3.load
+import coil3.request.crossfade
 import com.github.airstream.BuildConfig
+import com.github.airstream.R
 import com.github.airstream.databinding.ActivityAboutBinding
 import com.github.airstream.helpers.IntentHelper
 import com.github.airstream.ui.base.BaseActivity
@@ -17,7 +20,15 @@ class AboutActivity : BaseActivity() {
         binding = ActivityAboutBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.appVersion.text = "VERSION "
+        binding.appVersion.text = "VERSION ${BuildConfig.VERSION_NAME}"
+
+        // Load avatars
+        binding.imgDarkboy.load("https://avatars.githubusercontent.com/u/218248866") {
+            crossfade(true)
+        }
+        binding.imgVenom.load("https://avatars.githubusercontent.com/u/241423835") {
+            crossfade(true)
+        }
 
         // Global Action Listeners
         binding.btnGlobalGithub.setOnClickListener {
