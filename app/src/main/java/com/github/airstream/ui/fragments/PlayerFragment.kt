@@ -517,6 +517,12 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
 
             // if the player is minimized, the fragment behind the player should handle the event
             onBackPressedCallback.isEnabled = isMiniPlayerVisible != true
+            
+            if (isMiniPlayerVisible == true) {
+                stopAmbientModeLoop()
+            } else {
+                startAmbientModeLoop()
+            }
         }
 
         toggleVideoInfoVisibility(false)
@@ -1484,6 +1490,7 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
     }
 
     override fun onDestroyView() {
+        stopAmbientModeLoop()
         super.onDestroyView()
         _binding = null
     }
@@ -1498,5 +1505,90 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
 
     override fun isVideoLive(): Boolean {
         return ::streams.isInitialized && streams.isLive
+    }
+
+    private var ambientJob: kotlinx.coroutines.Job? = null
+    private val ambientBitmap = android.graphics.Bitmap.createBitmap(16, 9, android.graphics.Bitmap.Config.ARGB_8888)
+
+    private fun startAmbientModeLoop() {
+        if (!com.github.airstream.helpers.PreferenceHelper.getBoolean(com.github.airstream.constants.PreferenceKeys.AMBIENT_MODE, false)) return
+        if (ambientJob?.isActive == true) return
+
+        ambientJob = viewLifecycleOwner.lifecycleScope.launch {
+            while (ambientJob?.isActive == true) {
+                try {
+                    updateAmbientGlow()
+                } catch (e: Exception) {
+                    // Ignore
+                }
+                kotlinx.coroutines.delay(2000)
+            }
+        }
+    }
+
+    private fun stopAmbientModeLoop() {
+        ambientJob?.cancel()
+        ambientJob = null
+        val ambientBackground = _binding?.root?.findViewById<android.view.View>(R.id.ambient_background)
+        ambientBackground?.animate()?.alpha(0f)?.setDuration(500)?.start()
+    }
+
+    private fun updateAmbientGlow() {
+        val surfaceView = _binding?.player?.videoSurfaceView as? android.view.SurfaceView ?: return
+        val ambientBackground = _binding?.root?.findViewById<android.view.View>(R.id.ambient_background) ?: return
+        if (!surfaceView.holder.surface.isValid) return
+
+        android.view.PixelCopy.request(surfaceView, null, ambientBitmap, { result ->
+            if (result == android.view.PixelCopy.SUCCESS) {
+                var r = 0
+                var g = 0
+                var b = 0
+                val width = ambientBitmap.width
+                val height = ambientBitmap.height
+                val startY = height / 2 // Sample the bottom half
+                var count = 0
+                for (x in 0 until width step 2) {
+                    for (y in startY until height step 2) {
+                        val pixel = ambientBitmap.getPixel(x, y)
+                        r += android.graphics.Color.red(pixel)
+                        g += android.graphics.Color.green(pixel)
+                        b += android.graphics.Color.blue(pixel)
+                        count++
+                    }
+                }
+                if (count > 0) {
+                    r /= count
+                    g /= count
+                    b /= count
+                }
+                // Boost vibrancy slightly
+                val max = maxOf(r, g, b, 1)
+                val boost = 255f / max
+                r = (r * boost * 0.5f + r * 0.5f).toInt().coerceIn(0, 255)
+                g = (g * boost * 0.5f + g * 0.5f).toInt().coerceIn(0, 255)
+                b = (b * boost * 0.5f + b * 0.5f).toInt().coerceIn(0, 255)
+
+                val color = android.graphics.Color.argb(80, r, g, b) // ~30% opacity
+                val gradient = android.graphics.drawable.GradientDrawable(
+                    android.graphics.drawable.GradientDrawable.Orientation.TOP_BOTTOM,
+                    intArrayOf(color, android.graphics.Color.TRANSPARENT)
+                )
+
+                requireActivity().runOnUiThread {
+                    val currentDrawable = ambientBackground.background
+                    if (currentDrawable == null) {
+                        ambientBackground.background = gradient
+                        ambientBackground.animate().alpha(1f).setDuration(500).start()
+                    } else {
+                        // Smooth transition
+                        val transition = android.graphics.drawable.TransitionDrawable(arrayOf(currentDrawable, gradient))
+                        transition.isCrossFadeEnabled = true
+                        ambientBackground.background = transition
+                        transition.startTransition(1000)
+                        ambientBackground.alpha = 1f
+                    }
+                }
+            }
+        }, handler)
     }
 }
