@@ -55,7 +55,7 @@
                         android:id="@+id/player_subscribe"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="12dp"
+                        android:layout_marginEnd="8dp"
                         style="@style/Widget.Material3.Button"
                         android:textColor="?colorOnPrimary"
                         app:backgroundTint="?colorPrimary"
@@ -81,34 +81,33 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/relPlayer_like"
                         style="@style/PlayerActionsButton"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:layout_marginStart="8dp"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_marginStart="6dp"
                         app:icon="@drawable/ic_like" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/relPlayer_dislike"
                         style="@style/PlayerActionsButton"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:layout_marginStart="8dp"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_marginStart="6dp"
                         app:icon="@drawable/ic_dislike" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/relPlayer_share"
                         style="@style/PlayerActionsButton"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:layout_marginStart="8dp"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_marginStart="6dp"
                         app:icon="@drawable/ic_share" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/relPlayer_more"
                         style="@style/PlayerActionsButton"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:layout_marginStart="8dp"
-                        app:iconTint="?android:attr/textColorPrimary"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_marginStart="6dp"
                         app:icon="@drawable/ic_three_dots" />
 
                     <!-- Hidden buttons that will move to overflow -->
@@ -149,8 +148,9 @@
                   android:layout_marginVertical="12dp"
                   android:clickable="true"
                   android:focusable="true"
-                  app:cardBackgroundColor="?attr/colorSurfaceContainerHighest"
-                  app:cardCornerRadius="12dp"
+                  android:foreground="?attr/selectableItemBackground"
+                  app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
+                  app:cardCornerRadius="10dp"
                   app:cardElevation="0dp">
 
                   <LinearLayout
@@ -162,10 +162,12 @@
                       <TextView
                           android:layout_width="wrap_content"
                           android:layout_height="wrap_content"
+                          android:id="@+id/comment_preview_count"
+                          tools:text="Comments 167"
                           android:text="@string/comments"
                           android:textColor="?attr/colorOnSurface"
                           android:textSize="14sp"
-                          android:textStyle="bold" />
+                          android:textStyle="normal" />
 
                       <LinearLayout
                           android:layout_width="match_parent"
@@ -176,8 +178,8 @@
 
                           <com.google.android.material.imageview.ShapeableImageView
                               android:id="@+id/comment_preview_avatar"
-                              android:layout_width="24dp"
-                              android:layout_height="24dp"
+                              android:layout_width="28dp"
+                              android:layout_height="28dp"
                               android:src="@drawable/ic_person"
                               app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
 
@@ -190,7 +192,7 @@
                               android:ellipsize="end"
                               android:maxLines="2"
                               android:text="This is an awesome video, thanks for sharing!"
-                              android:textColor="?attr/colorOnSurfaceVariant"
+                              android:textColor="?attr/colorOnSurface"
                               android:textSize="12sp" />
                       </LinearLayout>
                   </LinearLayout>
@@ -205,6 +207,20 @@
         </LinearLayout>
 
     </ScrollView>
+
+    <View
+        android:id="@+id/ambient_glow"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:alpha="0"
+        android:scaleX="1.08"
+        android:scaleY="1.18"
+        android:translationY="16dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/main_container"
+        app:layout_constraintEnd_toEndOf="@id/main_container"
+        app:layout_constraintStart_toStartOf="@id/main_container"
+        app:layout_constraintTop_toTopOf="@id/main_container" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_container"

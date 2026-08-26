@@ -34,7 +34,7 @@
             
         <SwitchPreferenceCompat
             android:icon="@drawable/ic_play"
-            app:defaultValue="false"
+            app:defaultValue="true"
             app:key="ambient_mode"
             app:title="@string/ambient_mode"
             app:summary="@string/ambient_mode_summary" />

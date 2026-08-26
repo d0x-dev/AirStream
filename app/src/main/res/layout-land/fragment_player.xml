@@ -41,108 +41,106 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:paddingHorizontal="2dp">
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="12dp">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/player_channelImage"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginEnd="8dp"
+                        app:shapeAppearance="@style/CircleImageView" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/player_subscribe"
+                        style="@style/Widget.Material3.Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:text="@string/subscribe"
+                        android:textColor="?colorOnPrimary"
+                        android:textSize="14sp"
+                        app:backgroundTint="?colorPrimary" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/relPlayer_like"
+                        style="@style/PlayerActionsButton"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_marginStart="6dp"
+                        app:icon="@drawable/ic_like" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/relPlayer_dislike"
+                        style="@style/PlayerActionsButton"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_marginStart="6dp"
+                        app:icon="@drawable/ic_dislike" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/relPlayer_share"
                         style="@style/PlayerActionsButton"
-                        android:text="@string/share"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_marginStart="6dp"
                         app:icon="@drawable/ic_share" />
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/relPlayer_download"
+                        android:id="@+id/relPlayer_more"
                         style="@style/PlayerActionsButton"
-                        android:text="@string/download"
-                        app:icon="@drawable/ic_download" />
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_marginStart="6dp"
+                        app:icon="@drawable/ic_three_dots" />
+
+                    <LinearLayout
+                        android:id="@+id/player_channel"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:visibility="gone">
+                        <TextView
+                            android:id="@+id/player_channelName"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp" />
+                        <TextView
+                            android:id="@+id/player_channelSubCount"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp" />
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/relPlayer_download"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:visibility="gone" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/relPlayer_save"
-                        style="@style/PlayerActionsButton"
-                        android:text="@string/save"
-                        app:icon="@drawable/ic_save" />
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:visibility="gone" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/relPlayer_background"
-                        style="@style/PlayerActionsButton"
-                        android:text="@string/audio"
-                        app:icon="@drawable/ic_headphones" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/relPlayer_external_player"
-                        style="@style/PlayerActionsButton"
-                        android:text="@string/external_player"
-                        app:icon="@drawable/ic_video" />
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:visibility="gone" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/relPlayer_pip"
-                        style="@style/PlayerActionsButton"
-                        android:text="@string/pip"
-                        app:icon="@drawable/ic_open" />
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:visibility="gone" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/relPlayer_screenshot"
-                        style="@style/PlayerActionsButton"
-                        android:text="@string/screenshot"
-                        app:icon="@drawable/ic_copy" />
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:visibility="gone" />
                 </LinearLayout>
 
             </HorizontalScrollView>
-
-            <LinearLayout
-                android:id="@+id/player_channel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="8dp"
-                android:layout_marginVertical="10dp"
-                android:background="@drawable/rounded_ripple"
-                android:orientation="horizontal"
-                android:padding="5dp">
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/player_channelImage"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center"
-                    android:layout_marginEnd="4dp"
-                    app:shapeAppearance="@style/CircleImageView" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|center_vertical"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_weight="1"
-                    android:layoutDirection="locale"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/player_channelName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:textSize="15sp" />
-
-                    <TextView
-                        android:id="@+id/player_channelSubCount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:textSize="11sp"
-                        tools:text="2.5M subscribers" />
-
-                </LinearLayout>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/player_subscribe"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="@string/subscribe"
-                    android:textSize="12sp" />
-            </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/alternativeTrendingRec"
@@ -150,22 +148,80 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone" />
 
-            <com.google.android.material.button.MaterialButton
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/comments_toggle"
-                style="@style/PlayerActionsButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="12dp"
-                android:layout_marginVertical="16dp"
-                android:text="@string/comments"
-                android:textAlignment="viewStart"
-                android:textColor="?colorPrimary"
-                app:drawableEndCompat="@drawable/ic_arrow_up_down"
-                app:drawableTint="?colorPrimary" />
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:id="@+id/comment_preview_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/comments"
+                        android:textColor="?attr/colorOnSurface"
+                        android:textSize="14sp"
+                        tools:text="Comments 167" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/comment_preview_avatar"
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/ic_person"
+                            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
+
+                        <TextView
+                            android:id="@+id/comment_preview_text"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:maxLines="2"
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="12sp"
+                            tools:text="Mai to qreeb hu video dekh k khush ho jata hu" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
 
     </ScrollView>
+
+    <View
+        android:id="@+id/ambient_glow"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:alpha="0"
+        android:scaleX="1.08"
+        android:scaleY="1.18"
+        android:translationY="16dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/main_container"
+        app:layout_constraintEnd_toEndOf="@id/main_container"
+        app:layout_constraintStart_toStartOf="@id/main_container"
+        app:layout_constraintTop_toTopOf="@id/main_container" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_container"

@@ -111,11 +111,14 @@ import com.github.airstream.util.TextUtils.toTimeInSeconds
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlin.io.path.exists
 import kotlin.math.absoluteValue
+import kotlin.coroutines.resume
 
 
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
@@ -1172,14 +1175,20 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
             kotlin.runCatching {
                 val res = com.github.airstream.api.MediaServiceRepository.instance.getComments(videoId)
                 val topComment = res.comments.firstOrNull()
-                if (topComment != null) {
-                    kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
-                        try {
+                kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
+                    try {
+                        binding.commentPreviewCount?.text = if (res.commentCount > 0) {
+                            "${getString(R.string.comments)} ${res.commentCount.formatShort()}"
+                        } else {
+                            getString(R.string.comments)
+                        }
+                        if (topComment != null) {
                             binding.commentPreviewText?.text = (topComment.commentText ?: "").parseAsHtml()
                             if (topComment.thumbnail.isNotBlank()) {
                                 binding.commentPreviewAvatar?.let { com.github.airstream.helpers.ImageHelper.loadImage(topComment.thumbnail, it, false) }
                             }
-                        } catch (e: Exception) {}
+                        }
+                    } catch (e: Exception) {
                     }
                 }
             }
@@ -1509,7 +1518,7 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
     }
 
     private var ambientJob: kotlinx.coroutines.Job? = null
-    private val ambientBitmap = android.graphics.Bitmap.createBitmap(160, 90, android.graphics.Bitmap.Config.ARGB_8888)
+    private val ambientBitmap = Bitmap.createBitmap(96, 54, Bitmap.Config.ARGB_8888)
 
     private fun startAmbientModeLoop() {
         if (!com.github.airstream.helpers.PreferenceHelper.getBoolean(com.github.airstream.constants.PreferenceKeys.AMBIENT_MODE, true)) return
@@ -1519,10 +1528,13 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
         ambientJob?.cancel()
         
         ambientJob = viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                updateAmbientGlow()
-            } catch (e: Exception) {
-                // Ignore
+            while (isActive) {
+                try {
+                    updateAmbientGlow()
+                } catch (e: Exception) {
+                    // Ambient mode is decorative; playback should never depend on it.
+                }
+                kotlinx.coroutines.delay(3000)
             }
         }
     }
@@ -1530,6 +1542,12 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
     private fun stopAmbientModeLoop() {
         ambientJob?.cancel()
         ambientJob = null
+        _binding?.ambientGlow?.animate()?.cancel()
+        _binding?.ambientGlow?.apply {
+            alpha = 0f
+            background = null
+            isVisible = false
+        }
         val scrollView = _binding?.playerScrollView ?: return
         val typedValue = android.util.TypedValue()
         requireContext().theme.resolveAttribute(android.R.attr.colorBackground, typedValue, true)
@@ -1538,13 +1556,16 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
 
     private suspend fun updateAmbientGlow() {
         if (!::streams.isInitialized) return
+        val ambientGlow = _binding?.ambientGlow ?: return
         val scrollView = _binding?.playerScrollView ?: return
         
         val context = requireContext()
         // Yield to let UI settle
         kotlinx.coroutines.delay(500)
         
-        val bitmap = com.github.airstream.helpers.ImageHelper.getImage(context, streams.thumbnailUrl)
+        val bitmap = captureAmbientFrame() ?: withContext(Dispatchers.IO) {
+            com.github.airstream.helpers.ImageHelper.getImage(context, streams.thumbnailUrl)
+        }
         
         android.util.Log.d("AmbientGlow", "Bitmap fetched: ${bitmap != null} for URL: ${streams.thumbnailUrl}")
             
@@ -1554,17 +1575,31 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
             var b = 0
             val width = bitmap.width
             val height = bitmap.height
-            val startY = height / 2 // Sample the bottom half
-            val stepX = maxOf(1, width / 50)
-            val stepY = maxOf(1, height / 50)
+            
+            // Sample the whole image but avoid edges where black bars typically are
+            val startX = (width * 0.1).toInt()
+            val endX = (width * 0.9).toInt()
+            val startY = (height * 0.1).toInt()
+            val endY = (height * 0.9).toInt()
+            
+            val stepX = maxOf(1, (endX - startX) / 50)
+            val stepY = maxOf(1, (endY - startY) / 50)
             var count = 0
-            for (x in 0 until width step stepX) {
-                for (y in startY until height step stepY) {
+            
+            for (x in startX until endX step stepX) {
+                for (y in startY until endY step stepY) {
                     val pixel = bitmap.getPixel(x, y)
-                    r += android.graphics.Color.red(pixel)
-                    g += android.graphics.Color.green(pixel)
-                    b += android.graphics.Color.blue(pixel)
-                    count++
+                    val pr = android.graphics.Color.red(pixel)
+                    val pg = android.graphics.Color.green(pixel)
+                    val pb = android.graphics.Color.blue(pixel)
+                    
+                    // Ignore pitch black or very dark pixels (like black bars)
+                    if (pr > 15 || pg > 15 || pb > 15) {
+                        r += pr
+                        g += pg
+                        b += pb
+                        count++
+                    }
                 }
             }
             if (count > 0) {
@@ -1578,33 +1613,79 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
             // Boost vibrancy significantly
             val max = maxOf(r, g, b, 1)
             val boost = 255f / max
-            r = (r * boost * 0.8f + r * 0.2f).toInt().coerceIn(0, 255)
-            g = (g * boost * 0.8f + g * 0.2f).toInt().coerceIn(0, 255)
-            b = (b * boost * 0.8f + b * 0.2f).toInt().coerceIn(0, 255)
+            r = (r * boost * 0.65f + r * 0.35f).toInt().coerceIn(0, 255)
+            g = (g * boost * 0.65f + g * 0.35f).toInt().coerceIn(0, 255)
+            b = (b * boost * 0.65f + b * 0.35f).toInt().coerceIn(0, 255)
 
-            val color = android.graphics.Color.argb(200, r, g, b) // ~78% opacity
-            val gradient = android.graphics.drawable.GradientDrawable(
+            val topColor = android.graphics.Color.argb(180, r, g, b)
+            val middleColor = android.graphics.Color.argb(90, r, g, b)
+            val clearColor = android.graphics.Color.TRANSPARENT
+            val detailTopColor = android.graphics.Color.argb(150, r, g, b)
+            val detailMiddleColor = android.graphics.Color.argb(75, r, g, b)
+            val detailLowColor = android.graphics.Color.argb(28, r, g, b)
+            val verticalGlow = android.graphics.drawable.GradientDrawable(
                 android.graphics.drawable.GradientDrawable.Orientation.TOP_BOTTOM,
-                intArrayOf(color, android.graphics.Color.TRANSPARENT)
+                intArrayOf(topColor, middleColor, clearColor)
             )
+            val detailsGlow = android.graphics.drawable.GradientDrawable(
+                android.graphics.drawable.GradientDrawable.Orientation.TOP_BOTTOM,
+                intArrayOf(detailTopColor, detailMiddleColor, detailLowColor, clearColor)
+            )
+            val radialGlow = android.graphics.drawable.GradientDrawable().apply {
+                shape = android.graphics.drawable.GradientDrawable.RECTANGLE
+                gradientType = android.graphics.drawable.GradientDrawable.RADIAL_GRADIENT
+                gradientRadius = android.util.TypedValue.applyDimension(
+                    android.util.TypedValue.COMPLEX_UNIT_DIP,
+                    260f,
+                    resources.displayMetrics
+                )
+                setGradientCenter(0.5f, 0.28f)
+                colors = intArrayOf(topColor, middleColor, clearColor)
+            }
             
             val px = android.util.TypedValue.applyDimension(
                 android.util.TypedValue.COMPLEX_UNIT_DIP,
-                500f,
+                18f,
+                    resources.displayMetrics
+                ).toInt()
+            val detailsGlowHeight = android.util.TypedValue.applyDimension(
+                android.util.TypedValue.COMPLEX_UNIT_DIP,
+                260f,
                 resources.displayMetrics
             ).toInt()
 
             requireActivity().runOnUiThread {
+                val playerGlow = android.graphics.drawable.LayerDrawable(arrayOf(verticalGlow, radialGlow))
+                playerGlow.setLayerInset(0, 0, 0, 0, -px)
+                playerGlow.setLayerInset(1, 0, 0, 0, -px * 2)
+
+                ambientGlow.background = playerGlow
+                ambientGlow.isVisible = true
+                ambientGlow.animate()
+                    .alpha(1f)
+                    .setDuration(280L)
+                    .start()
+
                 val typedValue = android.util.TypedValue()
                 requireContext().theme.resolveAttribute(android.R.attr.colorBackground, typedValue, true)
-                val bgColor = android.graphics.drawable.ColorDrawable(typedValue.data)
-                
-                val layerDrawable = android.graphics.drawable.LayerDrawable(arrayOf(bgColor, gradient))
-                layerDrawable.setLayerHeight(1, px)
-                layerDrawable.setLayerGravity(1, android.view.Gravity.TOP)
-                
-                scrollView.background = layerDrawable
+                val pageBackground = android.graphics.drawable.ColorDrawable(typedValue.data)
+                val detailsBackground = android.graphics.drawable.LayerDrawable(arrayOf(pageBackground, detailsGlow))
+                detailsBackground.setLayerHeight(1, detailsGlowHeight)
+                detailsBackground.setLayerGravity(1, android.view.Gravity.TOP)
+                scrollView.background = detailsBackground
             }
         }
+    }
+
+    private suspend fun captureAmbientFrame(): Bitmap? = withContext(Dispatchers.Main) {
+        val surfaceView = _binding?.player?.videoSurfaceView as? SurfaceView ?: return@withContext null
+        if (surfaceView.width <= 0 || surfaceView.height <= 0 || !surfaceView.isShown) return@withContext null
+
+        val result = suspendCancellableCoroutine { continuation ->
+            PixelCopy.request(surfaceView, ambientBitmap, { copyResult ->
+                continuation.resume(copyResult)
+            }, handler)
+        }
+        if (result == PixelCopy.SUCCESS) ambientBitmap else null
     }
 }
