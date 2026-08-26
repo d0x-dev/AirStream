@@ -134,12 +134,24 @@ class MainActivity : AbstractPlayerHostActivity() {
                         )
                     }
                     val isPill = PreferenceHelper.getBoolean(PreferenceKeys.PILL_SHAPED_NAV_BAR, false)
-                    val marginPx = (16 * resources.displayMetrics.density).toInt()
-                    
-                    if (isPill) {
-                        val navLayoutParams = binding.bottomNav.layoutParams as android.view.ViewGroup.MarginLayoutParams
-                        navLayoutParams.setMargins(marginPx, 0, marginPx, systemBarInsets.bottom + marginPx)
-                        binding.bottomNav.layoutParams = navLayoutParams
+                    val marginPx = (24 * resources.displayMetrics.density).toInt()
+                      val bottomMargin = if (isPill) systemBarInsets.bottom + marginPx else 0
+                      val sideMargin = if (isPill) marginPx else 0
+
+                      val startSet = binding.root.getConstraintSet(R.id.start)
+                      startSet?.setMargin(R.id.bottomNav, androidx.constraintlayout.widget.ConstraintSet.BOTTOM, bottomMargin)
+                      startSet?.setMargin(R.id.bottomNav, androidx.constraintlayout.widget.ConstraintSet.START, sideMargin)
+                      startSet?.setMargin(R.id.bottomNav, androidx.constraintlayout.widget.ConstraintSet.END, sideMargin)
+                      startSet?.applyTo(binding.root)
+                      binding.root.updateState(R.id.start, startSet)
+
+                      val endSet = binding.root.getConstraintSet(R.id.end)
+                      endSet?.setMargin(R.id.bottomNav, androidx.constraintlayout.widget.ConstraintSet.BOTTOM, bottomMargin)
+                      endSet?.setMargin(R.id.bottomNav, androidx.constraintlayout.widget.ConstraintSet.START, sideMargin)
+                      endSet?.setMargin(R.id.bottomNav, androidx.constraintlayout.widget.ConstraintSet.END, sideMargin)
+                      binding.root.updateState(R.id.end, endSet)
+
+                      if (isPill) {
                         
                         val shapeDrawable = com.google.android.material.shape.MaterialShapeDrawable()
                         shapeDrawable.shapeAppearanceModel = shapeDrawable.shapeAppearanceModel.toBuilder()
