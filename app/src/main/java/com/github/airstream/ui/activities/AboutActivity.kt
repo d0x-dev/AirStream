@@ -20,7 +20,7 @@ class AboutActivity : BaseActivity() {
         binding = ActivityAboutBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.appVersion.text = "VERSION ${BuildConfig.VERSION_NAME}"
+        binding.appVersion.text = BuildConfig.VERSION_NAME
 
         // Load avatars
         binding.imgDarkboy.load("https://avatars.githubusercontent.com/u/218248866") {
@@ -31,11 +31,17 @@ class AboutActivity : BaseActivity() {
         }
 
         // Global Action Listeners
+        binding.btnGlobalFb.setOnClickListener {
+            // FB link not provided, use default or ignore
+        }
+        binding.btnGlobalInsta.setOnClickListener {
+            IntentHelper.openLinkFromHref(this, supportFragmentManager, "https://instagram.com/dark__336")
+        }
         binding.btnGlobalGithub.setOnClickListener {
             IntentHelper.openLinkFromHref(this, supportFragmentManager, "https://github.com/d0x-dev/AirStream")
         }
-        binding.btnGlobalTelegram.setOnClickListener {
-            IntentHelper.openLinkFromHref(this, supportFragmentManager, "https://t.me/songpy")
+        binding.btnGlobalGoogle.setOnClickListener {
+            IntentHelper.openLinkFromHref(this, supportFragmentManager, "https://darkboy.pro")
         }
         binding.btnGlobalLicense.setOnClickListener {
             showLicense()

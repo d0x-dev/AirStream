@@ -5,26 +5,11 @@
     android:layout_height="match_parent"
     android:background="?android:colorBackground">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        app:elevation="0dp">
-
-        <!-- Appbar is mostly transparent, no back button based on Airbeats -->
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:title="@string/about" 
-            app:titleCentered="true" />
-    </com.google.android.material.appbar.AppBarLayout>
-
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:clipToPadding="false"
+        android:paddingBottom="40dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -33,20 +18,30 @@
             android:paddingBottom="24dp">
 
             <!-- App Logo & Title -->
-            <ImageView
-                android:layout_width="120dp"
-                android:layout_height="120dp"
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="90dp"
+                android:layout_height="90dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="8dp"
-                android:src="@drawable/mono_nobg"
-                app:tint="?attr/colorOnBackground" />
+                android:layout_marginTop="100dp"
+                app:cardCornerRadius="45dp"
+                app:cardBackgroundColor="?attr/colorSurfaceVariant"
+                app:strokeWidth="0dp"
+                app:cardElevation="0dp">
+                
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/mono_nobg"
+                    app:tint="?attr/colorOnSurfaceVariant" />
+            </com.google.android.material.card.MaterialCardView>
 
             <TextView
                 android:id="@+id/appName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="12dp"
                 android:text="AirBeats"
                 android:textColor="?attr/colorPrimary"
                 android:textAppearance="?attr/textAppearanceHeadlineMedium"
@@ -63,11 +58,26 @@
                     android:id="@+id/appVersion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="VERSION 1.0.0"
+                    android:text="VERSION"
                     android:background="@drawable/circle_bg"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="4dp"
-                    android:textAppearance="?attr/textAppearanceLabelSmall"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="2dp"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:textAllCaps="true"
+                    android:textColor="?attr/colorSecondary" />
+                    
+                <Space android:layout_width="6dp" android:layout_height="wrap_content" />
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="NIGHTLY"
+                    android:background="@drawable/circle_bg"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="2dp"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
                     android:textColor="?attr/colorSecondary" />
             </LinearLayout>
 
@@ -76,7 +86,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="8dp"
-                android:text="Dev By DxV STUDIO -"
+                android:text="Dev By DxV STUDIO 👑"
                 android:textAppearance="?attr/textAppearanceTitleSmall"
                 android:textStyle="bold"
                 android:textColor="?attr/colorSecondary" />
@@ -85,11 +95,11 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
+                android:layout_marginHorizontal="20dp"
                 android:layout_marginVertical="16dp"
-                app:cardBackgroundColor="?attr/colorSurfaceContainer"
+                app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
                 app:cardCornerRadius="28dp"
-                app:cardElevation="4dp">
+                app:cardElevation="8dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -99,35 +109,57 @@
                     android:padding="16dp">
                     
                     <ImageView
-                        android:id="@+id/btnGlobalGithub"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:padding="12dp"
-                        android:background="@drawable/circle_bg"
-                        android:src="@drawable/ic_github"
-                        app:tint="?attr/colorOnSurfaceVariant" />
+                        android:id="@+id/btnGlobalFb"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:padding="8dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_facebook"
+                        app:tint="#D4AF37" />
                         
                     <Space android:layout_width="16dp" android:layout_height="wrap_content" />
                         
                     <ImageView
-                        android:id="@+id/btnGlobalTelegram"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:padding="12dp"
-                        android:background="@drawable/circle_bg"
-                        android:src="@drawable/ic_telegram_logo"
-                        app:tint="?attr/colorOnSurfaceVariant" />
+                        android:id="@+id/btnGlobalInsta"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:padding="8dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_instagram"
+                        app:tint="#D4AF37" />
+                        
+                    <Space android:layout_width="16dp" android:layout_height="wrap_content" />
+                        
+                    <ImageView
+                        android:id="@+id/btnGlobalGithub"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:padding="8dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_github"
+                        app:tint="#D4AF37" />
+                        
+                    <Space android:layout_width="16dp" android:layout_height="wrap_content" />
+                        
+                    <ImageView
+                        android:id="@+id/btnGlobalGoogle"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:padding="8dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_google"
+                        app:tint="#D4AF37" />
                         
                     <Space android:layout_width="16dp" android:layout_height="wrap_content" />
                         
                     <ImageView
                         android:id="@+id/btnGlobalLicense"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:padding="12dp"
-                        android:background="@drawable/circle_bg"
-                        android:src="@drawable/ic_info"
-                        app:tint="?attr/colorOnSurfaceVariant" />
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:padding="8dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@drawable/ic_language"
+                        app:tint="#D4AF37" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -139,26 +171,35 @@
                 android:gravity="center_vertical"
                 android:paddingHorizontal="24dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp">
+                android:layout_marginBottom="12dp">
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_person"
-                    app:tint="?attr/colorPrimary" />
+                    app:tint="#D4AF37" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="Founders"
+                    android:textColor="?attr/colorOnSurface"
                     android:textAppearance="?attr/textAppearanceHeadlineSmall"
                     android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="2 Founders"
+                    android:textStyle="bold"
+                    android:textColor="#D4AF37"
+                    android:textAppearance="?attr/textAppearanceLabelMedium" />
             </LinearLayout>
 
             <!-- User Cards Row -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="12dp"
+                android:paddingHorizontal="16dp"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
 
@@ -166,29 +207,38 @@
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/devDarkboy"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="240dp"
                     android:layout_weight="1"
-                    android:layout_marginHorizontal="4dp"
-                    app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
+                    android:layout_marginHorizontal="6dp"
+                    app:cardBackgroundColor="?attr/colorSurfaceContainer"
                     app:cardCornerRadius="24dp"
-                    app:cardElevation="8dp"
-                    app:strokeColor="?attr/colorPrimary"
+                    app:cardElevation="16dp"
+                    app:strokeColor="#D4AF37"
                     app:strokeWidth="1dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:gravity="center"
                         android:orientation="vertical"
                         android:padding="16dp">
 
-                        <ImageView android:id="@+id/imgDarkboy" android:layout_width="76dp" android:layout_height="76dp" android:background="@drawable/circle_bg" android:scaleType="centerCrop" android:src="@drawable/ic_person" />
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/imgDarkboy"
+                            android:layout_width="76dp"
+                            android:layout_height="76dp"
+                            android:padding="2dp"
+                            app:strokeWidth="1.5dp"
+                            app:strokeColor="#D4AF37"
+                            app:shapeAppearanceOverlay="@style/CircleImageView"
+                            android:scaleType="centerCrop" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
                             android:text="Darkboy"
+                            android:textColor="?attr/colorOnSurface"
                             android:textAppearance="?attr/textAppearanceTitleMedium"
                             android:textStyle="bold" />
 
@@ -197,11 +247,25 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:background="@drawable/circle_bg"
+                            android:backgroundTint="#20D4AF37"
                             android:paddingHorizontal="10dp"
                             android:paddingVertical="4dp"
                             android:text="Lead Developer"
                             android:textAppearance="?attr/textAppearanceLabelSmall"
-                            android:textColor="?attr/colorPrimary"
+                            android:textColor="#D4AF37"
+                            android:textStyle="bold" />
+                            
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:background="@drawable/circle_bg"
+                            android:backgroundTint="#20D4AF37"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="4dp"
+                            android:text="3423 Commits"
+                            android:textAppearance="?attr/textAppearanceLabelSmall"
+                            android:textColor="#D4AF37"
                             android:textStyle="bold" />
 
                         <!-- Developer Links -->
@@ -210,49 +274,47 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:gravity="center"
-                            android:layout_marginTop="12dp">
+                            android:layout_marginTop="10dp">
                             
                             <ImageView
                                 android:id="@+id/btnDarkboyGithub"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:padding="6dp"
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:padding="5dp"
                                 android:background="@drawable/circle_bg"
+                                android:backgroundTint="#15D4AF37"
                                 android:src="@drawable/ic_github"
-                                app:tint="?attr/colorPrimary" />
-                                
-                            <Space android:layout_width="6dp" android:layout_height="wrap_content" />
-                                
+                                app:tint="#D4AF37" />
+                            <Space android:layout_width="4dp" android:layout_height="wrap_content" />
                             <ImageView
                                 android:id="@+id/btnDarkboyTelegram"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:padding="6dp"
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:padding="5dp"
                                 android:background="@drawable/circle_bg"
+                                android:backgroundTint="#15D4AF37"
                                 android:src="@drawable/ic_telegram_logo"
-                                app:tint="?attr/colorPrimary" />
-                                
-                            <Space android:layout_width="6dp" android:layout_height="wrap_content" />
-                                
+                                app:tint="#D4AF37" />
+                            <Space android:layout_width="4dp" android:layout_height="wrap_content" />
                             <ImageView
                                 android:id="@+id/btnDarkboyInsta"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:padding="6dp"
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:padding="5dp"
                                 android:background="@drawable/circle_bg"
+                                android:backgroundTint="#15D4AF37"
                                 android:src="@drawable/ic_instagram"
-                                app:tint="?attr/colorPrimary" />
-                                
-                            <Space android:layout_width="6dp" android:layout_height="wrap_content" />
-                                
+                                app:tint="#D4AF37" />
+                            <Space android:layout_width="4dp" android:layout_height="wrap_content" />
                             <ImageView
                                 android:id="@+id/btnDarkboyWebsite"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:padding="6dp"
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:padding="5dp"
                                 android:background="@drawable/circle_bg"
+                                android:backgroundTint="#15D4AF37"
                                 android:src="@drawable/ic_language"
-                                app:tint="?attr/colorPrimary" />
+                                app:tint="#D4AF37" />
                         </LinearLayout>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -261,29 +323,38 @@
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/devVenom"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="240dp"
                     android:layout_weight="1"
-                    android:layout_marginHorizontal="4dp"
-                    app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
+                    android:layout_marginHorizontal="6dp"
+                    app:cardBackgroundColor="?attr/colorSurfaceContainer"
                     app:cardCornerRadius="24dp"
-                    app:cardElevation="8dp"
-                    app:strokeColor="?attr/colorPrimary"
+                    app:cardElevation="16dp"
+                    app:strokeColor="#D4AF37"
                     app:strokeWidth="1dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:gravity="center"
                         android:orientation="vertical"
                         android:padding="16dp">
 
-                        <ImageView android:id="@+id/imgVenom" android:layout_width="76dp" android:layout_height="76dp" android:background="@drawable/circle_bg" android:scaleType="centerCrop" android:src="@drawable/ic_person" />
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/imgVenom"
+                            android:layout_width="76dp"
+                            android:layout_height="76dp"
+                            android:padding="2dp"
+                            app:strokeWidth="1.5dp"
+                            app:strokeColor="#D4AF37"
+                            app:shapeAppearanceOverlay="@style/CircleImageView"
+                            android:scaleType="centerCrop" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
                             android:text="Venom"
+                            android:textColor="?attr/colorOnSurface"
                             android:textAppearance="?attr/textAppearanceTitleMedium"
                             android:textStyle="bold" />
 
@@ -292,11 +363,25 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
                             android:background="@drawable/circle_bg"
+                            android:backgroundTint="#20D4AF37"
                             android:paddingHorizontal="10dp"
                             android:paddingVertical="4dp"
                             android:text="UI/UX Specialist"
                             android:textAppearance="?attr/textAppearanceLabelSmall"
-                            android:textColor="?attr/colorPrimary"
+                            android:textColor="#D4AF37"
+                            android:textStyle="bold" />
+                            
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:background="@drawable/circle_bg"
+                            android:backgroundTint="#20D4AF37"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="4dp"
+                            android:text="3 Commits"
+                            android:textAppearance="?attr/textAppearanceLabelSmall"
+                            android:textColor="#D4AF37"
                             android:textStyle="bold" />
 
                         <!-- Developer Links -->
@@ -305,32 +390,78 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:gravity="center"
-                            android:layout_marginTop="12dp">
+                            android:layout_marginTop="10dp">
                             
                             <ImageView
                                 android:id="@+id/btnVenomGithub"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:padding="6dp"
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:padding="5dp"
                                 android:background="@drawable/circle_bg"
+                                android:backgroundTint="#15D4AF37"
                                 android:src="@drawable/ic_github"
-                                app:tint="?attr/colorPrimary" />
-                                
-                            <Space android:layout_width="6dp" android:layout_height="wrap_content" />
-                                
+                                app:tint="#D4AF37" />
+                            <Space android:layout_width="4dp" android:layout_height="wrap_content" />
                             <ImageView
                                 android:id="@+id/btnVenomWebsite"
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:padding="6dp"
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:padding="5dp"
                                 android:background="@drawable/circle_bg"
+                                android:backgroundTint="#15D4AF37"
                                 android:src="@drawable/ic_language"
-                                app:tint="?attr/colorPrimary" />
+                                app:tint="#D4AF37" />
                         </LinearLayout>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
+            
+            <!-- Other Contributors Title -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="32dp">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_github"
+                    app:tint="#D4AF37" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Other Contributors"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <!-- Overlay Toolbar gradient to mimic U-Shape -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:elevation="0dp">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="#A0403020">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="About"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </FrameLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
