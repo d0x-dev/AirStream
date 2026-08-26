@@ -1149,6 +1149,7 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
         dismissCommentsSheet()
 
         setPlayerDefaults()
+        startAmbientModeLoop()
 
         binding.player.useController = false
 
@@ -1511,9 +1512,12 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
     private val ambientBitmap = android.graphics.Bitmap.createBitmap(160, 90, android.graphics.Bitmap.Config.ARGB_8888)
 
     private fun startAmbientModeLoop() {
-        if (!com.github.airstream.helpers.PreferenceHelper.getBoolean(com.github.airstream.constants.PreferenceKeys.AMBIENT_MODE, false)) return
-        if (ambientJob?.isActive == true) return
-
+        if (!com.github.airstream.helpers.PreferenceHelper.getBoolean(com.github.airstream.constants.PreferenceKeys.AMBIENT_MODE, true)) return
+        if (commonPlayerViewModel.isMiniPlayerVisible.value == true) return
+        if (!::streams.isInitialized) return
+        
+        ambientJob?.cancel()
+        
         ambientJob = viewLifecycleOwner.lifecycleScope.launch {
             try {
                 updateAmbientGlow()
