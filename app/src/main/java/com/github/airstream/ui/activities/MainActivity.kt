@@ -178,9 +178,18 @@ class MainActivity : AbstractPlayerHostActivity() {
                         
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
                             if (com.github.airstream.helpers.ThemeHelper.isDarkMode(this@MainActivity)) {
-                                binding.bottomNav.outlineAmbientShadowColor = android.graphics.Color.parseColor("#40FFFFFF")
-                                binding.bottomNav.outlineSpotShadowColor = android.graphics.Color.parseColor("#40FFFFFF")
-                            } else {
+                                // Ambient shadow casts an even glow all around the view, while spot shadow is directional (downwards).
+                                // By using only ambient and making it stronger, we get an even glow on all edges.
+                                binding.bottomNav.outlineAmbientShadowColor = android.graphics.Color.parseColor("#66FFFFFF") // 40% white
+                                binding.bottomNav.outlineSpotShadowColor = android.graphics.Color.TRANSPARENT
+                                // Increase elevation slightly to spread the ambient glow further
+                                                                  shapeDrawable.elevation = binding.bottomNav.elevation + (8 * resources.displayMetrics.density)
+                                  binding.bottomNav.elevation = binding.bottomNav.elevation + (8 * resources.displayMetrics.density)
+                                  shapeDrawable.setStroke(
+                                      Math.max(1, (1f * resources.displayMetrics.density).toInt()).toFloat(),
+                                      android.graphics.Color.parseColor("#1AFFFFFF")
+                                  )
+                              } else {
                                 binding.bottomNav.outlineAmbientShadowColor = android.graphics.Color.BLACK
                                 binding.bottomNav.outlineSpotShadowColor = android.graphics.Color.BLACK
                             }
