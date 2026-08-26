@@ -204,7 +204,7 @@ class MainActivity : AbstractPlayerHostActivity() {
                 for (key in keyFrame.getKeyFramesForView(binding.container.id)) {
                     if (key.framePosition == 100) key.setValue(
                         Key.TRANSLATION_Y,
-                        -binding.bottomNav.height
+                        -(binding.bottomNav.height + (if (PreferenceHelper.getBoolean(PreferenceKeys.PILL_SHAPED_NAV_BAR, false)) ((androidx.core.view.ViewCompat.getRootWindowInsets(binding.root)?.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())?.bottom ?: 0) + (24 * resources.displayMetrics.density).toInt()) else 0)).toFloat()
                     )
                 }
             }
