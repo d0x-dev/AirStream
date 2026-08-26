@@ -182,9 +182,7 @@ class MainActivity : AbstractPlayerHostActivity() {
                                 // By using only ambient and making it stronger, we get an even glow on all edges.
                                 binding.bottomNav.outlineAmbientShadowColor = android.graphics.Color.parseColor("#66FFFFFF") // 40% white
                                 binding.bottomNav.outlineSpotShadowColor = android.graphics.Color.TRANSPARENT
-                                // Increase elevation slightly to spread the ambient glow further
-                                                                  shapeDrawable.elevation = binding.bottomNav.elevation + (8 * resources.displayMetrics.density)
-                                  binding.bottomNav.elevation = binding.bottomNav.elevation + (8 * resources.displayMetrics.density)
+
                                   shapeDrawable.setStroke(
                                       Math.max(1, (1f * resources.displayMetrics.density).toInt()).toFloat(),
                                       android.graphics.Color.parseColor("#1AFFFFFF")
