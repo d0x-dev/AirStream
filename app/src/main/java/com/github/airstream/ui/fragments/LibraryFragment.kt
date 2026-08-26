@@ -160,7 +160,7 @@ class LibraryFragment : DynamicLayoutManagerFragment(R.layout.fragment_library) 
     private fun updateFABMargin(isMiniPlayerVisible: Boolean) {
         val isPill = PreferenceHelper.getBoolean(PreferenceKeys.PILL_SHAPED_NAV_BAR, false)
         // If pill is enabled, we need to push the FAB up so it doesn't get hidden behind the floating nav bar.
-        val pillOffset = if (isPill) 104f else 0f
+        val pillOffset = if (isPill) 92f else 0f
 
         // optimize CreatePlaylistFab bottom margin if miniPlayer active
         binding.createPlaylist.updateLayoutParams<MarginLayoutParams> {

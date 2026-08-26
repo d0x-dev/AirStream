@@ -54,10 +54,13 @@ class WatchHistoryFragment : DynamicLayoutManagerFragment(R.layout.fragment_watc
         _binding = FragmentWatchHistoryBinding.bind(view)
         super.onViewCreated(view, savedInstanceState)
 
+        val isPill = com.github.airstream.helpers.PreferenceHelper.getBoolean(com.github.airstream.constants.PreferenceKeys.PILL_SHAPED_NAV_BAR, false)
+        val pillOffset = if (isPill) 92f else 0f
+        
         commonPlayerViewModel.isMiniPlayerVisible.observe(viewLifecycleOwner) { isMiniPlayerVisible ->
-            _binding?.watchHistoryRecView?.updatePadding(bottom = if (isMiniPlayerVisible) 64f.dpToPx() else 0)
+            _binding?.watchHistoryRecView?.updatePadding(bottom = (if (isMiniPlayerVisible) 64f + pillOffset else pillOffset).dpToPx())
             _binding?.playAll?.updateLayoutParams<MarginLayoutParams> {
-                bottomMargin = (if (isMiniPlayerVisible) 64f else 16f).dpToPx()
+                bottomMargin = (if (isMiniPlayerVisible) 64f + pillOffset else 16f + pillOffset).dpToPx()
             }
         }
 
