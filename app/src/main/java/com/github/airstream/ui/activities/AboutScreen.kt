@@ -15,15 +15,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.github.airstream.BuildConfig
+import com.github.airstream.R
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,9 +41,9 @@ fun AboutScreen(onBack: () -> Unit = {}) {
 
     Scaffold(
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = { Text("About", fontWeight = FontWeight.Bold) },
-                colors = TopAppBarDefaults.topAppBarColors(
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = Color(0xA0403020)
                 ),
                 modifier = Modifier.clip(RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp))
@@ -66,18 +68,23 @@ fun AboutScreen(onBack: () -> Unit = {}) {
                     .background(MaterialTheme.colorScheme.surfaceVariant),
                 contentAlignment = Alignment.Center
             ) {
-                Text("🎵", fontSize = 48.sp)
+                Icon(
+                    painter = painterResource(id = R.drawable.mono_nobg),
+                    contentDescription = "App Logo",
+                    modifier = Modifier.size(48.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
             
             Spacer(modifier = Modifier.height(16.dp))
-            Text("AirBeats", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+            Text("AirStream", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
             
             Row(modifier = Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Surface(color = MaterialTheme.colorScheme.surfaceVariant, shape = CircleShape) {
-                    Text("VERSION {BuildConfig.VERSION_NAME}", modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp), fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                    Text("VERSION ${BuildConfig.VERSION_NAME}", modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp), fontSize = 10.sp, fontWeight = FontWeight.Bold)
                 }
                 Surface(color = MaterialTheme.colorScheme.surfaceVariant, shape = CircleShape) {
-                    Text("NIGHTLY", modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp), fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                    Text(BuildConfig.BUILD_TYPE.uppercase(Locale.getDefault()), modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp), fontSize = 10.sp, fontWeight = FontWeight.Bold)
                 }
             }
             
@@ -95,11 +102,36 @@ fun AboutScreen(onBack: () -> Unit = {}) {
                     modifier = Modifier.fillMaxWidth().padding(16.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    Text("FB", color = gold, modifier = Modifier.clickable { openLink("https://facebook.com") })
-                    Text("IG", color = gold, modifier = Modifier.clickable { openLink("https://instagram.com") })
-                    Text("GH", color = gold, modifier = Modifier.clickable { openLink("https://github.com") })
-                    Text("GO", color = gold, modifier = Modifier.clickable { openLink("https://google.com") })
-                    Text("WEB", color = gold, modifier = Modifier.clickable { openLink("https://darkboy.pro") })
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_facebook),
+                        contentDescription = "Facebook",
+                        modifier = Modifier.size(28.dp).clickable { openLink("https://facebook.com") },
+                        tint = gold
+                    )
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_instagram),
+                        contentDescription = "Instagram",
+                        modifier = Modifier.size(28.dp).clickable { openLink("https://instagram.com") },
+                        tint = gold
+                    )
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_github),
+                        contentDescription = "GitHub",
+                        modifier = Modifier.size(28.dp).clickable { openLink("https://github.com/d0x-dev/AirStream") },
+                        tint = gold
+                    )
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_google),
+                        contentDescription = "Google",
+                        modifier = Modifier.size(28.dp).clickable { openLink("https://google.com") },
+                        tint = gold
+                    )
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_language),
+                        contentDescription = "Website",
+                        modifier = Modifier.size(28.dp).clickable { openLink("https://darkboy.pro") },
+                        tint = gold
+                    )
                 }
             }
             
