@@ -106,11 +106,11 @@ class SingleViewTouchableMotionLayout(context: Context, attributeSet: AttributeS
             }
 
             MotionEvent.ACTION_MOVE -> {
-                if (!startedMinimized && !shouldInterceptTouchEvent && isTouchDownInsideHitArea) {
+                if (!shouldInterceptTouchEvent && isTouchDownInsideHitArea) {
                     val deltaY = event.y - touchInitialY
 
                     // swipe down detected
-                    if (deltaY > scaledTouchSlop) {
+                    if ((!startedMinimized && deltaY > scaledTouchSlop) || (startedMinimized && Math.abs(deltaY) > scaledTouchSlop)) {
                         // start intercepting and consume the event ourselves in onTouchEvent()
                         shouldInterceptTouchEvent = true
 
