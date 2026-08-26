@@ -53,7 +53,7 @@ jobs:
             
 
       - name: Rename apk file
-        run: mv "${{ steps.sign.outputs.signedFile }}" "app-release.apk"
+        run: mv "${{ steps.sign.outputs.signedFile }}" "AirStream_${{ github.ref_name }}_signed.apk"
 
       - name: Create release
         uses: softprops/action-gh-release@v2
@@ -62,6 +62,6 @@ jobs:
             ${{ steps.changelog-summary.outputs.summary }}
 
             ${{ steps.changelog.outputs.changes }}
-          files: "app-release.apk"
+          files: "AirStream_${{ github.ref_name }}_signed.apk"
           fail_on_unmatched_files: true
           make_latest: true
