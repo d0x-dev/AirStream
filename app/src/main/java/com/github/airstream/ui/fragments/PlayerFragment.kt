@@ -1508,10 +1508,9 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
     }
 
     private var ambientJob: kotlinx.coroutines.Job? = null
-    private val ambientBitmap = android.graphics.Bitmap.createBitmap(16, 9, android.graphics.Bitmap.Config.ARGB_8888)
+    private val ambientBitmap = android.graphics.Bitmap.createBitmap(160, 90, android.graphics.Bitmap.Config.ARGB_8888)
 
     private fun startAmbientModeLoop() {
-        if (!com.github.airstream.helpers.PreferenceHelper.getBoolean(com.github.airstream.constants.PreferenceKeys.AMBIENT_MODE, false)) return
         if (ambientJob?.isActive == true) return
 
         ambientJob = viewLifecycleOwner.lifecycleScope.launch {
@@ -1561,32 +1560,27 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
                     g /= count
                     b /= count
                 }
-                // Boost vibrancy slightly
+                // Boost vibrancy significantly
                 val max = maxOf(r, g, b, 1)
                 val boost = 255f / max
-                r = (r * boost * 0.5f + r * 0.5f).toInt().coerceIn(0, 255)
-                g = (g * boost * 0.5f + g * 0.5f).toInt().coerceIn(0, 255)
-                b = (b * boost * 0.5f + b * 0.5f).toInt().coerceIn(0, 255)
+                r = (r * boost * 0.8f + r * 0.2f).toInt().coerceIn(0, 255)
+                g = (g * boost * 0.8f + g * 0.2f).toInt().coerceIn(0, 255)
+                b = (b * boost * 0.8f + b * 0.2f).toInt().coerceIn(0, 255)
 
-                val color = android.graphics.Color.argb(80, r, g, b) // ~30% opacity
+                val color = android.graphics.Color.argb(200, r, g, b) // ~78% opacity
                 val gradient = android.graphics.drawable.GradientDrawable(
                     android.graphics.drawable.GradientDrawable.Orientation.TOP_BOTTOM,
                     intArrayOf(color, android.graphics.Color.TRANSPARENT)
                 )
 
                 requireActivity().runOnUiThread {
-                    val currentDrawable = ambientBackground.background
-                    if (currentDrawable == null) {
-                        ambientBackground.background = gradient
-                        ambientBackground.animate().alpha(1f).setDuration(500).start()
-                    } else {
-                        // Smooth transition
-                        val transition = android.graphics.drawable.TransitionDrawable(arrayOf(currentDrawable, gradient))
-                        transition.isCrossFadeEnabled = true
-                        ambientBackground.background = transition
-                        transition.startTransition(1000)
-                        ambientBackground.alpha = 1f
-                    }
+                    ambientBackground.background = gradient
+                    ambientBackground.alpha = 1f
+                }
+            } else {
+                requireActivity().runOnUiThread {
+                    ambientBackground.setBackgroundColor(android.graphics.Color.RED)
+                    ambientBackground.alpha = 1f
                 }
             }
         }, handler)
