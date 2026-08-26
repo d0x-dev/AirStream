@@ -92,5 +92,11 @@
             motion:layout_constraintEnd_toStartOf="@+id/play_imageView"
             motion:layout_constraintStart_toEndOf="@+id/player"
             motion:layout_constraintTop_toTopOf="@+id/play_imageView" />
+        <Constraint
+            android:id="@+id/player_scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:alpha="0"
+            motion:layout_constraintTop_toBottomOf="parent" />
     </ConstraintSet>
 </MotionScene>
