@@ -142,6 +142,11 @@ class MainActivity : AbstractPlayerHostActivity() {
                       startSet?.setMargin(R.id.bottomNav, androidx.constraintlayout.widget.ConstraintSet.BOTTOM, bottomMargin)
                       startSet?.setMargin(R.id.bottomNav, androidx.constraintlayout.widget.ConstraintSet.START, sideMargin)
                       startSet?.setMargin(R.id.bottomNav, androidx.constraintlayout.widget.ConstraintSet.END, sideMargin)
+                        if (isPill) {
+                            startSet?.connect(R.id.fragment, androidx.constraintlayout.widget.ConstraintSet.BOTTOM, androidx.constraintlayout.widget.ConstraintSet.PARENT_ID, androidx.constraintlayout.widget.ConstraintSet.BOTTOM)
+                        } else {
+                            startSet?.connect(R.id.fragment, androidx.constraintlayout.widget.ConstraintSet.BOTTOM, R.id.bottomNav, androidx.constraintlayout.widget.ConstraintSet.TOP)
+                        }
                       startSet?.applyTo(binding.root)
                       binding.root.updateState(R.id.start, startSet)
 
@@ -149,6 +154,11 @@ class MainActivity : AbstractPlayerHostActivity() {
                       endSet?.setMargin(R.id.bottomNav, androidx.constraintlayout.widget.ConstraintSet.BOTTOM, bottomMargin)
                       endSet?.setMargin(R.id.bottomNav, androidx.constraintlayout.widget.ConstraintSet.START, sideMargin)
                       endSet?.setMargin(R.id.bottomNav, androidx.constraintlayout.widget.ConstraintSet.END, sideMargin)
+                        if (isPill) {
+                            endSet?.connect(R.id.fragment, androidx.constraintlayout.widget.ConstraintSet.BOTTOM, androidx.constraintlayout.widget.ConstraintSet.PARENT_ID, androidx.constraintlayout.widget.ConstraintSet.BOTTOM)
+                        } else {
+                            endSet?.connect(R.id.fragment, androidx.constraintlayout.widget.ConstraintSet.BOTTOM, R.id.bottomNav, androidx.constraintlayout.widget.ConstraintSet.TOP)
+                        }
                       binding.root.updateState(R.id.end, endSet)
 
                       if (isPill) {
