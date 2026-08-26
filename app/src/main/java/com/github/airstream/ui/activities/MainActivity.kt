@@ -175,7 +175,8 @@ class MainActivity : AbstractPlayerHostActivity() {
                         
                         shapeDrawable.elevation = binding.bottomNav.elevation
                         binding.bottomNav.background = shapeDrawable
-                        binding.bottomNav.setPadding(0, 0, 0, 0)
+                        val verticalPadding = (6 * resources.displayMetrics.density).toInt()
+                        binding.bottomNav.setPadding(0, verticalPadding, 0, verticalPadding)
                     } else {
                         with(binding.bottomNav) {
                             setPadding(
