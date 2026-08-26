@@ -22,19 +22,6 @@ class AppearanceSettings : BasePreferenceFragment() {
             true
         }
 
-        val pureTheme = findPreference<SwitchPreferenceCompat>(PreferenceKeys.PURE_THEME)
-        pureTheme?.setOnPreferenceChangeListener { _, _ ->
-            RequireRestartDialog().show(childFragmentManager, RequireRestartDialog::class.java.name)
-            true
-        }
-
-        val accentColor = findPreference<ListPreference>(PreferenceKeys.ACCENT_COLOR)
-        updateAccentColorValues(accentColor!!)
-        accentColor.setOnPreferenceChangeListener { _, _ ->
-            RequireRestartDialog().show(childFragmentManager, RequireRestartDialog::class.java.name)
-            true
-        }
-
         val navBarOptions = findPreference<Preference>(PreferenceKeys.NAVBAR_ITEMS)
         navBarOptions?.setOnPreferenceClickListener {
             NavBarOptionsDialog().show(childFragmentManager, null)
