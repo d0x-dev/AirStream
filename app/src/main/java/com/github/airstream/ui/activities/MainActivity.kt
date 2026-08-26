@@ -240,6 +240,7 @@ class MainActivity : AbstractPlayerHostActivity() {
 
         // set the action bar for the activity
         setSupportActionBar(binding.toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         val navHostFragment = binding.fragment.getFragment<NavHostFragment>()
         navController = navHostFragment.navController
@@ -275,7 +276,7 @@ class MainActivity : AbstractPlayerHostActivity() {
 
         if (binding.bottomNav.menu.children.none { it.itemId == startFragmentId }) deselectBottomBarItems()
 
-        binding.toolbar.title = ThemeHelper.getStyledAppName(this)
+        binding.toolbarTitle.text = ThemeHelper.getStyledAppName(this)
 
         // handle error logs
         PreferenceHelper.getErrorLog().ifBlank { null }?.let {
