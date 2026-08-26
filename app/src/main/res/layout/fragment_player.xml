@@ -5,22 +5,13 @@
     android:id="@+id/playerMotionLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:colorBackground"
     app:layoutDescription="@xml/player_scene">
-
-    <View
-        android:id="@+id/ambient_background"
-        android:layout_width="match_parent"
-        android:layout_height="500dp"
-        app:layout_constraintTop_toBottomOf="@id/main_container"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
     <ScrollView
         android:id="@+id/player_scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@android:color/transparent"
+        android:background="?android:colorBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

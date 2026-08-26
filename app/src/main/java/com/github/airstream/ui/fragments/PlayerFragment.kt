@@ -1511,6 +1511,7 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
     private val ambientBitmap = android.graphics.Bitmap.createBitmap(160, 90, android.graphics.Bitmap.Config.ARGB_8888)
 
     private fun startAmbientModeLoop() {
+        if (!com.github.airstream.helpers.PreferenceHelper.getBoolean(com.github.airstream.constants.PreferenceKeys.AMBIENT_MODE, false)) return
         if (ambientJob?.isActive == true) return
 
         ambientJob = viewLifecycleOwner.lifecycleScope.launch {
@@ -1528,13 +1529,15 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
     private fun stopAmbientModeLoop() {
         ambientJob?.cancel()
         ambientJob = null
-        val ambientBackground = _binding?.root?.findViewById<android.view.View>(R.id.ambient_background)
-        ambientBackground?.animate()?.alpha(0f)?.setDuration(500)?.start()
+        val scrollView = _binding?.playerScrollView ?: return
+        val typedValue = android.util.TypedValue()
+        requireContext().theme.resolveAttribute(android.R.attr.colorBackground, typedValue, true)
+        scrollView.setBackgroundColor(typedValue.data)
     }
 
     private fun updateAmbientGlow() {
         val surfaceView = _binding?.player?.videoSurfaceView as? android.view.SurfaceView ?: return
-        val ambientBackground = _binding?.root?.findViewById<android.view.View>(R.id.ambient_background) ?: return
+        val scrollView = _binding?.playerScrollView ?: return
         if (!surfaceView.holder.surface.isValid) return
 
         android.view.PixelCopy.request(surfaceView, null, ambientBitmap, { result ->
@@ -1572,15 +1575,47 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
                     android.graphics.drawable.GradientDrawable.Orientation.TOP_BOTTOM,
                     intArrayOf(color, android.graphics.Color.TRANSPARENT)
                 )
+                
+                // Convert 500dp to pixels for gradient height
+                val px = android.util.TypedValue.applyDimension(
+                    android.util.TypedValue.COMPLEX_UNIT_DIP,
+                    500f,
+                    resources.displayMetrics
+                ).toInt()
 
                 requireActivity().runOnUiThread {
-                    ambientBackground.background = gradient
-                    ambientBackground.alpha = 1f
+                    val typedValue = android.util.TypedValue()
+                    requireContext().theme.resolveAttribute(android.R.attr.colorBackground, typedValue, true)
+                    val bgColor = android.graphics.drawable.ColorDrawable(typedValue.data)
+                    
+                    val layerDrawable = android.graphics.drawable.LayerDrawable(arrayOf(bgColor, gradient))
+                    layerDrawable.setLayerHeight(1, px)
+                    layerDrawable.setLayerGravity(1, android.view.Gravity.TOP)
+                    
+                    scrollView.background = layerDrawable
                 }
             } else {
                 requireActivity().runOnUiThread {
-                    ambientBackground.setBackgroundColor(android.graphics.Color.RED)
-                    ambientBackground.alpha = 1f
+                    val typedValue = android.util.TypedValue()
+                    requireContext().theme.resolveAttribute(android.R.attr.colorBackground, typedValue, true)
+                    val bgColor = android.graphics.drawable.ColorDrawable(typedValue.data)
+                    
+                    val gradient = android.graphics.drawable.GradientDrawable(
+                        android.graphics.drawable.GradientDrawable.Orientation.TOP_BOTTOM,
+                        intArrayOf(android.graphics.Color.RED, android.graphics.Color.TRANSPARENT)
+                    )
+                    
+                    val px = android.util.TypedValue.applyDimension(
+                        android.util.TypedValue.COMPLEX_UNIT_DIP,
+                        500f,
+                        resources.displayMetrics
+                    ).toInt()
+
+                    val layerDrawable = android.graphics.drawable.LayerDrawable(arrayOf(bgColor, gradient))
+                    layerDrawable.setLayerHeight(1, px)
+                    layerDrawable.setLayerGravity(1, android.view.Gravity.TOP)
+                    
+                    scrollView.background = layerDrawable
                 }
             }
         }, handler)
