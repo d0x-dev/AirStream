@@ -1541,7 +1541,12 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
         val scrollView = _binding?.playerScrollView ?: return
         
         val context = requireContext()
+        // Yield to let UI settle
+        kotlinx.coroutines.delay(500)
+        
         val bitmap = com.github.airstream.helpers.ImageHelper.getImage(context, streams.thumbnailUrl)
+        
+        android.util.Log.d("AmbientGlow", "Bitmap fetched: ${bitmap != null} for URL: ${streams.thumbnailUrl}")
             
         if (bitmap != null) {
             var r = 0
@@ -1567,6 +1572,8 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
                 g /= count
                 b /= count
             }
+            
+            android.util.Log.d("AmbientGlow", "Extracted Color: R=$r G=$g B=$b")
             
             // Boost vibrancy significantly
             val max = maxOf(r, g, b, 1)
