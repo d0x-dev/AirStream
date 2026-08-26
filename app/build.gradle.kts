@@ -39,6 +39,21 @@ android {
         versionName = "1.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         resValue("string", "app_name", "Airstream")
+        
+        val gitCommitsDarkboy = try {
+            val p = ProcessBuilder("git", "log", "--format=%aN").start()
+            val txt = p.inputStream.bufferedReader().readText()
+            txt.lines().count { it.contains("Dark", ignoreCase = true) }.toString()
+        } catch (e: Exception) { "70" }
+        
+        val gitCommitsVenom = try {
+            val p = ProcessBuilder("git", "log", "--format=%aN").start()
+            val txt = p.inputStream.bufferedReader().readText()
+            txt.lines().count { it.contains("Venom", ignoreCase = true) }.toString()
+        } catch (e: Exception) { "0" }
+        
+        buildConfigField("String", "DARKBOY_COMMITS", "\"$gitCommitsDarkboy\"")
+        buildConfigField("String", "VENOM_COMMITS", "\"$gitCommitsVenom\"")
     }
 
     ksp {

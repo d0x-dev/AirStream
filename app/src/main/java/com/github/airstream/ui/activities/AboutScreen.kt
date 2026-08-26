@@ -36,8 +36,8 @@ fun AboutScreen(onBack: () -> Unit = {}) {
         context.startActivity(intent)
     }
     
-    val gold = Color(0xFFD4AF37)
-    val goldBg = Color(0x20D4AF37)
+    val gold = MaterialTheme.colorScheme.onSurface
+    val goldBg = MaterialTheme.colorScheme.surfaceVariant
 
     Scaffold(
         topBar = {
@@ -164,7 +164,7 @@ fun AboutScreen(onBack: () -> Unit = {}) {
                             Text("Lead Developer", color = gold, fontSize = 10.sp, modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp))
                         }
                         Surface(color = goldBg, shape = CircleShape, modifier = Modifier.padding(top = 4.dp)) {
-                            Text("3423 Commits", color = gold, fontSize = 10.sp, modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp))
+                            Text(BuildConfig.DARKBOY_COMMITS + " Commits", color = gold, fontSize = 10.sp, modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp))
                         }
                     }
                 }
@@ -191,7 +191,7 @@ fun AboutScreen(onBack: () -> Unit = {}) {
                             Text("UI/UX Specialist", color = gold, fontSize = 10.sp, modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp))
                         }
                         Surface(color = goldBg, shape = CircleShape, modifier = Modifier.padding(top = 4.dp)) {
-                            Text("3 Commits", color = gold, fontSize = 10.sp, modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp))
+                            Text(BuildConfig.VENOM_COMMITS + " Commits", color = gold, fontSize = 10.sp, modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp))
                         }
                     }
                 }
