@@ -1515,13 +1515,10 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
         if (ambientJob?.isActive == true) return
 
         ambientJob = viewLifecycleOwner.lifecycleScope.launch {
-            while (ambientJob?.isActive == true) {
-                try {
-                    updateAmbientGlow()
-                } catch (e: Exception) {
-                    // Ignore
-                }
-                kotlinx.coroutines.delay(2000)
+            try {
+                updateAmbientGlow()
+            } catch (e: Exception) {
+                // Ignore
             }
         }
     }
@@ -1535,89 +1532,68 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
         scrollView.setBackgroundColor(typedValue.data)
     }
 
-    private fun updateAmbientGlow() {
-        val surfaceView = _binding?.player?.videoSurfaceView as? android.view.SurfaceView ?: return
+    private suspend fun updateAmbientGlow() {
+        if (!::streams.isInitialized) return
         val scrollView = _binding?.playerScrollView ?: return
-        if (!surfaceView.holder.surface.isValid) return
-
-        android.view.PixelCopy.request(surfaceView, null, ambientBitmap, { result ->
-            if (result == android.view.PixelCopy.SUCCESS) {
-                var r = 0
-                var g = 0
-                var b = 0
-                val width = ambientBitmap.width
-                val height = ambientBitmap.height
-                val startY = height / 2 // Sample the bottom half
-                var count = 0
-                for (x in 0 until width step 2) {
-                    for (y in startY until height step 2) {
-                        val pixel = ambientBitmap.getPixel(x, y)
-                        r += android.graphics.Color.red(pixel)
-                        g += android.graphics.Color.green(pixel)
-                        b += android.graphics.Color.blue(pixel)
-                        count++
-                    }
-                }
-                if (count > 0) {
-                    r /= count
-                    g /= count
-                    b /= count
-                }
-                // Boost vibrancy significantly
-                val max = maxOf(r, g, b, 1)
-                val boost = 255f / max
-                r = (r * boost * 0.8f + r * 0.2f).toInt().coerceIn(0, 255)
-                g = (g * boost * 0.8f + g * 0.2f).toInt().coerceIn(0, 255)
-                b = (b * boost * 0.8f + b * 0.2f).toInt().coerceIn(0, 255)
-
-                val color = android.graphics.Color.argb(200, r, g, b) // ~78% opacity
-                val gradient = android.graphics.drawable.GradientDrawable(
-                    android.graphics.drawable.GradientDrawable.Orientation.TOP_BOTTOM,
-                    intArrayOf(color, android.graphics.Color.TRANSPARENT)
-                )
-                
-                // Convert 500dp to pixels for gradient height
-                val px = android.util.TypedValue.applyDimension(
-                    android.util.TypedValue.COMPLEX_UNIT_DIP,
-                    500f,
-                    resources.displayMetrics
-                ).toInt()
-
-                requireActivity().runOnUiThread {
-                    val typedValue = android.util.TypedValue()
-                    requireContext().theme.resolveAttribute(android.R.attr.colorBackground, typedValue, true)
-                    val bgColor = android.graphics.drawable.ColorDrawable(typedValue.data)
-                    
-                    val layerDrawable = android.graphics.drawable.LayerDrawable(arrayOf(bgColor, gradient))
-                    layerDrawable.setLayerHeight(1, px)
-                    layerDrawable.setLayerGravity(1, android.view.Gravity.TOP)
-                    
-                    scrollView.background = layerDrawable
-                }
-            } else {
-                requireActivity().runOnUiThread {
-                    val typedValue = android.util.TypedValue()
-                    requireContext().theme.resolveAttribute(android.R.attr.colorBackground, typedValue, true)
-                    val bgColor = android.graphics.drawable.ColorDrawable(typedValue.data)
-                    
-                    val gradient = android.graphics.drawable.GradientDrawable(
-                        android.graphics.drawable.GradientDrawable.Orientation.TOP_BOTTOM,
-                        intArrayOf(android.graphics.Color.RED, android.graphics.Color.TRANSPARENT)
-                    )
-                    
-                    val px = android.util.TypedValue.applyDimension(
-                        android.util.TypedValue.COMPLEX_UNIT_DIP,
-                        500f,
-                        resources.displayMetrics
-                    ).toInt()
-
-                    val layerDrawable = android.graphics.drawable.LayerDrawable(arrayOf(bgColor, gradient))
-                    layerDrawable.setLayerHeight(1, px)
-                    layerDrawable.setLayerGravity(1, android.view.Gravity.TOP)
-                    
-                    scrollView.background = layerDrawable
+        
+        val context = requireContext()
+        val bitmap = com.github.airstream.helpers.ImageHelper.getImage(context, streams.thumbnailUrl)
+            
+        if (bitmap != null) {
+            var r = 0
+            var g = 0
+            var b = 0
+            val width = bitmap.width
+            val height = bitmap.height
+            val startY = height / 2 // Sample the bottom half
+            val stepX = maxOf(1, width / 50)
+            val stepY = maxOf(1, height / 50)
+            var count = 0
+            for (x in 0 until width step stepX) {
+                for (y in startY until height step stepY) {
+                    val pixel = bitmap.getPixel(x, y)
+                    r += android.graphics.Color.red(pixel)
+                    g += android.graphics.Color.green(pixel)
+                    b += android.graphics.Color.blue(pixel)
+                    count++
                 }
             }
-        }, handler)
+            if (count > 0) {
+                r /= count
+                g /= count
+                b /= count
+            }
+            
+            // Boost vibrancy significantly
+            val max = maxOf(r, g, b, 1)
+            val boost = 255f / max
+            r = (r * boost * 0.8f + r * 0.2f).toInt().coerceIn(0, 255)
+            g = (g * boost * 0.8f + g * 0.2f).toInt().coerceIn(0, 255)
+            b = (b * boost * 0.8f + b * 0.2f).toInt().coerceIn(0, 255)
+
+            val color = android.graphics.Color.argb(200, r, g, b) // ~78% opacity
+            val gradient = android.graphics.drawable.GradientDrawable(
+                android.graphics.drawable.GradientDrawable.Orientation.TOP_BOTTOM,
+                intArrayOf(color, android.graphics.Color.TRANSPARENT)
+            )
+            
+            val px = android.util.TypedValue.applyDimension(
+                android.util.TypedValue.COMPLEX_UNIT_DIP,
+                500f,
+                resources.displayMetrics
+            ).toInt()
+
+            requireActivity().runOnUiThread {
+                val typedValue = android.util.TypedValue()
+                requireContext().theme.resolveAttribute(android.R.attr.colorBackground, typedValue, true)
+                val bgColor = android.graphics.drawable.ColorDrawable(typedValue.data)
+                
+                val layerDrawable = android.graphics.drawable.LayerDrawable(arrayOf(bgColor, gradient))
+                layerDrawable.setLayerHeight(1, px)
+                layerDrawable.setLayerGravity(1, android.view.Gravity.TOP)
+                
+                scrollView.background = layerDrawable
+            }
+        }
     }
 }
