@@ -44,7 +44,7 @@ fun AboutScreen(onBack: () -> Unit = {}) {
             CenterAlignedTopAppBar(
                 title = { Text("About", fontWeight = FontWeight.Bold) },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color(0xA0403020)
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant
                 ),
                 modifier = Modifier.clip(RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp))
             )
@@ -88,7 +88,7 @@ fun AboutScreen(onBack: () -> Unit = {}) {
                 }
             }
             
-            Text("Dev By DxV STUDIO 👑", modifier = Modifier.padding(top = 12.dp), fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.secondary)
+            Text("Dev By DxV STUDIO ðŸ‘‘", modifier = Modifier.padding(top = 12.dp), fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.secondary)
             
             // Global links
             Card(
