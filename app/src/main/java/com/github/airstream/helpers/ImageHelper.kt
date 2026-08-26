@@ -94,7 +94,16 @@ object ImageHelper {
         // clear image to avoid loading issues at fast scrolling
         target.setImageBitmap(null)
 
-        val urlToLoad = ProxyHelper.rewriteUrlUsingProxyPreference(url)
+        // upgrade to highest resolution
+        var upgradedUrl = url
+        if (url.contains("i.ytimg.com/vi/") || url.contains("img.youtube.com/vi/")) {
+            upgradedUrl = url.replace(Regex("(hqdefault|mqdefault|sddefault|default|hq720)\\.jpg"), "maxresdefault.jpg")
+        } else if (url.contains("yt3.ggpht.com")) {
+            upgradedUrl = url.replace(Regex("=s\\d+"), "=s800")
+        }
+
+        val urlToLoad = ProxyHelper.rewriteUrlUsingProxyPreference(upgradedUrl)
+        val fallbackUrl = ProxyHelper.rewriteUrlUsingProxyPreference(url)
 
         // only load online images if the data saver mode is disabled
         if (DataSaverMode.isEnabled(target.context)) {
@@ -106,6 +115,17 @@ object ImageHelper {
                 onSuccess = { _, _ ->
                     // set the background to white for transparent images
                     if (whiteBackground) target.setBackgroundColor(Color.WHITE)
+                },
+                onError = { _, _ ->
+                    if (upgradedUrl != url) {
+                        target.load(fallbackUrl) {
+                            listener(
+                                onSuccess = { _, _ ->
+                                    if (whiteBackground) target.setBackgroundColor(Color.WHITE)
+                                }
+                            )
+                        }
+                    }
                 }
             )
         }
