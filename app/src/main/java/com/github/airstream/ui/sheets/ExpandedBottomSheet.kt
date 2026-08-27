@@ -35,7 +35,7 @@ open class ExpandedBottomSheet(@LayoutRes layoutResId: Int) :
         dialog.window?.let { window ->
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
                 window.addFlags(android.view.WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
-                window.attributes.blurBehindRadius = 60
+                window.setBackgroundBlurRadius(60)
             }
             window.setDimAmount(0.3f)
             window.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))

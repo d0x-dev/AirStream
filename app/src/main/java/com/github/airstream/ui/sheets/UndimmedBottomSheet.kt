@@ -73,11 +73,12 @@ abstract class UndimmedBottomSheet(@LayoutRes layoutResId: Int) : ExpandedBottom
 
     override fun onStart() {
         super.onStart()
-        dialog?.window?.let {
-            it.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-            it.clearFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
+        dialog?.window?.let { window ->
+            window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+            window.clearFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
+            
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                it.attributes.blurBehindRadius = 0
+                window.setBackgroundBlurRadius(0)
             }
         }
     }
