@@ -777,9 +777,13 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
                     window.attributes.blurBehindRadius = 60
                 }
                 window.setDimAmount(0.3f)
+                window.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))
             }
-            val bottomSheet = bottomSheetDialog.findViewById<android.view.View>(com.google.android.material.R.id.design_bottom_sheet)
-            bottomSheet?.setBackgroundResource(android.R.color.transparent)
+
+            bottomSheetDialog.setOnShowListener {
+                val bottomSheet = bottomSheetDialog.findViewById<android.view.View>(com.google.android.material.R.id.design_bottom_sheet)
+                bottomSheet?.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+            }
 
             view.findViewById<android.widget.TextView>(R.id.btnDownload).setOnClickListener {
                 bottomSheetDialog.dismiss()
