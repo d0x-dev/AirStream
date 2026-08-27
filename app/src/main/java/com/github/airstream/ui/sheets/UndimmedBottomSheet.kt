@@ -71,6 +71,17 @@ abstract class UndimmedBottomSheet(@LayoutRes layoutResId: Int) : ExpandedBottom
         return dialog
     }
 
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.let {
+            it.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+            it.clearFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                it.attributes.blurBehindRadius = 0
+            }
+        }
+    }
+
     abstract fun getSheetMaxHeightPx(): Int
     abstract fun getDragHandle(): View
     abstract fun getBottomSheet(): FrameLayout
