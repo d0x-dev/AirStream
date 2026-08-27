@@ -18,27 +18,33 @@ open class ExpandedBottomSheet(@LayoutRes layoutResId: Int) :
     override fun onStart() {
         super.onStart()
 
-        val designBottomSheet = dialog?.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
-        designBottomSheet?.post {
-            designBottomSheet.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+        if (this !is UndimmedBottomSheet) {
+            val designBottomSheet = dialog?.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+            designBottomSheet?.post {
+                designBottomSheet.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+            }
+            
+            view?.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+            val standardBottomSheet = view?.findViewById<android.view.View>(com.github.airstream.R.id.standard_bottom_sheet)
+            standardBottomSheet?.setBackgroundResource(com.github.airstream.R.drawable.bg_bottom_sheet_rounded)
+            standardBottomSheet?.backgroundTintList = null
         }
-        
-        view?.setBackgroundColor(android.graphics.Color.TRANSPARENT)
-        val standardBottomSheet = view?.findViewById<android.view.View>(com.github.airstream.R.id.standard_bottom_sheet)
-        standardBottomSheet?.setBackgroundResource(com.github.airstream.R.drawable.bg_bottom_sheet_rounded)
-        standardBottomSheet?.backgroundTintList = null
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
 
         dialog.window?.let { window ->
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                window.addFlags(android.view.WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
-                window.setBackgroundBlurRadius(60)
+            if (this !is UndimmedBottomSheet) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                    window.addFlags(android.view.WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
+                    window.setBackgroundBlurRadius(60)
+                }
             }
             window.setDimAmount(0.3f)
-            window.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))
+            if (this !is UndimmedBottomSheet) {
+                window.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))
+            }
         }
 
         if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) return dialog
