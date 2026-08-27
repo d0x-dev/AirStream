@@ -1,4 +1,4 @@
-﻿package com.github.airstream.ui.fragments
+package com.github.airstream.ui.fragments
 import androidx.core.text.parseAsHtml
 
 import android.annotation.SuppressLint
