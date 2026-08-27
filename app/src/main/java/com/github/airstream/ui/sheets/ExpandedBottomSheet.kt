@@ -25,10 +25,11 @@ open class ExpandedBottomSheet(@LayoutRes layoutResId: Int) :
                     window.setBackgroundBlurRadius(60)
                 }
                 window.setDimAmount(0.3f)
+                window.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))
             }
 
             dialog?.findViewById<android.view.View>(com.google.android.material.R.id.touch_outside)?.setBackgroundColor(
-                android.graphics.Color.argb(1, 0, 0, 0)
+                android.graphics.Color.argb(10, 0, 0, 0)
             )
         }
     }
