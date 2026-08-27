@@ -26,12 +26,13 @@ open class ExpandedBottomSheet(@LayoutRes layoutResId: Int) :
             window.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))
         }
 
-        val designBottomSheet = dialog?.findViewById<FrameLayout>(R.id.design_bottom_sheet)
-        designBottomSheet?.setBackgroundResource(com.github.airstream.R.drawable.bg_bottom_sheet_rounded)
+        val designBottomSheet = dialog?.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+        designBottomSheet?.setBackgroundColor(android.graphics.Color.TRANSPARENT)
         
         view?.setBackgroundColor(android.graphics.Color.TRANSPARENT)
         val standardBottomSheet = view?.findViewById<android.view.View>(com.github.airstream.R.id.standard_bottom_sheet)
-        standardBottomSheet?.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+        standardBottomSheet?.setBackgroundResource(com.github.airstream.R.drawable.bg_bottom_sheet_rounded)
+        standardBottomSheet?.backgroundTintList = null
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
