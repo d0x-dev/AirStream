@@ -1,4 +1,4 @@
-package com.github.airstream.ui.fragments
+﻿package com.github.airstream.ui.fragments
 import androidx.core.text.parseAsHtml
 
 import android.annotation.SuppressLint
@@ -767,23 +767,36 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
         }
 
                 binding.relPlayerMore?.setOnClickListener {
-            val popup = android.widget.PopupMenu(requireContext(), it)
-            popup.menu.add(0, 1, 0, "Download")
-            popup.menu.add(0, 2, 0, "Save")
-            popup.menu.add(0, 3, 0, "Audio")
-            if (isPipAvailable()) popup.menu.add(0, 4, 0, "PiP")
-            popup.menu.add(0, 5, 0, "Screenshot")
-            popup.setOnMenuItemClickListener { item ->
-                when (item.itemId) {
-                    1 -> binding.relPlayerDownload?.performClick()
-                    2 -> binding.relPlayerSave?.performClick()
-                    3 -> binding.relPlayerBackground?.performClick()
-                    4 -> binding.relPlayerPip?.performClick()
-                    5 -> binding.relPlayerScreenshot?.performClick()
-                }
-                true
+            val bottomSheetDialog = com.google.android.material.bottomsheet.BottomSheetDialog(requireContext())
+            val view = layoutInflater.inflate(R.layout.dialog_player_more, null)
+            bottomSheetDialog.setContentView(view)
+
+            view.findViewById<android.widget.TextView>(R.id.btnDownload).setOnClickListener {
+                bottomSheetDialog.dismiss()
+                binding.relPlayerDownload?.performClick()
             }
-            popup.show()
+            view.findViewById<android.widget.TextView>(R.id.btnSave).setOnClickListener {
+                bottomSheetDialog.dismiss()
+                binding.relPlayerSave?.performClick()
+            }
+            view.findViewById<android.widget.TextView>(R.id.btnAudio).setOnClickListener {
+                bottomSheetDialog.dismiss()
+                binding.relPlayerBackground?.performClick()
+            }
+            val btnPip = view.findViewById<android.widget.TextView>(R.id.btnPip)
+            if (isPipAvailable()) {
+                btnPip.setOnClickListener {
+                    bottomSheetDialog.dismiss()
+                    binding.relPlayerPip?.performClick()
+                }
+            } else {
+                btnPip.visibility = android.view.View.GONE
+            }
+            view.findViewById<android.widget.TextView>(R.id.btnScreenshot).setOnClickListener {
+                bottomSheetDialog.dismiss()
+                binding.relPlayerScreenshot?.performClick()
+            }
+            bottomSheetDialog.show()
         }
 
         binding.playerChannelImage.setOnClickListener {
