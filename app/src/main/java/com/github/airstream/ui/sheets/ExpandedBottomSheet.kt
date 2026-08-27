@@ -28,6 +28,10 @@ open class ExpandedBottomSheet(@LayoutRes layoutResId: Int) :
                 window.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))
             }
 
+            dialog?.findViewById<View>(com.google.android.material.R.id.touch_outside)?.setBackgroundColor(
+                android.graphics.Color.argb(1, 0, 0, 0)
+            )
+
             val designBottomSheet = dialog?.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
             designBottomSheet?.post {
                 designBottomSheet.setBackgroundColor(android.graphics.Color.TRANSPARENT)
