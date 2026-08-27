@@ -27,7 +27,9 @@ open class ExpandedBottomSheet(@LayoutRes layoutResId: Int) :
         }
 
         val designBottomSheet = dialog?.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
-        designBottomSheet?.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+        designBottomSheet?.post {
+            designBottomSheet.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+        }
         
         view?.setBackgroundColor(android.graphics.Color.TRANSPARENT)
         val standardBottomSheet = view?.findViewById<android.view.View>(com.github.airstream.R.id.standard_bottom_sheet)
