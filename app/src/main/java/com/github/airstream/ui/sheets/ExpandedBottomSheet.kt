@@ -15,6 +15,25 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 open class ExpandedBottomSheet(@LayoutRes layoutResId: Int) :
     BottomSheetDialogFragment(layoutResId) {
     private val bottomSheet: FrameLayout? get() = dialog?.findViewById(R.id.design_bottom_sheet)
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.let { window ->
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                window.addFlags(android.view.WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
+                window.attributes.blurBehindRadius = 60
+            }
+            window.setDimAmount(0.3f)
+            window.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))
+        }
+
+        val designBottomSheet = dialog?.findViewById<FrameLayout>(R.id.design_bottom_sheet)
+        designBottomSheet?.setBackgroundResource(com.github.airstream.R.drawable.bg_bottom_sheet_rounded)
+        
+        view?.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+        val standardBottomSheet = view?.findViewById<android.view.View>(com.github.airstream.R.id.standard_bottom_sheet)
+        standardBottomSheet?.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+    }
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
 

@@ -62,6 +62,7 @@ abstract class UndimmedBottomSheet(@LayoutRes layoutResId: Int) : ExpandedBottom
             window?.let {
                 it.addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL)
                 it.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+                it.clearFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
             }
 
             setCanceledOnTouchOutside(false)
