@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:paddingTop="16dp"
     android:paddingBottom="16dp"
-    android:background="?android:attr/windowBackground">
+    android:background="@drawable/bg_bottom_sheet_rounded">
 
     <TextView
         android:id="@+id/btnDownload"
