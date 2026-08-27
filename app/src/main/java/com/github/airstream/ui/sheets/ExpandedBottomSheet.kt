@@ -17,14 +17,6 @@ open class ExpandedBottomSheet(@LayoutRes layoutResId: Int) :
     private val bottomSheet: FrameLayout? get() = dialog?.findViewById(R.id.design_bottom_sheet)
     override fun onStart() {
         super.onStart()
-        dialog?.window?.let { window ->
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                window.addFlags(android.view.WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
-                window.attributes.blurBehindRadius = 60
-            }
-            window.setDimAmount(0.3f)
-            window.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))
-        }
 
         val designBottomSheet = dialog?.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
         designBottomSheet?.post {
@@ -39,6 +31,15 @@ open class ExpandedBottomSheet(@LayoutRes layoutResId: Int) :
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+
+        dialog.window?.let { window ->
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                window.addFlags(android.view.WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
+                window.attributes.blurBehindRadius = 60
+            }
+            window.setDimAmount(0.3f)
+            window.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))
+        }
 
         if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) return dialog
 
