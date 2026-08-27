@@ -25,22 +25,11 @@ open class ExpandedBottomSheet(@LayoutRes layoutResId: Int) :
                     window.attributes.blurBehindRadius = 60
                 }
                 window.setDimAmount(0.3f)
-                window.setBackgroundDrawable(android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT))
             }
 
             dialog?.findViewById<android.view.View>(com.google.android.material.R.id.touch_outside)?.setBackgroundColor(
                 android.graphics.Color.argb(1, 0, 0, 0)
             )
-
-            val designBottomSheet = dialog?.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
-            designBottomSheet?.post {
-                designBottomSheet.setBackgroundColor(android.graphics.Color.TRANSPARENT)
-            }
-            
-            view?.setBackgroundColor(android.graphics.Color.TRANSPARENT)
-            val standardBottomSheet = view?.findViewById<android.view.View>(com.github.airstream.R.id.standard_bottom_sheet)
-            standardBottomSheet?.setBackgroundResource(com.github.airstream.R.drawable.bg_bottom_sheet_rounded)
-            standardBottomSheet?.backgroundTintList = null
         }
     }
 
