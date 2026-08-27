@@ -771,6 +771,16 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
             val view = layoutInflater.inflate(R.layout.dialog_player_more, null)
             bottomSheetDialog.setContentView(view)
 
+            bottomSheetDialog.window?.let { window ->
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                    window.addFlags(android.view.WindowManager.LayoutParams.FLAG_BLUR_BEHIND)
+                    window.attributes.blurBehindRadius = 60
+                }
+                window.setDimAmount(0.3f)
+            }
+            val bottomSheet = bottomSheetDialog.findViewById<android.view.View>(com.google.android.material.R.id.design_bottom_sheet)
+            bottomSheet?.setBackgroundResource(android.R.color.transparent)
+
             view.findViewById<android.widget.TextView>(R.id.btnDownload).setOnClickListener {
                 bottomSheetDialog.dismiss()
                 binding.relPlayerDownload?.performClick()
