@@ -78,7 +78,7 @@ class VideosAdapter(
                 NavigationHelper.navigateVideo(root.context, PlayerData(videoId))
             }
 
-            root.setOnLongClickListener {
+            val openBottomSheet = {
                 fragmentManager.setFragmentResultListener(
                     VideoOptionsBottomSheet.VIDEO_OPTIONS_SHEET_REQUEST_KEY,
                     activity
@@ -88,7 +88,15 @@ class VideosAdapter(
                 val sheet = VideoOptionsBottomSheet()
                 sheet.arguments = bundleOf(IntentData.streamItem to video)
                 sheet.show(fragmentManager, VideosAdapter::class.java.name)
+            }
+
+            root.setOnLongClickListener {
+                openBottomSheet()
                 true
+            }
+
+            moreOptionsButton.setOnClickListener {
+                openBottomSheet()
             }
 
             CoroutineScope(Dispatchers.IO).launch {

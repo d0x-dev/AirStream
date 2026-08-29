@@ -114,7 +114,7 @@ class VideoCardsAdapter(private val columnWidthDp: Float? = null) :
                 NavigationHelper.navigateVideo(root.context, PlayerData(videoId))
             }
 
-            root.setOnLongClickListener {
+            val openBottomSheet = {
                 fragmentManager.setFragmentResultListener(
                     VideoOptionsBottomSheet.VIDEO_OPTIONS_SHEET_REQUEST_KEY,
                     activity
@@ -124,7 +124,15 @@ class VideoCardsAdapter(private val columnWidthDp: Float? = null) :
                 val sheet = VideoOptionsBottomSheet()
                 sheet.arguments = bundleOf(IntentData.streamItem to video)
                 sheet.show(fragmentManager, VideoCardsAdapter::class.java.name)
+            }
+
+            root.setOnLongClickListener {
+                openBottomSheet()
                 true
+            }
+
+            moreOptionsButton.setOnClickListener {
+                openBottomSheet()
             }
 
             // always hide the icon, to avoid issues where the icon is recycled and shown until the web requests succeeds
