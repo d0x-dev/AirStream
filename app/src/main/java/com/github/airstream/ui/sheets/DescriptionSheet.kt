@@ -127,18 +127,29 @@ class DescriptionSheet : ExpandablePlayerSheet(R.layout.description_sheet) {
         lifecycleScope.launch(Dispatchers.IO) {
             val bitmap = ImageHelper.getImage(requireContext(), streams.thumbnailUrl)
             if (bitmap != null) {
-                val scaled = Bitmap.createScaledBitmap(bitmap, 1, 1, false)
-                val avgColor = scaled.getPixel(0, 0)
-                scaled.recycle()
+                val softwareBitmap = if (bitmap.config == Bitmap.Config.HARDWARE) {
+                    bitmap.copy(Bitmap.Config.ARGB_8888, false)
+                } else {
+                    bitmap
+                }
 
-                val darkTint = ColorUtils.blendARGB(Color.BLACK, avgColor, 0.20f)
-                val tintList = ColorStateList.valueOf(darkTint)
+                if (softwareBitmap != null) {
+                    val scaled = Bitmap.createScaledBitmap(softwareBitmap, 1, 1, false)
+                    val avgColor = scaled.getPixel(0, 0)
+                    scaled.recycle()
+                    if (softwareBitmap != bitmap) {
+                        softwareBitmap.recycle()
+                    }
 
-                withContext(Dispatchers.Main) {
-                    binding.cardLikes.setCardBackgroundColor(tintList)
-                    binding.cardViews.setCardBackgroundColor(tintList)
-                    binding.cardDate.setCardBackgroundColor(tintList)
-                    binding.cardDescription.setCardBackgroundColor(tintList)
+                    val darkTint = ColorUtils.blendARGB(Color.BLACK, avgColor, 0.20f)
+                    val tintList = ColorStateList.valueOf(darkTint)
+
+                    withContext(Dispatchers.Main) {
+                        binding.cardLikes.setCardBackgroundColor(tintList)
+                        binding.cardViews.setCardBackgroundColor(tintList)
+                        binding.cardDate.setCardBackgroundColor(tintList)
+                        binding.cardDescription.setCardBackgroundColor(tintList)
+                    }
                 }
             }
         }
