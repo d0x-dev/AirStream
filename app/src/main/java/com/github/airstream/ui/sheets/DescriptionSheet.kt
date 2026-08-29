@@ -124,6 +124,9 @@ class DescriptionSheet : ExpandablePlayerSheet(R.layout.description_sheet) {
             binding.additionalInfo.isGone = true
         }
 
+        // Also make sure the actual bottom sheet container is pure black
+        (dialog as? com.google.android.material.bottomsheet.BottomSheetDialog)?.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)?.backgroundTintList = ColorStateList.valueOf(Color.BLACK)
+
         lifecycleScope.launch(Dispatchers.IO) {
             val bitmap = ImageHelper.getImage(requireContext(), streams.thumbnailUrl)
             if (bitmap != null) {
@@ -141,7 +144,14 @@ class DescriptionSheet : ExpandablePlayerSheet(R.layout.description_sheet) {
                         softwareBitmap.recycle()
                     }
 
-                    val darkTint = ColorUtils.blendARGB(Color.BLACK, avgColor, 0.20f)
+                    // Convert to HSL to strictly control the brightness of the tint
+                    val hsl = FloatArray(3)
+                    ColorUtils.colorToHSL(avgColor, hsl)
+                    // Ensure the color is not completely grey by enforcing minimum saturation
+                    hsl[1] = Math.max(0.3f, hsl[1])
+                    // Force the lightness to be very dark (but not black) so the cards stand out against the pure black background
+                    hsl[2] = 0.14f 
+                    val darkTint = ColorUtils.HSLToColor(hsl)
                     val tintList = ColorStateList.valueOf(darkTint)
 
                     withContext(Dispatchers.Main) {
