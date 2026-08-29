@@ -57,8 +57,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         style="@style/Widget.Material3.Button"
-                        android:textColor="?colorOnPrimary"
-                        app:backgroundTint="?colorPrimary"
+                        android:textColor="@android:color/black"
+                        app:backgroundTint="@android:color/white"
                         android:text="@string/subscribe"
                         android:textSize="14sp" />
                         
