@@ -137,8 +137,9 @@ class DescriptionSheet : ExpandablePlayerSheet(R.layout.description_sheet) {
                 }
 
                 if (softwareBitmap != null) {
-                    val scaled = Bitmap.createScaledBitmap(softwareBitmap, 1, 1, false)
-                    val avgColor = scaled.getPixel(0, 0)
+                    val scaled = Bitmap.createScaledBitmap(softwareBitmap, 10, 10, true)
+                    // Sample from the center to avoid black letterbox bars on the edges
+                    val avgColor = scaled.getPixel(5, 5)
                     scaled.recycle()
                     if (softwareBitmap != bitmap) {
                         softwareBitmap.recycle()
@@ -148,9 +149,9 @@ class DescriptionSheet : ExpandablePlayerSheet(R.layout.description_sheet) {
                     val hsl = FloatArray(3)
                     ColorUtils.colorToHSL(avgColor, hsl)
                     // Ensure the color is not completely grey by enforcing minimum saturation
-                    hsl[1] = Math.max(0.3f, hsl[1])
-                    // Force the lightness to be very dark (but not black) so the cards stand out against the pure black background
-                    hsl[2] = 0.14f 
+                    hsl[1] = Math.max(0.4f, hsl[1])
+                    // Force the lightness to be dark but clearly visible (22%)
+                    hsl[2] = 0.22f 
                     val darkTint = ColorUtils.HSLToColor(hsl)
                     val tintList = ColorStateList.valueOf(darkTint)
 

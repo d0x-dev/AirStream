@@ -17,6 +17,7 @@ open class ExpandedBottomSheet(@LayoutRes layoutResId: Int) :
     private val bottomSheet: FrameLayout? get() = dialog?.findViewById(R.id.design_bottom_sheet)
     override fun onStart() {
         super.onStart()
+        bottomSheet?.backgroundTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.BLACK)
 
         if (this !is UndimmedBottomSheet) {
             dialog?.window?.let { window ->
