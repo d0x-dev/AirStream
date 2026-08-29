@@ -16,6 +16,15 @@ import com.github.airstream.ui.models.CommonPlayerViewModel
 import com.github.airstream.util.TextUtils
 import com.github.airstream.extensions.formatShort
 import kotlinx.serialization.json.Json
+import android.graphics.Color
+import android.content.res.ColorStateList
+import androidx.core.graphics.ColorUtils
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import android.graphics.Bitmap
+import com.github.airstream.helpers.ImageHelper
 
 class DescriptionSheet : ExpandablePlayerSheet(R.layout.description_sheet) {
     private var _binding: DescriptionSheetBinding? = null
@@ -42,6 +51,8 @@ class DescriptionSheet : ExpandablePlayerSheet(R.layout.description_sheet) {
         binding.btnClose.setOnClickListener {
             dismiss()
         }
+
+        binding.standardBottomSheet.backgroundTintList = ColorStateList.valueOf(Color.BLACK)
 
         binding.tagsRecycler.adapter = videoTagsAdapter
         binding.tagsRecycler.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -111,6 +122,25 @@ class DescriptionSheet : ExpandablePlayerSheet(R.layout.description_sheet) {
             binding.additionalInfo.text = metaInfoText.parseAsHtml()
         } else {
             binding.additionalInfo.isGone = true
+        }
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            val bitmap = ImageHelper.getImage(requireContext(), streams.thumbnailUrl)
+            if (bitmap != null) {
+                val scaled = Bitmap.createScaledBitmap(bitmap, 1, 1, false)
+                val avgColor = scaled.getPixel(0, 0)
+                scaled.recycle()
+
+                val darkTint = ColorUtils.blendARGB(Color.BLACK, avgColor, 0.20f)
+                val tintList = ColorStateList.valueOf(darkTint)
+
+                withContext(Dispatchers.Main) {
+                    binding.cardLikes.setCardBackgroundColor(tintList)
+                    binding.cardViews.setCardBackgroundColor(tintList)
+                    binding.cardDate.setCardBackgroundColor(tintList)
+                    binding.cardDescription.setCardBackgroundColor(tintList)
+                }
+            }
         }
     }
     private fun setupDescription(description: String) {

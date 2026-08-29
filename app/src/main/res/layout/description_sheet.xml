@@ -96,6 +96,7 @@
 
                         <!-- Likes -->
                         <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/cardLikes"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -133,6 +134,7 @@
 
                         <!-- Views -->
                         <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/cardViews"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1.2"
@@ -170,6 +172,7 @@
 
                         <!-- Date -->
                         <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/cardDate"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -218,6 +221,7 @@
 
                     <!-- Description Block -->
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardDescription"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:cardBackgroundColor="?colorSurfaceContainerHighest"
