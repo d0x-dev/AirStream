@@ -84,7 +84,7 @@
                         android:layout_width="44dp"
                         android:layout_height="44dp"
                         android:layout_marginStart="6dp"
-                        app:icon="@drawable/ic_like" />
+                        app:icon="@drawable/yt_outline_experimental_thumb_up_vd_theme_24" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/relPlayer_dislike"
@@ -92,7 +92,7 @@
                         android:layout_width="44dp"
                         android:layout_height="44dp"
                         android:layout_marginStart="6dp"
-                        app:icon="@drawable/ic_dislike" />
+                        app:icon="@drawable/yt_outline_experimental_thumb_down_vd_theme_24" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/relPlayer_share"
@@ -100,7 +100,7 @@
                         android:layout_width="44dp"
                         android:layout_height="44dp"
                         android:layout_marginStart="6dp"
-                        app:icon="@drawable/ic_share" />
+                        app:icon="@drawable/yt_outline_experimental_share_vd_theme_24" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/relPlayer_more"

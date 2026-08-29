@@ -120,6 +120,98 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/player_action_buttons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="10dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            
+            <!-- Like Button -->
+            <LinearLayout
+                android:id="@+id/player_like_container"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:background="@drawable/bg_bottom_sheet_rounded"
+                android:backgroundTint="#33FFFFFF"
+                android:gravity="center"
+                android:paddingHorizontal="16dp"
+                android:clickable="true"
+                android:focusable="true">
+                
+                <ImageView
+                    android:id="@+id/player_like_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/yt_outline_experimental_thumb_up_vd_theme_24"
+                    app:tint="@android:color/white" />
+                    
+                <TextView
+                    android:id="@+id/player_like_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:text="Like" />
+            </LinearLayout>
+
+            <!-- Dislike Button -->
+            <LinearLayout
+                android:id="@+id/player_dislike_container"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_bottom_sheet_rounded"
+                android:backgroundTint="#33FFFFFF"
+                android:gravity="center"
+                android:paddingHorizontal="16dp"
+                android:clickable="true"
+                android:focusable="true">
+                
+                <ImageView
+                    android:id="@+id/player_dislike_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/yt_outline_experimental_thumb_down_vd_theme_24"
+                    app:tint="@android:color/white" />
+            </LinearLayout>
+
+            <!-- Share Button -->
+            <LinearLayout
+                android:id="@+id/player_share_container"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_bottom_sheet_rounded"
+                android:backgroundTint="#33FFFFFF"
+                android:gravity="center"
+                android:paddingHorizontal="16dp"
+                android:clickable="true"
+                android:focusable="true">
+                
+                <ImageView
+                    android:id="@+id/player_share_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/yt_outline_experimental_share_vd_theme_24"
+                    app:tint="@android:color/white" />
+                    
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:text="Share" />
+            </LinearLayout>
+
+        </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout
