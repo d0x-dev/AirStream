@@ -404,6 +404,7 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         _binding = FragmentPlayerBinding.bind(view)
+        binding.playerScrollView.isNestedScrollingEnabled = false
         super.onViewCreated(view, savedInstanceState)
 
         // manually apply additional padding for edge-to-edge compatibility
