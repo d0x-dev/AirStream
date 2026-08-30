@@ -62,6 +62,9 @@ import com.github.airstream.util.UpdateChecker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import androidx.preference.PreferenceManager
+import com.darkxvenom.airbeats.innertube.YouTube
+import com.github.airstream.util.YouTubeSyncManager
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
 class MainActivity : AbstractPlayerHostActivity() {
@@ -104,6 +107,14 @@ class MainActivity : AbstractPlayerHostActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         
         super.onCreate(savedInstanceState)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        val autoSync = prefs.getBoolean("yt_auto_sync", true)
+        val cookie = YouTube.cookie
+        if (autoSync && cookie != null) {
+            lifecycleScope.launch {
+                YouTubeSyncManager.syncData(applicationContext, cookie)
+            }
+        }
 
         // show noInternet Activity if no internet available on app startup
         if (!NetworkHelper.isNetworkAvailable(this)) {
@@ -766,3 +777,5 @@ class MainActivity : AbstractPlayerHostActivity() {
         return true
     }
 }
+
+

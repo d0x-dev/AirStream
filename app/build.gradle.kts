@@ -35,8 +35,8 @@ android {
         applicationId = "com.github.airstream"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 3
+        versionName = "1.1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         resValue("string", "app_name", "Airstream")
         
@@ -140,6 +140,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":innertube"))
     implementation("io.coil-kt.coil3:coil-compose:3.4.0")
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.ui)

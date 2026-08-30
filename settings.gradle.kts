@@ -26,3 +26,5 @@ rootProject.name = "Airstream"
 
 include(":app")
 include(":baselineprofile")
+
+include(":innertube")

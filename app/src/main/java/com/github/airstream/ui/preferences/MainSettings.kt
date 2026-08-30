@@ -23,6 +23,7 @@ class MainSettings : Fragment(R.layout.fragment_custom_settings) {
         }
         
         listOf(
+            R.id.opt_account to R.id.action_global_accountSettings,
             R.id.opt_general to R.id.action_global_generalSettings,
             R.id.opt_instance to R.id.action_global_instanceSettings,
             R.id.opt_appearance to R.id.action_global_appearanceSettings,

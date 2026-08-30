@@ -56,6 +56,12 @@
         app:summary="@string/backup_restore_summary"
         app:title="@string/backup_restore" />
 
+        <Preference
+        android:icon="@drawable/ic_person"
+        app:key="account"
+        app:summary="@string/account_summary"
+        app:title="@string/account" />
+
     <PreferenceCategory>
 
         <Preference
@@ -72,3 +78,4 @@
     </PreferenceCategory>
 
 </PreferenceScreen>
+

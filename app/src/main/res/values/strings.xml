@@ -590,4 +590,8 @@
     <string name="pill_shape_nav_bar">Pill shape nav bar</string>
     <string name="ambient_mode">Ambient Mode</string>
     <string name="ambient_mode_summary">Make background colors glow dynamically to match the video</string>
+    <string name="account">Account</string>
+    <string name="account_summary">Manage your YouTube account and sync data</string>
+    <string name="login_to_youtube">Login to YouTube</string>
+    <string name="login_to_youtube_summary">Fetch playlists, subscriptions, and liked videos from your YouTube account</string>
 </resources>

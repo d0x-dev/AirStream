@@ -9,6 +9,8 @@ import com.github.airstream.helpers.NewPipeExtractorInstance
 import com.github.airstream.helpers.NotificationHelper
 import com.github.airstream.helpers.PreferenceHelper
 import com.github.airstream.helpers.ProxyHelper
+import androidx.preference.PreferenceManager
+import com.darkxvenom.airbeats.innertube.YouTube
 import com.github.airstream.helpers.ShortcutHelper
 import com.github.airstream.util.ExceptionHandler
 
@@ -26,7 +28,12 @@ class AirstreamApp : Application() {
          * Initialize the [PreferenceHelper]
          */
         PreferenceHelper.initialize(applicationContext)
-        PreferenceHelper.migrate()
+                PreferenceHelper.migrate()
+        
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+        YouTube.cookie = prefs.getString("yt_cookie", null)
+        YouTube.visitorData = prefs.getString("yt_visitor_data", null)
+        YouTube.useLoginForBrowse = prefs.getBoolean("yt_use_login_for_browsing", true)
 
         /**
          * Set the api and the auth api url
@@ -114,3 +121,4 @@ class AirstreamApp : Application() {
         const val PUSH_CHANNEL_NAME = "notification_worker"
     }
 }
+
