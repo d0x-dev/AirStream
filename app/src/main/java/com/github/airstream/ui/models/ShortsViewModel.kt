@@ -1,4 +1,4 @@
-﻿package com.github.airstream.ui.models
+package com.github.airstream.ui.models
 
 import android.content.Context
 import androidx.lifecycle.LiveData

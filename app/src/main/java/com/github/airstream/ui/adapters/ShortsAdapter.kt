@@ -1,4 +1,4 @@
-﻿package com.github.airstream.ui.adapters
+package com.github.airstream.ui.adapters
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
