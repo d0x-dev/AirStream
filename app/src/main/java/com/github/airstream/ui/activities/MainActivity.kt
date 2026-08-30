@@ -222,7 +222,11 @@ class MainActivity : AbstractPlayerHostActivity() {
             })
         }
         // manually update the bottom bar height in the mini player transition
-        binding.bottomNav.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+        binding.bottomNav.addOnLayoutChangeListener { _, _, top, _, bottom, _, oldTop, _, oldBottom ->
+            val height = bottom - top
+            val oldHeight = oldBottom - oldTop
+            if (height == oldHeight) return@addOnLayoutChangeListener
+
             val transition = binding.root.getTransition(R.id.bottom_bar_transition)
             transition.keyFrameList.forEach { keyFrame ->
                 // These frame positions are hardcoded in activity_main_scene.xml!

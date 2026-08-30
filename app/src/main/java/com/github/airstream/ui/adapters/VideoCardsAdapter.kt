@@ -13,6 +13,10 @@ import com.github.airstream.api.obj.StreamItem
 import com.github.airstream.constants.IntentData
 import com.github.airstream.databinding.AllCaughtUpRowBinding
 import com.github.airstream.databinding.TrendingRowBinding
+import com.github.airstream.databinding.ShortsShelfRowBinding
+import android.widget.ImageView
+import android.widget.TextView
+import android.view.View
 import com.github.airstream.extensions.dpToPx
 import com.github.airstream.extensions.toID
 import com.github.airstream.helpers.ImageHelper
@@ -36,7 +40,11 @@ class VideoCardsAdapter(private val columnWidthDp: Float? = null) :
     ListAdapter<StreamItem, VideoCardsViewHolder>(DiffUtilItemCallback()) {
 
     override fun getItemViewType(position: Int): Int {
-        return if (currentList[position].type == CAUGHT_UP_STREAM_TYPE) CAUGHT_UP_TYPE else NORMAL_TYPE
+        return when (currentList[position].type) {
+            CAUGHT_UP_STREAM_TYPE -> CAUGHT_UP_TYPE
+            "shorts_shelf" -> SHORTS_SHELF_TYPE
+            else -> NORMAL_TYPE
+        }
     }
 
     fun removeItemById(videoId: String) {
@@ -52,11 +60,13 @@ class VideoCardsAdapter(private val columnWidthDp: Float? = null) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoCardsViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        return when {
-            viewType == CAUGHT_UP_TYPE -> VideoCardsViewHolder(
+        return when (viewType) {
+            CAUGHT_UP_TYPE -> VideoCardsViewHolder(
                 AllCaughtUpRowBinding.inflate(layoutInflater, parent, false)
             )
-
+            SHORTS_SHELF_TYPE -> VideoCardsViewHolder(
+                ShortsShelfRowBinding.inflate(layoutInflater, parent, false)
+            )
             else -> VideoCardsViewHolder(
                 TrendingRowBinding.inflate(layoutInflater, parent, false)
             )
@@ -68,6 +78,26 @@ class VideoCardsAdapter(private val columnWidthDp: Float? = null) :
         val video = getItem(holder.bindingAdapterPosition)
         val videoId = video.url.orEmpty().toID()
 
+        holder.shortsShelfBinding?.let { binding ->
+            val context = binding.root.context
+            val shorts = video.shortsShelfItems ?: emptyList()
+            val shortViews = listOf(binding.short1, binding.short2, binding.short3, binding.short4)
+            for (i in 0 until 4) {
+                if (i < shorts.size) {
+                    val shortItem = shorts[i]
+                    val shortBinding = shortViews[i]
+                    shortBinding.root.visibility = View.VISIBLE
+                    shortBinding.title.text = shortItem.title
+                    ImageHelper.loadImage(shortItem.thumbnail, shortBinding.thumbnail)
+                    shortBinding.root.setOnClickListener {
+                        NavigationHelper.openShorts(context, shortItem.url.orEmpty().toID())
+                    }
+                } else {
+                    shortViews[i].root.visibility = View.INVISIBLE
+                }
+            }
+            return
+        }
         val context = (holder.trendingRowBinding ?: holder.allCaughtUpBinding)!!.root.context
         val activity = (context as BaseActivity)
         val fragmentManager = activity.supportFragmentManager
@@ -171,6 +201,7 @@ class VideoCardsAdapter(private val columnWidthDp: Float? = null) :
     companion object {
         private const val NORMAL_TYPE = 0
         private const val CAUGHT_UP_TYPE = 1
+        private const val SHORTS_SHELF_TYPE = 2
 
         const val CAUGHT_UP_STREAM_TYPE = "caught"
     }

@@ -19,6 +19,16 @@ object YouTubeSyncManager {
         try {
             YouTube.cookie = cookie
 
+            val accountInfo = YouTube.accountInfo().getOrNull()
+            if (accountInfo != null) {
+                val prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context)
+                prefs.edit()
+                    .putString("yt_name", accountInfo.name)
+                    .putString("yt_email", accountInfo.email ?: "")
+                    .putString("yt_avatar", accountInfo.thumbnailUrl ?: "")
+                    .apply()
+            }
+
             // 1. Sync Subscriptions (Artists/Channels from Music Library)
             val artistsPage = YouTube.library("FEmusic_library_corpus_artists").completedLibraryPage().getOrNull()
             if (artistsPage != null) {
@@ -125,3 +135,4 @@ object YouTubeSyncManager {
         }
     }
 }
+

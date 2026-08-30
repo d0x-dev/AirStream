@@ -29,11 +29,17 @@ class SettingsActivity : BaseActivity() {
 
         if (intent.extras?.getString(REDIRECT_KEY) == REDIRECT_TO_INTENT_SETTINGS) {
             navController.navigate(R.id.action_global_instanceSettings)
+        } else if (intent.extras?.getString(REDIRECT_KEY) == REDIRECT_TO_ACCOUNT_SETTINGS) {
+            navController.navigate(R.id.action_global_accountSettings)
         }
     }
 
     companion object {
         const val REDIRECT_KEY = "redirect"
         const val REDIRECT_TO_INTENT_SETTINGS = "intent_settings"
+        const val REDIRECT_TO_ACCOUNT_SETTINGS = "account_settings"
     }
 }
+
+
+

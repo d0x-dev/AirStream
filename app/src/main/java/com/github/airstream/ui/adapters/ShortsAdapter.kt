@@ -200,13 +200,11 @@ class ShortsAdapter(
         }
 
         fun setLikeActive(isActive: Boolean) {
-            val color = if (isActive) Color.parseColor("#FF2D55") else Color.WHITE
-            binding.likeIcon.setColorFilter(color)
+            binding.likeIcon.isSelected = isActive
         }
 
         fun setDislikeActive(isActive: Boolean) {
-            val color = if (isActive) Color.parseColor("#3B82F6") else Color.WHITE
-            binding.dislikeIcon.setColorFilter(color)
+            binding.dislikeIcon.isSelected = isActive
         }
 
         fun setBuffering(isBuffering: Boolean) {
@@ -231,4 +229,5 @@ class ShortsAdapter(
         }
     }
 }
+
 

@@ -328,6 +328,25 @@ class ShortsViewModel : ViewModel() {
         return filtered
     }
 
+    fun prefetchStreams(currentIndex: Int, count: Int = 3) {
+        val list = _shortsList.value ?: return
+        for (i in currentIndex + 1..minOf(currentIndex + count, list.lastIndex)) {
+            val videoId = list[i].url?.toID() ?: continue
+            if (!streamsCache.containsKey(videoId)) {
+                viewModelScope.launch {
+                    try {
+                        val streams = withContext(Dispatchers.IO) {
+                            MediaServiceRepository.instance.getStreams(videoId)
+                        }
+                        streamsCache[videoId] = streams
+                    } catch (e: Exception) {
+                        // ignore
+                    }
+                }
+            }
+        }
+    }
+
     suspend fun getStreamInfo(videoId: String): Streams? {
         val id = videoId.toID()
         streamsCache[id]?.let { return it }
@@ -375,3 +394,4 @@ class ShortsViewModel : ViewModel() {
         )
     }
 }
+

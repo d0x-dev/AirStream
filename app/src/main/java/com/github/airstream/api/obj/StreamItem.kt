@@ -22,6 +22,7 @@ data class StreamItem(
     val uploaderAvatar: String? = null,
     val uploadedDate: String? = null,
     val duration: Long? = null,
+    @kotlin.jvm.Transient var shortsShelfItems: List<StreamItem>? = null,
     val views: Long? = null,
     val uploaderVerified: Boolean? = null,
     val uploaded: Long = 0,
@@ -75,5 +76,6 @@ data class StreamItem(
         const val TYPE_STREAM = "stream"
         const val TYPE_CHANNEL = "channel"
         const val TYPE_PLAYLIST = "playlist"
+        const val SHORTS_SHELF_TYPE = "shorts_shelf"
     }
 }

@@ -29,6 +29,11 @@ import com.github.airstream.helpers.NavBarHelper
 import com.github.airstream.helpers.PreferenceHelper
 import com.github.airstream.ui.adapters.PlaylistBookmarkAdapter
 import com.github.airstream.ui.adapters.PlaylistsAdapter
+import com.github.airstream.ui.adapters.HorizontalHistoryAdapter
+import com.github.airstream.ui.models.WatchHistoryModel
+import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.github.airstream.helpers.ImageHelper
 import com.github.airstream.ui.base.DynamicLayoutManagerFragment
 import com.github.airstream.ui.dialogs.CreatePlaylistDialog
 import com.github.airstream.ui.dialogs.CreatePlaylistDialog.Companion.CREATE_PLAYLIST_DIALOG_REQUEST_KEY
@@ -45,18 +50,40 @@ class LibraryFragment : DynamicLayoutManagerFragment(R.layout.fragment_library) 
     private val commonPlayerViewModel: CommonPlayerViewModel by activityViewModels()
 
     private val playlistsAdapter = PlaylistsAdapter(PlaylistsHelper.getPrivatePlaylistType())
+    private val historyAdapter = HorizontalHistoryAdapter()
+    private val historyViewModel: WatchHistoryModel by viewModels()
     private val playlistBookmarkAdapter = PlaylistBookmarkAdapter()
 
-    override fun setLayoutManagers(gridItems: Int) {
+        override fun setLayoutManagers(gridItems: Int) {
         _binding?.bookmarksRecView?.layoutManager = GridLayoutManager(context, gridItems.ceilHalf())
-        _binding?.playlistRecView?.layoutManager = GridLayoutManager(context, gridItems.ceilHalf())
+        _binding?.playlistRecView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        _binding?.historyRecView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         _binding = FragmentLibraryBinding.bind(view)
         super.onViewCreated(view, savedInstanceState)
 
-        binding.bookmarksRecView.adapter = playlistBookmarkAdapter
+                binding.bookmarksRecView.adapter = playlistBookmarkAdapter
+        binding.historyRecView.adapter = historyAdapter
+
+
+
+        binding.viewChannelButton.setOnClickListener {
+            val settingsIntent = android.content.Intent(context, com.github.airstream.ui.activities.SettingsActivity::class.java).apply {
+                putExtra(com.github.airstream.ui.activities.SettingsActivity.REDIRECT_KEY, com.github.airstream.ui.activities.SettingsActivity.REDIRECT_TO_ACCOUNT_SETTINGS)
+            }
+            startActivity(settingsIntent)
+        }
+        binding.historyHeader.setOnClickListener {
+            findNavController().navigate(R.id.action_libraryFragment_to_watchHistoryFragment)
+        }
+
+        historyViewModel.filteredWatchHistory.observe(viewLifecycleOwner) { history ->
+            historyAdapter.submitList(history.take(15))
+        }
+        historyViewModel.fetchNextPage()
+
         // listen for playlists to become deleted
         playlistsAdapter.registerAdapterDataObserver(object :
             RecyclerView.AdapterDataObserver() {
@@ -73,16 +100,7 @@ class LibraryFragment : DynamicLayoutManagerFragment(R.layout.fragment_library) 
             updateFABMargin(it)
         }
 
-        // hide watch history button of history disabled
-        val watchHistoryEnabled =
-            PreferenceHelper.getBoolean(PreferenceKeys.WATCH_HISTORY_TOGGLE, true)
-        if (!watchHistoryEnabled) {
-            binding.watchHistory.isGone = true
-        } else {
-            binding.watchHistory.setOnClickListener {
-                findNavController().navigate(R.id.action_libraryFragment_to_watchHistoryFragment)
-            }
-        }
+
 
         binding.downloads.setOnClickListener {
             findNavController().navigate(R.id.action_libraryFragment_to_downloadsFragment)
@@ -137,6 +155,56 @@ class LibraryFragment : DynamicLayoutManagerFragment(R.layout.fragment_library) 
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        updateProfileUi()
+    }
+
+    private fun updateProfileUi() {
+        // Load profile data
+        val name = PreferenceHelper.getString("yt_name", "")
+        val email = PreferenceHelper.getString("yt_email", "")
+        val avatar = PreferenceHelper.getString("yt_avatar", "")
+        
+        _binding?.let { binding ->
+            if (name.isNotBlank()) {
+                binding.profileName.text = name
+                binding.profileUsername.text = email.takeIf { it.isNotBlank() } ?: "Logged in"
+                binding.profilePremium.isVisible = true
+                if (avatar.isNotBlank()) {
+                    ImageHelper.loadImage(avatar, binding.profileAvatar)
+                } else {
+                    binding.profileAvatar.setImageResource(R.drawable.ic_person)
+                }
+            } else if (com.darkxvenom.airbeats.innertube.YouTube.cookie != null) {
+                // Logged in but name not saved yet. Fetch it!
+                binding.profileName.text = "Loading..."
+                binding.profileUsername.text = "Fetching account info..."
+                binding.profilePremium.isVisible = false
+                lifecycleScope.launch {
+                    val accountInfo = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) { com.darkxvenom.airbeats.innertube.YouTube.accountInfo().getOrNull() }
+                    if (accountInfo != null) {
+                        val prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(requireContext())
+                        prefs.edit()
+                            .putString("yt_name", accountInfo.name)
+                            .putString("yt_email", accountInfo.email ?: "")
+                            .putString("yt_avatar", accountInfo.thumbnailUrl ?: "")
+                            .apply()
+                        updateProfileUi()
+                    } else {
+                        binding.profileName.text = "Logged in"
+                        binding.profileUsername.text = "Failed to load info"
+                    }
+                }
+            } else {
+                binding.profileName.text = "Guest"
+                binding.profileUsername.text = getString(R.string.login_to_youtube)
+                binding.profilePremium.isVisible = false
+                binding.profileAvatar.setImageResource(R.drawable.ic_person)
+            }
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -171,27 +239,25 @@ class LibraryFragment : DynamicLayoutManagerFragment(R.layout.fragment_library) 
     private fun fetchPlaylists() {
         _binding?.playlistRefresh?.isRefreshing = true
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
-                val playlists = try {
-                    withContext(Dispatchers.IO) {
-                        PlaylistsHelper.getPlaylists()
-                    }
-                } catch (e: Exception) {
-                    Log.e(TAG(), e.toString())
-                    Toast.makeText(context, R.string.unknown_error, Toast.LENGTH_SHORT).show()
-                    return@repeatOnLifecycle
+            val playlists = try {
+                withContext(Dispatchers.IO) {
+                    PlaylistsHelper.getPlaylists()
                 }
+            } catch (e: Exception) {
+                Log.e(TAG(), e.toString())
+                Toast.makeText(context, R.string.unknown_error, Toast.LENGTH_SHORT).show()
+                return@launch
+            }
 
-                val binding = _binding ?: return@repeatOnLifecycle
-                binding.playlistRefresh.isRefreshing = false
+            val binding = _binding ?: return@launch
+            binding.playlistRefresh.isRefreshing = false
 
-                // also update playlists recycler when the playlists are empty in order to remove
-                // playlists that were removed by the user
-                showPlaylists(playlists)
-                if (playlists.isEmpty()) {
-                    binding.sortTV.isVisible = false
-                    binding.nothingHere.isVisible = true
-                }
+            // also update playlists recycler when the playlists are empty in order to remove
+            // playlists that were removed by the user
+            showPlaylists(playlists)
+            if (playlists.isEmpty()) {
+                binding.sortTV.isVisible = false
+                binding.nothingHere.isVisible = true
             }
         }
     }
@@ -204,3 +270,8 @@ class LibraryFragment : DynamicLayoutManagerFragment(R.layout.fragment_library) 
         playlistsAdapter.submitList(playlists)
     }
 }
+
+
+
+
+

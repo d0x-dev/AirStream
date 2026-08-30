@@ -34,7 +34,8 @@ class AccountSettings : BasePreferenceFragment() {
 
         ytLogout?.setOnPreferenceClickListener {
             val prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(requireContext())
-            prefs.edit().remove("yt_cookie").remove("yt_visitor_data").apply()
+            prefs.edit().remove("yt_cookie").remove("yt_visitor_data")
+                .remove("yt_name").remove("yt_email").remove("yt_avatar").apply()
             YouTube.cookie = null
             YouTube.visitorData = null
             updateUi()
@@ -68,6 +69,12 @@ class AccountSettings : BasePreferenceFragment() {
                 if (accountInfo != null) {
                     youtubeLogin?.title = accountInfo.name
                     youtubeLogin?.summary = accountInfo.email
+                    val prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(requireContext())
+                    prefs.edit()
+                        .putString("yt_name", accountInfo.name)
+                        .putString("yt_email", accountInfo.email ?: "")
+                        .putString("yt_avatar", accountInfo.thumbnailUrl ?: "")
+                        .apply()
                 } else {
                     youtubeLogin?.title = "YouTube Account"
                     youtubeLogin?.summary = "Logged in (Failed to fetch info)"
@@ -87,3 +94,4 @@ class AccountSettings : BasePreferenceFragment() {
         }
     }
 }
+

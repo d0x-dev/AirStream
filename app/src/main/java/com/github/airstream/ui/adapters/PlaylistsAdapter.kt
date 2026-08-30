@@ -33,7 +33,7 @@ class PlaylistsAdapter(
         val playlist = getItem(holder.bindingAdapterPosition)
         holder.binding.apply {
             // set imageview drawable as empty playlist if imageview empty
-            if (playlist.thumbnail.orEmpty().split("/").size <= 4) {
+            if (playlist.thumbnail.isNullOrEmpty()) {
                 playlistThumbnail.setImageResource(R.drawable.ic_empty_playlist)
                 playlistThumbnail
                     .setBackgroundColor(com.google.android.material.R.attr.colorSurface)
@@ -50,7 +50,7 @@ class PlaylistsAdapter(
             }
 
             val fragmentManager = (root.context as BaseActivity).supportFragmentManager
-            root.setOnLongClickListener {
+            optionsMenu.setOnClickListener {
                 fragmentManager.setFragmentResultListener(
                     PLAYLIST_OPTIONS_REQUEST_KEY,
                     (root.context as BaseActivity)
@@ -88,7 +88,6 @@ class PlaylistsAdapter(
                     fragmentManager,
                     PlaylistOptionsBottomSheet::class.java.name
                 )
-                true
             }
         }
     }

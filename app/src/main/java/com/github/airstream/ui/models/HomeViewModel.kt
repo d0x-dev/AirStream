@@ -163,7 +163,20 @@ class HomeViewModel : ViewModel() {
         val videos = fetchRecommendations(context, 10, excludeUrls)
         
         if (videos.isNotEmpty()) {
-            allRecommendations.addAll(videos)
+            val normalVideos = videos.toMutableList()
+            val shortsList = try {
+                withContext(Dispatchers.IO) {
+                    val searchResult = MediaServiceRepository.instance.getSearchResults("#shorts", "video")
+                    searchResult.items.map { it.toStreamItem() }.filter { it.isShort }.take(4)
+                }
+            } catch (e: Exception) {
+                emptyList()
+            }
+            if (shortsList.size >= 4) {
+                val shelf = StreamItem(type = "shorts_shelf").apply { shortsShelfItems = shortsList }
+                normalVideos.add(normalVideos.size / 2, shelf)
+            }
+            allRecommendations.addAll(normalVideos)
         }
         
         trending.postValue(
@@ -210,15 +223,26 @@ class HomeViewModel : ViewModel() {
             .filterUnwatched(videos.map { it.toStreamItem() })
     }
 
-    private suspend fun tryLoadFeed(subscriptionsViewModel: SubscriptionsViewModel): List<StreamItem> {
-        // use cached feed if available, otherwise load feed from API/database
+        private suspend fun tryLoadFeed(subscriptionsViewModel: SubscriptionsViewModel): List<StreamItem> {
         val feed = subscriptionsViewModel.videoFeed.value ?: run {
             SubscriptionHelper.getFeed(forceRefresh = false).also {
                 subscriptionsViewModel.videoFeed.postValue(it)
             }
         }
-
-        return DatabaseHelper.filterByStreamTypeAndWatchPosition(feed, hideWatched, showUpcoming)
+        val normalVideos = DatabaseHelper.filterByStreamTypeAndWatchPosition(feed, hideWatched, showUpcoming).toMutableList()
+        val shortsList = try {
+            withContext(Dispatchers.IO) {
+                val searchResult = MediaServiceRepository.instance.getSearchResults("#shorts", "video")
+                searchResult.items.map { it.toStreamItem() }.filter { it.isShort }.take(4)
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
+        if (shortsList.size >= 4 && normalVideos.isNotEmpty()) {
+            val shelf = StreamItem(type = "shorts_shelf").apply { shortsShelfItems = shortsList }
+            normalVideos.add(normalVideos.size / 2, shelf)
+        }
+        return normalVideos
     }
 
     companion object {

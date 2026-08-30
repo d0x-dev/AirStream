@@ -43,46 +43,33 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private val trendingAdapter = VideoCardsAdapter()
     private val feedAdapter = VideoCardsAdapter(columnWidthDp = 250f)
-    private val watchingAdapter = VideoCardsAdapter(columnWidthDp = 250f)
+    
     private val bookmarkAdapter = CarouselPlaylistAdapter()
-    private val playlistAdapter = CarouselPlaylistAdapter()
+    
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         _binding = FragmentHomeBinding.bind(view)
         super.onViewCreated(view, savedInstanceState)
 
         binding.bookmarksRV.layoutManager = CarouselLayoutManager(UncontainedCarouselStrategy())
-        binding.playlistsRV.layoutManager = CarouselLayoutManager(UncontainedCarouselStrategy())
+        
 
         val bookmarksSnapHelper = CarouselSnapHelper()
         bookmarksSnapHelper.attachToRecyclerView(binding.bookmarksRV)
 
-        val playlistsSnapHelper = CarouselSnapHelper()
-        playlistsSnapHelper.attachToRecyclerView(binding.playlistsRV)
+        
+        
 
         binding.trendingRV.adapter = trendingAdapter
         binding.featuredRV.adapter = feedAdapter
         binding.bookmarksRV.adapter = bookmarkAdapter
-        binding.playlistsRV.adapter = playlistAdapter
-        binding.playlistsRV.adapter?.registerAdapterDataObserver(object :
-            RecyclerView.AdapterDataObserver() {
-            override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
-                super.onItemRangeRemoved(positionStart, itemCount)
-                if (itemCount == 0) {
-                    binding.playlistsRV.isGone = true
-                    binding.playlistsTV.isGone = true
-                }
-            }
-        })
-        binding.watchingRV.adapter = watchingAdapter
-
+        
         with(homeViewModel) {
             trending.observe(viewLifecycleOwner, ::showTrending)
             feed.observe(viewLifecycleOwner, ::showFeed)
             bookmarks.observe(viewLifecycleOwner, ::showBookmarks)
-            playlists.observe(viewLifecycleOwner, ::showPlaylists)
-            continueWatching.observe(viewLifecycleOwner, ::showContinueWatching)
-            isLoading.observe(viewLifecycleOwner, ::updateLoading)
+            
+                        isLoading.observe(viewLifecycleOwner, ::updateLoading)
             loadingMore.observe(viewLifecycleOwner) { isL -> binding.loadMoreProgress.isVisible = isL }
         }
 
@@ -90,17 +77,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             findNavController().navigate(R.id.action_homeFragment_to_subscriptionsFragment)
         }
 
-        binding.watchingTV.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_watchHistoryFragment)
-        }
+        
 
         binding.trendingTV.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_trendsFragment)
         }
 
-        binding.playlistsTV.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_libraryFragment)
-        }
+        
 
         binding.bookmarksTV.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_libraryFragment)
@@ -203,25 +186,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         })
     }
 
-    private fun showPlaylists(playlists: List<Playlists>?) {
-        if (playlists == null) return
 
-        makeVisible(binding.playlistsRV, binding.playlistsTV)
-        playlistAdapter.submitList(playlists.map { playlist ->
-            CarouselPlaylist(
-                id = playlist.id!!,
-                thumbnail = playlist.thumbnail,
-                title = playlist.name
-            )
-        })
-    }
-
-    private fun showContinueWatching(unwatchedVideos: List<StreamItem>?) {
-        if (unwatchedVideos == null) return
-
-        makeVisible(binding.watchingRV, binding.watchingTV)
-        watchingAdapter.submitList(unwatchedVideos)
-    }
 
     private fun updateLoading(isLoading: Boolean) {
         if (isLoading) {
@@ -283,3 +248,5 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         views.forEach { it.isVisible = true }
     }
 }
+
+

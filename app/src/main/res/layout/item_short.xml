@@ -137,7 +137,7 @@
                     android:id="@+id/likeIcon"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:src="@drawable/ic_like"
+                    android:src="@drawable/yt_like_selector"
                     app:tint="@android:color/white" />
 
                 <TextView
@@ -172,7 +172,7 @@
                     android:id="@+id/dislikeIcon"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:src="@drawable/ic_dislike"
+                    android:src="@drawable/yt_dislike_selector"
                     app:tint="@android:color/white" />
 
                 <TextView
@@ -405,3 +405,4 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
+
