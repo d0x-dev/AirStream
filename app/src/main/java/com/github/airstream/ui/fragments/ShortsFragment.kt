@@ -25,10 +25,10 @@ import androidx.media3.common.MimeTypes
 import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.hls.HlsMediaSource
 import androidx.media3.exoplayer.source.MediaSource
-import androidx.media3.exoplayer.source.MergingMediaSource
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -124,8 +124,19 @@ class ShortsFragment : Fragment(R.layout.fragment_shorts) {
     private fun initPlayer() {
         if (exoPlayer != null) return
 
+        // Ultra-low latency LoadControl for instant shorts playback
+        val shortsLoadControl = DefaultLoadControl.Builder()
+            .setBufferDurationsMs(
+                1500,  // minBufferMs (1.5s)
+                20000, // maxBufferMs (20s)
+                250,   // bufferForPlaybackMs (instant start on 0.25s)
+                500    // bufferForPlaybackAfterRebufferMs (0.5s rebuffer)
+            )
+            .setPrioritizeTimeOverSizeThresholds(true)
+            .build()
+
         exoPlayer = ExoPlayer.Builder(requireContext())
-            .setLoadControl(PlayerHelper.getLoadControl())
+            .setLoadControl(shortsLoadControl)
             .build()
             .apply {
                 repeatMode = Player.REPEAT_MODE_ONE
@@ -168,8 +179,13 @@ class ShortsFragment : Fragment(R.layout.fragment_shorts) {
             },
             onCommentsClick = { videoId, channelAvatar ->
                 CommentsSheet()
-                    .apply { arguments = bundleOf(IntentData.channelAvatar to channelAvatar) }
-                    .show(childFragmentManager)
+                    .apply {
+                        arguments = bundleOf(
+                            IntentData.videoId to videoId,
+                            IntentData.channelAvatar to channelAvatar
+                        )
+                    }
+                    .show(childFragmentManager, CommentsSheet::class.java.name)
             },
             onShareClick = { streamItem ->
                 val videoId = streamItem.url.orEmpty().toID()
@@ -325,8 +341,18 @@ class ShortsFragment : Fragment(R.layout.fragment_shorts) {
         val player = exoPlayer ?: return
         val context = requireContext()
 
+        // 1. Direct Progressive Stream for instant zero-latency start
+        val progressiveStream = streams.videoStreams.firstOrNull {
+            !it.url.isNullOrBlank() && (it.quality == "720p" || it.quality == "480p" || it.format == "MPEG_4")
+        } ?: streams.videoStreams.firstOrNull { !it.url.isNullOrBlank() }
+
         when {
-            // SABR
+            // High-speed progressive MP4
+            progressiveStream != null && !progressiveStream.url.isNullOrBlank() -> {
+                val mediaItem = MediaItem.fromUri(progressiveStream.url!!.toUri())
+                player.setMediaItem(mediaItem)
+            }
+            // SABR adaptive streaming
             !streams.isLive && streams.serverAbrStreamingUrl != null && streams.videoPlaybackUstreamerConfig != null -> {
                 val sabrMediaSourceFactory = SabrMediaSource.Factory(
                     SabrManifest(videoId, streams)
@@ -338,7 +364,7 @@ class ShortsFragment : Fragment(R.layout.fragment_shorts) {
                 val mediaSource = sabrMediaSourceFactory.createMediaSource(mediaItem)
                 player.setMediaSource(mediaSource)
             }
-            // DASH
+            // DASH source
             streams.videoStreams.any { it.url?.startsWith("sabr://") != true } -> {
                 val dashUri = if (streams.isLive && streams.dash != null) {
                     ProxyHelper.rewriteUrlUsingProxyPreference(streams.dash).toUri()
@@ -364,12 +390,6 @@ class ShortsFragment : Fragment(R.layout.fragment_shorts) {
                     .build()
                 val mediaSource = hlsMediaSourceFactory.createMediaSource(mediaItem)
                 player.setMediaSource(mediaSource)
-            }
-            // Progressive MP4
-            streams.videoStreams.firstOrNull { !it.url.isNullOrBlank() } != null -> {
-                val streamUrl = streams.videoStreams.first { !it.url.isNullOrBlank() }.url!!
-                val mediaItem = MediaItem.fromUri(streamUrl.toUri())
-                player.setMediaItem(mediaItem)
             }
             else -> Unit
         }
@@ -435,4 +455,3 @@ class ShortsFragment : Fragment(R.layout.fragment_shorts) {
         _binding = null
     }
 }
-
