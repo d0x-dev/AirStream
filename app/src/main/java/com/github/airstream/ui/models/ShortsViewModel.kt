@@ -168,8 +168,8 @@ class ShortsViewModel : ViewModel() {
             if (searchHistory.isNotEmpty()) {
                 val topSearches = searchHistory.reversed().take(3)
                 topSearches.forEach { item ->
-                    if (!item.searchQuery.isNullOrBlank()) {
-                        personalizedQueries.add("${item.searchQuery} shorts")
+                    if (item.query.isNotBlank()) {
+                        personalizedQueries.add("${item.query} shorts")
                     }
                 }
             }
