@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.airstream.R
 import com.github.airstream.api.obj.StreamItem
 import com.github.airstream.databinding.ItemShortBinding
+import com.github.airstream.extensions.formatShort
 import com.github.airstream.extensions.toID
 import com.github.airstream.helpers.ImageHelper
 import com.github.airstream.ui.adapters.callbacks.DiffUtilItemCallback
@@ -68,11 +69,7 @@ class ShortsAdapter(
             binding.shortTitle.text = item.title ?: ""
             binding.channelName.text = item.uploaderName ?: context.getString(R.string.unknown)
 
-            if (!item.uploaderAvatar.isNullOrBlank()) {
-                ImageHelper.loadImage(item.uploaderAvatar, binding.channelAvatar, true)
-            } else {
-                binding.channelAvatar.setImageResource(R.drawable.ic_user)
-            }
+            ImageHelper.loadImage(item.uploaderAvatar, binding.channelAvatar, true)
 
             // Channel click
             binding.channelRow.setOnClickListener {
@@ -104,14 +101,14 @@ class ShortsAdapter(
 
             // Like, Comments count format
             val likesFormatted = if (item.views != null && item.views > 0) {
-                TextUtils.formatViews(context, (item.views / 8).coerceAtLeast(1))
+                (item.views / 8).coerceAtLeast(1).formatShort()
             } else {
                 "Like"
             }
             binding.likeCountText.text = likesFormatted
 
             val commentsFormatted = if (item.views != null && item.views > 0) {
-                TextUtils.formatViews(context, (item.views / 50).coerceAtLeast(1))
+                (item.views / 50).coerceAtLeast(1).formatShort()
             } else {
                 "0"
             }
