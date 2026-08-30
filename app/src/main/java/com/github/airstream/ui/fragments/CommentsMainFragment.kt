@@ -29,6 +29,12 @@ class CommentsMainFragment : Fragment(R.layout.fragment_comments) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        arguments?.getString(IntentData.videoId)?.let { vid ->
+            if (vid.isNotBlank()) {
+                viewModel.videoIdLiveData.value = vid
+            }
+        }
+
         val binding = FragmentCommentsBinding.bind(view)
         val layoutManager = LinearLayoutManager(requireContext())
         binding.commentsRV.layoutManager = layoutManager

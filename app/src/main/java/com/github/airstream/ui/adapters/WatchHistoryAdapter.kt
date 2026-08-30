@@ -61,7 +61,11 @@ class WatchHistoryAdapter :
             }
 
             root.setOnClickListener {
-                NavigationHelper.navigateVideo(root.context, PlayerData(video.videoId))
+                if (video.isShort || (video.duration != null && video.duration in 1..90)) {
+                    NavigationHelper.openShorts(root.context, video.videoId)
+                } else {
+                    NavigationHelper.navigateVideo(root.context, PlayerData(video.videoId))
+                }
             }
 
             val activity = (root.context as BaseActivity)

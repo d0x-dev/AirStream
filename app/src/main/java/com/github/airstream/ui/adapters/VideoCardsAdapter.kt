@@ -111,7 +111,11 @@ class VideoCardsAdapter(private val columnWidthDp: Float? = null) :
                 }
             }
             root.setOnClickListener {
-                NavigationHelper.navigateVideo(root.context, PlayerData(videoId))
+                if (video.isShort) {
+                    NavigationHelper.openShorts(root.context, videoId)
+                } else {
+                    NavigationHelper.navigateVideo(root.context, PlayerData(videoId))
+                }
             }
 
             val openBottomSheet = {

@@ -105,7 +105,11 @@ class SearchResultsAdapter(
             ImageHelper.loadImage(item.uploaderAvatar, channelImage, true)
 
             root.setOnClickListener {
-                NavigationHelper.navigateVideo(root.context, PlayerData(item.url, timestamp = timeStamp))
+                if (item.isShort == true) {
+                    NavigationHelper.openShorts(root.context, item.url)
+                } else {
+                    NavigationHelper.navigateVideo(root.context, PlayerData(item.url, timestamp = timeStamp))
+                }
             }
 
             val videoId = item.url.toID()

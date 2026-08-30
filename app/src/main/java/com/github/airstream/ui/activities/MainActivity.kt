@@ -592,6 +592,7 @@ class MainActivity : AbstractPlayerHostActivity() {
             ShortcutManagerCompat.reportShortcutUsed(this, it)
             when (it) {
                 TopLevelDestination.Home.route -> navController.navigate(R.id.homeFragment)
+                TopLevelDestination.Shorts.route -> navController.navigate(R.id.shortsFragment)
                 TopLevelDestination.Trends.route -> navController.navigate(R.id.trendsFragment)
                 TopLevelDestination.Subscriptions.route -> navController.navigate(R.id.subscriptionsFragment)
                 TopLevelDestination.Library.route -> navController.navigate(R.id.libraryFragment)

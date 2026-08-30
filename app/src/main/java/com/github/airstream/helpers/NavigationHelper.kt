@@ -43,6 +43,21 @@ object NavigationHelper {
         }
     }
 
+    fun openShorts(context: Context, videoId: String? = null) {
+        val activity = ContextHelper.tryUnwrapActivity<MainActivity>(context) ?: return
+        val bundle = if (videoId != null) bundleOf("videoId" to videoId.toID()) else bundleOf()
+        activity.navController.navigate(R.id.shortsFragment, bundle)
+        try {
+            activity.runOnPlayerFragment {
+                binding.playerMotionLayout.transitionToEnd()
+                true
+            }
+            activity.minimizePlayerContainerLayout()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     /**
      * Navigate to the given video using the other provided parameters as well
      * If the audio only mode is enabled, play it in the background, else as a normal video

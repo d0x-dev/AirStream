@@ -65,15 +65,29 @@ class CommentsSheet : ExpandablePlayerSheet(R.layout.comments_sheet) {
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
             )
         }
+        val targetHeight = getSheetMaxHeightPx()
+        val bottomSheet = (dialog as? com.google.android.material.bottomsheet.BottomSheetDialog)
+            ?.findViewById<android.widget.FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+        bottomSheet?.let {
+            val behavior = com.google.android.material.bottomsheet.BottomSheetBehavior.from(it)
+            behavior.peekHeight = targetHeight
+            behavior.state = com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
+        }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
-    override fun getSheetMaxHeightPx() = commonPlayerViewModel.maxSheetHeightPx
+    override fun getSheetMaxHeightPx(): Int {
+        val playerHeight = commonPlayerViewModel.maxSheetHeightPx
+        return if (playerHeight > 200) {
+            playerHeight
+        } else {
+            (resources.displayMetrics.heightPixels * 0.75).toInt()
+        }
+    }
 
     override fun getDragHandle() = binding.dragHandle
 

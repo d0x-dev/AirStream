@@ -10,6 +10,7 @@ enum class TopLevelDestination(
     @DrawableRes val icon: Int
 ) {
     Home("home", R.string.startpage, R.drawable.ic_home),
+    Shorts("shorts", R.string.yt_shorts, R.drawable.ic_shorts),
     Trends("trends", R.string.trends, R.drawable.ic_trending),
     Subscriptions("subscriptions", R.string.subscriptions, R.drawable.ic_subscriptions),
     Library("library", R.string.library, R.drawable.ic_library)
