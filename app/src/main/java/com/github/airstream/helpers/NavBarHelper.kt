@@ -78,7 +78,7 @@ object NavBarHelper {
 
         // copy menu items 1:1, but add them in user-preferred order
         navBarItems.forEach { (menuItemId, isVisible) ->
-            val oldMenuItem = bottomNav.menu.findItem(menuItemId)
+            val oldMenuItem = bottomNav.menu.findItem(menuItemId) ?: return@forEach
             bottomNav.menu.removeItem(oldMenuItem.itemId)
 
             // we re-add all items, even if they're hidden, otherwise the nav graph breaks
