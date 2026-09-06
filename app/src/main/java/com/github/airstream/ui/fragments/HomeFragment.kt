@@ -7,31 +7,19 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.airstream.R
-import com.github.airstream.api.MediaServiceRepository
-import com.github.airstream.api.TrendingCategory
-import com.github.airstream.api.obj.Playlists
 import com.github.airstream.api.obj.StreamItem
-import com.github.airstream.constants.PreferenceKeys
-import com.github.airstream.constants.PreferenceKeys.HOME_TAB_CONTENT
 import com.github.airstream.databinding.FragmentHomeBinding
-import com.github.airstream.db.obj.PlaylistBookmark
-import com.github.airstream.helpers.PreferenceHelper
 import com.github.airstream.ui.activities.SettingsActivity
-import com.github.airstream.ui.adapters.CarouselPlaylist
-import com.github.airstream.ui.adapters.CarouselPlaylistAdapter
 import com.github.airstream.ui.adapters.VideoCardsAdapter
 import com.github.airstream.ui.models.HomeViewModel
 import com.github.airstream.ui.models.SubscriptionsViewModel
-import com.github.airstream.ui.models.TrendsViewModel
-import com.google.android.material.carousel.CarouselLayoutManager
-import com.google.android.material.carousel.CarouselSnapHelper
-import com.google.android.material.carousel.UncontainedCarouselStrategy
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.github.airstream.helpers.PreferenceHelper
+import com.github.airstream.constants.PreferenceKeys
+import com.github.airstream.constants.PreferenceKeys.HOME_TAB_CONTENT
 import com.google.android.material.snackbar.Snackbar
-
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
     private var _binding: FragmentHomeBinding? = null
@@ -39,54 +27,19 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private val homeViewModel: HomeViewModel by activityViewModels()
     private val subscriptionsViewModel: SubscriptionsViewModel by activityViewModels()
-    private val trendsViewModel: TrendsViewModel by activityViewModels()
 
-    private val trendingAdapter = VideoCardsAdapter()
-    private val feedAdapter = VideoCardsAdapter(columnWidthDp = 250f)
-    
-    private val bookmarkAdapter = CarouselPlaylistAdapter()
-    
+    private val feedAdapter = VideoCardsAdapter()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         _binding = FragmentHomeBinding.bind(view)
         super.onViewCreated(view, savedInstanceState)
 
-        binding.bookmarksRV.layoutManager = CarouselLayoutManager(UncontainedCarouselStrategy())
-        
+        binding.feedRV.adapter = feedAdapter
 
-        val bookmarksSnapHelper = CarouselSnapHelper()
-        bookmarksSnapHelper.attachToRecyclerView(binding.bookmarksRV)
-
-        
-        
-
-        binding.trendingRV.adapter = trendingAdapter
-        binding.featuredRV.adapter = feedAdapter
-        binding.bookmarksRV.adapter = bookmarkAdapter
-        
         with(homeViewModel) {
-            trending.observe(viewLifecycleOwner, ::showTrending)
             feed.observe(viewLifecycleOwner, ::showFeed)
-            bookmarks.observe(viewLifecycleOwner, ::showBookmarks)
-            
-                        isLoading.observe(viewLifecycleOwner, ::updateLoading)
+            isLoading.observe(viewLifecycleOwner, ::updateLoading)
             loadingMore.observe(viewLifecycleOwner) { isL -> binding.loadMoreProgress.isVisible = isL }
-        }
-
-        binding.featuredTV.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_subscriptionsFragment)
-        }
-
-        
-
-        binding.trendingTV.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_trendsFragment)
-        }
-
-        
-
-        binding.bookmarksTV.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_libraryFragment)
         }
 
         binding.refresh.setOnRefreshListener {
@@ -94,30 +47,25 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             fetchHomeFeed()
         }
 
-        binding.scroll.setOnScrollChangeListener { v: View, _, scrollY, _, oldScrollY ->
-            if (scrollY > oldScrollY) { // Scrolling down
-                val scrollView = v as android.widget.ScrollView
-                val view = scrollView.getChildAt(scrollView.childCount - 1)
-                val diff = (view.bottom - (scrollView.height + scrollView.scrollY))
-                
-                // If we're near the bottom (within 500 pixels)
-                if (diff < 500) {
+        binding.feedRV.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                val totalItemCount = layoutManager.itemCount
+                val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
+
+                // Load more if we are within 5 items of the end
+                if (totalItemCount > 0 && lastVisibleItem >= totalItemCount - 5) {
                     homeViewModel.loadMoreRecommendations(requireContext())
                 }
             }
-        }
+        })
     }
 
     override fun onResume() {
         super.onResume()
 
-        // Avoid re-fetching when re-entering the screen if it was loaded successfully, except when
-        // the value of trending region has changed
-        val isTrendingRegionChanged = homeViewModel.trending.value?.let {
-            it.second.region != PreferenceHelper.getTrendingRegion(requireContext())
-        } == true
-
-        if (homeViewModel.loadedSuccessfully.value == false || isTrendingRegionChanged) {
+        if (homeViewModel.loadedSuccessfully.value == false) {
             fetchHomeFeed()
         }
     }
@@ -140,53 +88,19 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         )
     }
 
-    private fun showTrending(trends: Pair<TrendingCategory, TrendsViewModel.TrendingStreams>?) {
-        if (trends == null) return
-        val (category, trendingStreams) = trends
-
-        // cache the loaded trends in the [TrendsViewModel] so that the trends don't need to be
-        // reloaded there
-        val region = PreferenceHelper.getTrendingRegion(requireContext())
-        trendsViewModel.setStreamsForCategory(
-            category,
-            TrendsViewModel.TrendingStreams(region, trendingStreams.streams)
-        )
-
-        if (trendingStreams.streams.isNotEmpty()) {
-            makeVisible(binding.trendingRV, binding.trendingTV)
-            binding.emptyRecommendationsTV.isGone = true
-            trendingAdapter.submitList(trendingStreams.streams)
-        } else {
-            binding.trendingRV.isGone = true
-            binding.trendingTV.isVisible = true
-            binding.emptyRecommendationsTV.isVisible = true
-            trendingAdapter.submitList(emptyList())
-        }
-    }
-
     private fun showFeed(streamItems: List<StreamItem>?) {
         if (streamItems == null) return
 
-        makeVisible(binding.featuredRV, binding.featuredTV)
-        val feedVideos = streamItems.take(20)
-
-        feedAdapter.submitList(feedVideos)
+        if (streamItems.isNotEmpty()) {
+            binding.feedRV.isVisible = true
+            binding.emptyRecommendationsTV.isGone = true
+            feedAdapter.submitList(streamItems)
+        } else {
+            binding.feedRV.isGone = true
+            binding.emptyRecommendationsTV.isVisible = true
+            feedAdapter.submitList(emptyList())
+        }
     }
-
-    private fun showBookmarks(bookmarks: List<PlaylistBookmark>?) {
-        if (bookmarks == null) return
-
-        makeVisible(binding.bookmarksTV, binding.bookmarksRV)
-        bookmarkAdapter.submitList(bookmarks.map { bookmark ->
-            CarouselPlaylist(
-                id = bookmark.playlistId,
-                title = bookmark.playlistName,
-                thumbnail = bookmark.thumbnailUrl
-            )
-        })
-    }
-
-
 
     private fun updateLoading(isLoading: Boolean) {
         if (isLoading) {
@@ -199,7 +113,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun showLoading() {
         binding.progress.isVisible = !binding.refresh.isRefreshing
         binding.nothingHere.isVisible = false
-        binding.scroll.alpha = 0.3f
+        binding.feedRV.alpha = 0.3f
     }
 
     private fun hideLoading() {
@@ -212,17 +126,17 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         } else {
             showNothingHere()
         }
-        binding.scroll.alpha = 1.0f
+        binding.feedRV.alpha = 1.0f
     }
 
     private fun showNothingHere() {
         binding.nothingHere.isVisible = true
-        binding.scroll.isVisible = false
+        binding.feedRV.isVisible = false
     }
 
     private fun showContent() {
         binding.nothingHere.isVisible = false
-        binding.scroll.isVisible = true
+        binding.feedRV.isVisible = true
     }
 
     private fun showChangeInstanceSnackBar() {
@@ -243,10 +157,4 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
         startActivity(settingsIntent)
     }
-
-    private fun makeVisible(vararg views: View) {
-        views.forEach { it.isVisible = true }
-    }
 }
-
-

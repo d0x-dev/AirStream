@@ -72,7 +72,7 @@ class ShortsFragment : Fragment(R.layout.fragment_shorts) {
     private val viewModel: ShortsViewModel by viewModels()
     private val commonPlayerViewModel: CommonPlayerViewModel by activityViewModels()
 
-    private var exoPlayer: ExoPlayer? = null
+    private val playerPool = mutableMapOf<Int, ExoPlayer>()
     private var shortsAdapter: ShortsAdapter? = null
     private var currentPlayingPosition = -1
     private var currentStreamsJob: Job? = null
@@ -80,7 +80,7 @@ class ShortsFragment : Fragment(R.layout.fragment_shorts) {
     private val progressHandler = Handler(Looper.getMainLooper())
     private val progressUpdateRunnable = object : Runnable {
         override fun run() {
-            exoPlayer?.let { player ->
+            playerPool[currentPlayingPosition]?.let { player ->
                 if (player.isPlaying && currentPlayingPosition >= 0) {
                     val holder = getCurrentViewHolder()
                     holder?.updateProgress(player.currentPosition, player.duration)
@@ -93,8 +93,6 @@ class ShortsFragment : Fragment(R.layout.fragment_shorts) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         _binding = FragmentShortsBinding.bind(view)
         super.onViewCreated(view, savedInstanceState)
-
-        initPlayer()
         initViewPager()
         observeViewModel()
 
@@ -121,55 +119,47 @@ class ShortsFragment : Fragment(R.layout.fragment_shorts) {
         }
     }
 
-    private fun initPlayer() {
-        if (exoPlayer != null) return
+    private fun getOrCreatePlayer(position: Int): ExoPlayer {
+        return playerPool.getOrPut(position) {
+            val shortsLoadControl = DefaultLoadControl.Builder()
+                .setBufferDurationsMs(1500, 20000, 250, 500)
+                .setPrioritizeTimeOverSizeThresholds(true)
+                .build()
 
-        // Ultra-low latency LoadControl for instant shorts playback
-        val shortsLoadControl = DefaultLoadControl.Builder()
-            .setBufferDurationsMs(
-                1500,  // minBufferMs (1.5s)
-                20000, // maxBufferMs (20s)
-                250,   // bufferForPlaybackMs (instant start on 0.25s)
-                500    // bufferForPlaybackAfterRebufferMs (0.5s rebuffer)
-            )
-            .setPrioritizeTimeOverSizeThresholds(true)
-            .build()
-
-        exoPlayer = ExoPlayer.Builder(requireContext())
-            .setLoadControl(shortsLoadControl)
-            .build()
-            .apply {
-                repeatMode = Player.REPEAT_MODE_ONE
-                playWhenReady = true
-                addListener(object : Player.Listener {
-                    override fun onPlaybackStateChanged(playbackState: Int) {
-                        val holder = getCurrentViewHolder()
-                        when (playbackState) {
-                            Player.STATE_BUFFERING -> {
-                                holder?.setBuffering(true)
-                            }
-                            Player.STATE_READY -> {
-                                holder?.setBuffering(false)
-                                holder?.hideThumbnail()
-                            }
-                            Player.STATE_ENDED -> {
-                                holder?.setBuffering(false)
-                            }
-                            else -> {
-                                holder?.setBuffering(false)
+            ExoPlayer.Builder(requireContext())
+                .setLoadControl(shortsLoadControl)
+                .build()
+                .apply {
+                    repeatMode = Player.REPEAT_MODE_ONE
+                    playWhenReady = false
+                    addListener(object : Player.Listener {
+                        override fun onPlaybackStateChanged(playbackState: Int) {
+                            if (currentPlayingPosition == position) {
+                                val holder = getCurrentViewHolder()
+                                when (playbackState) {
+                                    Player.STATE_BUFFERING -> holder?.setBuffering(true)
+                                    Player.STATE_READY -> {
+                                        holder?.setBuffering(false)
+                                        holder?.hideThumbnail()
+                                    }
+                                    Player.STATE_ENDED -> holder?.setBuffering(false)
+                                    else -> holder?.setBuffering(false)
+                                }
                             }
                         }
-                    }
 
-                    override fun onIsPlayingChanged(isPlaying: Boolean) {
-                        val holder = getCurrentViewHolder()
-                        if (isPlaying) {
-                            holder?.setBuffering(false)
-                            holder?.hideThumbnail()
+                        override fun onIsPlayingChanged(isPlaying: Boolean) {
+                            if (currentPlayingPosition == position) {
+                                val holder = getCurrentViewHolder()
+                                if (isPlaying) {
+                                    holder?.setBuffering(false)
+                                    holder?.hideThumbnail()
+                                }
+                            }
                         }
-                    }
-                })
-            }
+                    })
+                }
+        }
     }
 
     private fun initViewPager() {
@@ -194,7 +184,7 @@ class ShortsFragment : Fragment(R.layout.fragment_shorts) {
                     IntentData.shareObjectType to ShareObjectType.VIDEO,
                     IntentData.shareData to ShareData(
                         currentVideo = streamItem.title,
-                        currentPosition = (exoPlayer?.currentPosition ?: 0L) / 1000
+                        currentPosition = (playerPool[currentPlayingPosition]?.currentPosition ?: 0L) / 1000
                     )
                 )
                 val newShareDialog = ShareDialog()
@@ -215,7 +205,7 @@ class ShortsFragment : Fragment(R.layout.fragment_shorts) {
                 getCurrentViewHolder()?.setDislikeActive(isDisliked)
             },
             onSingleTap = { position, holder ->
-                exoPlayer?.let { player ->
+                playerPool[currentPlayingPosition]?.let { player ->
                     if (player.isPlaying) {
                         player.pause()
                         holder.showPlayPauseIndicator(false)
@@ -235,11 +225,11 @@ class ShortsFragment : Fragment(R.layout.fragment_shorts) {
                 holder.showHeartAnimation()
             },
             onFastForwardStart = { holder ->
-                exoPlayer?.playbackParameters = PlaybackParameters(2.0f)
+                playerPool[currentPlayingPosition]?.playbackParameters = PlaybackParameters(2.0f)
                 holder.binding.fastForwardIndicator.isVisible = true
             },
             onFastForwardEnd = { holder ->
-                exoPlayer?.playbackParameters = PlaybackParameters(1.0f)
+                playerPool[currentPlayingPosition]?.playbackParameters = PlaybackParameters(1.0f)
                 holder.binding.fastForwardIndicator.isVisible = false
             }
         )
@@ -296,17 +286,24 @@ class ShortsFragment : Fragment(R.layout.fragment_shorts) {
         val videoId = item.url.orEmpty().toID()
         if (videoId.isBlank()) return
 
-        // Detach player from any previous view
-        exoPlayer?.stop()
-        exoPlayer?.clearMediaItems()
+        // Clean up distant players
+        val keysToRemove = playerPool.keys.filter { it < position - 1 || it > position + 1 }
+        keysToRemove.forEach { p ->
+            playerPool[p]?.release()
+            playerPool.remove(p)
+        }
+
+        // Pause previous if exists
+        playerPool[position - 1]?.pause()
+        playerPool[position + 1]?.pause()
+
+        val player = getOrCreatePlayer(position)
 
         val holder = getCurrentViewHolder()
-        holder?.binding?.playerView?.player = exoPlayer
-        holder?.setBuffering(true)
+        holder?.binding?.playerView?.player = player
         holder?.setLikeActive(viewModel.likedShorts[videoId] == true)
         holder?.setDislikeActive(viewModel.dislikedShorts[videoId] == true)
 
-        // Save to watch history
         if (PlayerHelper.watchHistoryEnabled) {
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
@@ -322,23 +319,27 @@ class ShortsFragment : Fragment(R.layout.fragment_shorts) {
         currentStreamsJob = lifecycleScope.launch {
             val streams = viewModel.getStreamInfo(videoId)
             if (streams != null && currentPlayingPosition == position && isAdded) {
-                applyMediaSource(videoId, streams)
-                exoPlayer?.prepare()
-                exoPlayer?.play()
+                applyMediaSource(player, videoId, streams)
+                player.prepare()
+                player.play()
             }
         }
 
-        // Pre-fetch next short info
+        // Pre-fetch next short
         if (position + 1 < shorts.size) {
             val nextVideoId = shorts[position + 1].url.orEmpty().toID()
-            lifecycleScope.launch(Dispatchers.IO) {
-                viewModel.getStreamInfo(nextVideoId)
+            lifecycleScope.launch {
+                val nextStreams = viewModel.getStreamInfo(nextVideoId)
+                if (nextStreams != null && isAdded) {
+                    val nextPlayer = getOrCreatePlayer(position + 1)
+                    applyMediaSource(nextPlayer, nextVideoId, nextStreams)
+                    nextPlayer.prepare()
+                }
             }
         }
     }
 
-    private fun applyMediaSource(videoId: String, streams: Streams) {
-        val player = exoPlayer ?: return
+    private fun applyMediaSource(player: ExoPlayer, videoId: String, streams: Streams) {
         val context = requireContext()
 
         when {
@@ -429,23 +430,21 @@ class ShortsFragment : Fragment(R.layout.fragment_shorts) {
         pauseMainVideoPlayer()
         progressHandler.post(progressUpdateRunnable)
         if (currentPlayingPosition >= 0) {
-            exoPlayer?.play()
+            playerPool[currentPlayingPosition]?.play()
         }
     }
 
     override fun onPause() {
         super.onPause()
         progressHandler.removeCallbacks(progressUpdateRunnable)
-        exoPlayer?.pause()
+        playerPool.values.forEach { it.pause() }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         progressHandler.removeCallbacks(progressUpdateRunnable)
         currentStreamsJob?.cancel()
-        exoPlayer?.stop()
-        exoPlayer?.release()
-        exoPlayer = null
+        playerPool.values.forEach { it.release() }; playerPool.clear()
         _binding = null
     }
 }
