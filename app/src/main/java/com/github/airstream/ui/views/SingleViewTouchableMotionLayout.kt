@@ -27,7 +27,8 @@ class SingleViewTouchableMotionLayout(context: Context, attributeSet: AttributeS
                 findViewById(R.id.player),
                 findViewById(R.id.close_imageView),
                 findViewById(R.id.play_imageView),
-                findViewById(R.id.title_textView)
+                findViewById(R.id.title_textView),
+                findViewById(R.id.miniplayer_progress)
             )
         }
     }
