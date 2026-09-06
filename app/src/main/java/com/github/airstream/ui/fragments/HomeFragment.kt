@@ -10,12 +10,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.airstream.R
+import com.github.airstream.api.TrendingCategory
 import com.github.airstream.api.obj.StreamItem
 import com.github.airstream.databinding.FragmentHomeBinding
 import com.github.airstream.ui.activities.SettingsActivity
 import com.github.airstream.ui.adapters.VideoCardsAdapter
 import com.github.airstream.ui.models.HomeViewModel
 import com.github.airstream.ui.models.SubscriptionsViewModel
+import com.github.airstream.ui.models.TrendsViewModel
 import com.github.airstream.helpers.PreferenceHelper
 import com.github.airstream.constants.PreferenceKeys
 import com.github.airstream.constants.PreferenceKeys.HOME_TAB_CONTENT
@@ -37,7 +39,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         binding.feedRV.adapter = feedAdapter
 
         with(homeViewModel) {
-            feed.observe(viewLifecycleOwner, ::showFeed)
+            trending.observe(viewLifecycleOwner, ::showTrending)
             isLoading.observe(viewLifecycleOwner, ::updateLoading)
             loadingMore.observe(viewLifecycleOwner) { isL -> binding.loadMoreProgress.isVisible = isL }
         }
@@ -78,7 +80,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     private fun fetchHomeFeed() {
         binding.nothingHere.isGone = true
         val defaultItems = resources.getStringArray(R.array.homeTabItemsValues)
-        val visibleItems = PreferenceHelper.getStringSet(HOME_TAB_CONTENT, defaultItems.toSet())
+        // Hardcode loading TRENDING because we use it as the main feed now
+        val visibleItems = setOf("trending")
 
         homeViewModel.loadHomeFeed(
             context = requireContext(),
@@ -88,13 +91,14 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         )
     }
 
-    private fun showFeed(streamItems: List<StreamItem>?) {
-        if (streamItems == null) return
+    private fun showTrending(trends: Pair<TrendingCategory, TrendsViewModel.TrendingStreams>?) {
+        if (trends == null) return
+        val (_, trendingStreams) = trends
 
-        if (streamItems.isNotEmpty()) {
+        if (trendingStreams.streams.isNotEmpty()) {
             binding.feedRV.isVisible = true
             binding.emptyRecommendationsTV.isGone = true
-            feedAdapter.submitList(streamItems)
+            feedAdapter.submitList(trendingStreams.streams)
         } else {
             binding.feedRV.isGone = true
             binding.emptyRecommendationsTV.isVisible = true
