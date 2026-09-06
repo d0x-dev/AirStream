@@ -131,20 +131,6 @@ class HomeViewModel : ViewModel() {
                 }
             }
             
-            // If we still need more, or history is empty, fallback to a random search
-            if (newRecommendations.size < amount) {
-                val defaultQueries = listOf("popular music", "popular podcast", "tech news", "lofi hip hop", "funny videos", "documentary", "cooking recipes", "coding")
-                val query = defaultQueries.random()
-                try {
-                    val searchResult = MediaServiceRepository.instance.getSearchResults(query, "all")
-                    val searchVideos = searchResult.items.filterIsInstance<StreamItem>().filter { 
-                        !it.isLive && it.url !in excludeUrls && it.url !in newRecommendations.map { r -> r.url }
-                    }
-                    newRecommendations.addAll(searchVideos.shuffled())
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
             
             return@withContext newRecommendations.take(amount)
         }
@@ -254,3 +240,4 @@ class HomeViewModel : ViewModel() {
         private const val PLAYLISTS = "playlists"
     }
 }
+

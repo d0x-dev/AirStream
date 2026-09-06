@@ -25,19 +25,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
+                android:paddingBottom="80dp"
                 android:orientation="vertical"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-            <TextView
-                android:id="@+id/emptyRecommendationsTV"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:gravity="center"
-                android:text="Watch some videos to get personalized recommendations!"
-                android:textSize="16sp"
-                android:visibility="gone"
-                tools:visibility="visible" />
 
             <com.google.android.material.loadingindicator.LoadingIndicator
                 android:id="@+id/loadMoreProgress"
@@ -101,3 +91,4 @@
         tools:visibility="gone" />
 
 </FrameLayout>
+

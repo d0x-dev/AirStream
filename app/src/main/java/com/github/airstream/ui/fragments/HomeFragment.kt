@@ -97,11 +97,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         if (trendingStreams.streams.isNotEmpty()) {
             binding.feedRV.isVisible = true
-            binding.emptyRecommendationsTV.isGone = true
+            binding.nothingHere.isGone = true
             feedAdapter.submitList(trendingStreams.streams)
         } else {
             binding.feedRV.isGone = true
-            binding.emptyRecommendationsTV.isVisible = true
+            binding.nothingHere.isVisible = true
             feedAdapter.submitList(emptyList())
         }
     }
