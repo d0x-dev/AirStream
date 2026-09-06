@@ -27,7 +27,7 @@ with open("checksums", "w") as checksums:
             sha256hash = hashlib.sha256(bytes).hexdigest()
             checksums.write(sha256hash + "  " + apk.name + "\n")
 
-if config_file.GH_REPO.lower() == "libre-tube/libretube":
+if config_file.GH_REPO.lower() == "d0x-dev/airstream":
     run("git add -f *")
     run(f'git commit -m "{message}"')
     run("git push -u")

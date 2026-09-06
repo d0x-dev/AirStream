@@ -54,7 +54,7 @@ AirStream delivers an entirely ad-free, deeply polished video viewing experience
 - **Kotlin** & **Android Jetpack**
 - **Piped API** for privacy-first YouTube data scraping
 - **ExoPlayer** for smooth, seamless media playback
-- Based on the incredible foundations of LibreTube, heavily modified for UI perfection.
+- Built from the ground up for UI perfection.
 
 ---
 
