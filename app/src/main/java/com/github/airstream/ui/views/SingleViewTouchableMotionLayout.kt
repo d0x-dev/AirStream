@@ -18,6 +18,19 @@ class SingleViewTouchableMotionLayout(context: Context, attributeSet: AttributeS
     private val viewToDetectTouch by lazy {
         findViewById<View>(R.id.main_container) ?: findViewById(R.id.audio_player_container)
     }
+    private val viewsToTranslate by lazy {
+        if (isAudioPlayer) {
+            listOf(viewToDetectTouch)
+        } else {
+            listOfNotNull(
+                viewToDetectTouch,
+                findViewById(R.id.player),
+                findViewById(R.id.close_imageView),
+                findViewById(R.id.play_imageView),
+                findViewById(R.id.title_textView)
+            )
+        }
+    }
     private val isAudioPlayer by lazy {
         viewToDetectTouch.id == R.id.audio_player_container
     }
@@ -29,7 +42,13 @@ class SingleViewTouchableMotionLayout(context: Context, attributeSet: AttributeS
 
     private var startedMinimized = false
     private var isStrictlyDownSwipe = false
+    
+    private var touchInitialX = 0f
     private var touchInitialY = 0f
+    private var initialTranslationX = 0f
+    private var initialTranslationY = 0f
+    private var isFreeDragging = false
+
     private var isTouchDownInsideHitArea = false
     private var shouldInterceptTouchEvent = false
 
@@ -57,6 +76,10 @@ class SingleViewTouchableMotionLayout(context: Context, attributeSet: AttributeS
 
     private inner class Listener : GestureDetector.SimpleOnGestureListener() {
         override fun onSingleTapUp(e: MotionEvent): Boolean {
+            // Reset position before expanding
+            viewsToTranslate.forEach { view ->
+                view.animate().translationX(0f).translationY(0f).setDuration(200).start()
+            }
             setTransitionDuration(200)
             transitionToStart()
             return true
@@ -72,7 +95,8 @@ class SingleViewTouchableMotionLayout(context: Context, attributeSet: AttributeS
                 isStrictlyDownSwipe = false
             }
 
-            if (isStrictlyDownSwipe && distanceY < -15F) {
+            // Only trigger close on fast scroll if NOT freely dragging
+            if (!isFreeDragging && isStrictlyDownSwipe && distanceY < -15F) {
                 swipeDownListener.forEach { it.invoke() }
                 return true
             }
@@ -81,10 +105,6 @@ class SingleViewTouchableMotionLayout(context: Context, attributeSet: AttributeS
         }
     }
 
-    /**
-     * Add a listener when the view is swiped down while the current transition's state is in
-     * end state (minimized state)
-     */
     fun addSwipeDownListener(listener: () -> Unit) = apply {
         swipeDownListener.add(listener)
     }
@@ -94,49 +114,89 @@ class SingleViewTouchableMotionLayout(context: Context, attributeSet: AttributeS
             MotionEvent.ACTION_DOWN -> {
                 shouldInterceptTouchEvent = false
                 isTouchDownInsideHitArea = false
+                isFreeDragging = false
 
-                // never intercept touch event if we're currently in audio player mode
                 if (isAudioPlayer) return false
 
                 viewToDetectTouch.getHitRect(viewRect)
+                // Adjust hit rect for current floating translation
+                viewRect.offset(viewToDetectTouch.translationX.toInt(), viewToDetectTouch.translationY.toInt())
+                
                 isTouchDownInsideHitArea = viewRect.contains(event.x.toInt(), event.y.toInt())
-                touchInitialY = event.y
+                
+                touchInitialX = event.rawX
+                touchInitialY = event.rawY
+                initialTranslationX = viewToDetectTouch.translationX
+                initialTranslationY = viewToDetectTouch.translationY
+                
                 startedMinimized = progress == 1F
                 isStrictlyDownSwipe = true
             }
 
             MotionEvent.ACTION_MOVE -> {
                 if (!shouldInterceptTouchEvent && isTouchDownInsideHitArea) {
-                    val deltaY = event.y - touchInitialY
+                    val deltaX = event.rawX - touchInitialX
+                    val deltaY = event.rawY - touchInitialY
 
-                    // swipe down detected
-                    if ((!startedMinimized && deltaY > scaledTouchSlop) || (startedMinimized && Math.abs(deltaY) > scaledTouchSlop)) {
-                        // start intercepting and consume the event ourselves in onTouchEvent()
+                    if (!startedMinimized && deltaY > scaledTouchSlop) {
                         shouldInterceptTouchEvent = true
+                        injectDownEvent(event)
+                    } else if (startedMinimized && (Math.abs(deltaY) > scaledTouchSlop || Math.abs(deltaX) > scaledTouchSlop)) {
+                        shouldInterceptTouchEvent = true
+                        isFreeDragging = true
+                    }
+                }
+            }
+        }
+        return shouldInterceptTouchEvent
+    }
 
-                        // inject down MotionEvent from current position to properly trigger
-                        // motion scene's swipe action
-                        MotionEvent.obtain(event).apply {
-                            action = MotionEvent.ACTION_DOWN
-                            setLocation(event.x, event.y)
-                        }.also { downEvent ->
-                            onTouchEvent(downEvent)
-                            downEvent.recycle()
+    private fun injectDownEvent(event: MotionEvent) {
+        MotionEvent.obtain(event).apply {
+            action = MotionEvent.ACTION_DOWN
+            setLocation(event.x, event.y)
+        }.also { downEvent ->
+            onTouchEvent(downEvent)
+            downEvent.recycle()
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (isTouchDownInsideHitArea && startedMinimized) {
+            gestureDetector.onTouchEvent(event)
+            
+            when (event.actionMasked) {
+                MotionEvent.ACTION_MOVE -> {
+                    if (isFreeDragging) {
+                        val deltaX = event.rawX - touchInitialX
+                        val deltaY = event.rawY - touchInitialY
+                        viewsToTranslate.forEach { view ->
+                            view.translationX = initialTranslationX + deltaX
+                            view.translationY = initialTranslationY + deltaY
                         }
+                        return true
+                    }
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    if (isFreeDragging) {
+                        isFreeDragging = false
+                        
+                        // Close if dragged off screen (bottom edge)
+                        val screenHeight = resources.displayMetrics.heightPixels
+                        val currentBottom = viewToDetectTouch.y + viewToDetectTouch.translationY + viewToDetectTouch.height
+                        if (currentBottom > screenHeight * 0.95f) {
+                             swipeDownListener.forEach { it.invoke() }
+                        }
+                        return true
                     }
                 }
             }
         }
 
-        return shouldInterceptTouchEvent
-    }
-    @SuppressLint("ClickableViewAccessibility")
-    override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (isTouchDownInsideHitArea && startedMinimized) {
-            // detect gesture only when the player is in minimized state
-            gestureDetector.onTouchEvent(event)
-        }
-
+        // If we were freely dragging, don't pass the touch to MotionLayout
+        if (isFreeDragging && startedMinimized) return true
+        
         return isTouchDownInsideHitArea && super.onTouchEvent(event)
     }
 }
