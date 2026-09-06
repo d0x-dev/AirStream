@@ -45,8 +45,8 @@
     <ConstraintSet android:id="@+id/end">
         <Constraint
             android:id="@+id/main_container"
-            android:layout_width="224dp"
-            android:layout_height="126dp"
+            android:layout_width="192dp"
+            android:layout_height="108dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             motion:layout_constraintBottom_toBottomOf="parent"

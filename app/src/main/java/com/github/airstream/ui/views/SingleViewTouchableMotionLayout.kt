@@ -109,6 +109,21 @@ class SingleViewTouchableMotionLayout(context: Context, attributeSet: AttributeS
         swipeDownListener.add(listener)
     }
 
+    private fun isTouchInside(view: View, rawX: Float, rawY: Float): Boolean {
+        val location = IntArray(2)
+        view.getLocationOnScreen(location)
+        val x = location[0]
+        val y = location[1]
+        return rawX >= x && rawX <= x + view.width && rawY >= y && rawY <= y + view.height
+    }
+
+    override fun requestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
+        // Prevent children (like ExoPlayer) from holding onto the touch when minimized,
+        // so we can always drag the PiP view freely!
+        if (progress == 1F) return
+        super.requestDisallowInterceptTouchEvent(disallowIntercept)
+    }
+
     override fun onInterceptTouchEvent(event: MotionEvent?): Boolean {
         when (event?.action) {
             MotionEvent.ACTION_DOWN -> {
@@ -118,11 +133,7 @@ class SingleViewTouchableMotionLayout(context: Context, attributeSet: AttributeS
 
                 if (isAudioPlayer) return false
 
-                viewToDetectTouch.getHitRect(viewRect)
-                // Adjust hit rect for current floating translation
-                viewRect.offset(viewToDetectTouch.translationX.toInt(), viewToDetectTouch.translationY.toInt())
-                
-                isTouchDownInsideHitArea = viewRect.contains(event.x.toInt(), event.y.toInt())
+                isTouchDownInsideHitArea = isTouchInside(viewToDetectTouch, event.rawX, event.rawY)
                 
                 touchInitialX = event.rawX
                 touchInitialY = event.rawY
@@ -168,9 +179,14 @@ class SingleViewTouchableMotionLayout(context: Context, attributeSet: AttributeS
             
             when (event.actionMasked) {
                 MotionEvent.ACTION_MOVE -> {
+                    val deltaX = event.rawX - touchInitialX
+                    val deltaY = event.rawY - touchInitialY
+                    
+                    if (!isFreeDragging && (Math.abs(deltaY) > scaledTouchSlop || Math.abs(deltaX) > scaledTouchSlop)) {
+                        isFreeDragging = true
+                    }
+
                     if (isFreeDragging) {
-                        val deltaX = event.rawX - touchInitialX
-                        val deltaY = event.rawY - touchInitialY
                         viewsToTranslate.forEach { view ->
                             view.translationX = initialTranslationX + deltaX
                             view.translationY = initialTranslationY + deltaY
