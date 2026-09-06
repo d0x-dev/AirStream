@@ -222,10 +222,33 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
     }
 
     private var bufferingTimeoutTask: Runnable? = null
+    
+    private val progressRunnable = object : Runnable {
+        override fun run() {
+            if (_binding == null) return
+            val player = binding.player.player ?: return
+            if (binding.playerMotionLayout.progress == 1f) {
+                val current = player.currentPosition
+                val total = player.duration
+                if (total > 0) {
+                    val progress = (current * 1000 / total).toInt()
+                    binding.miniplayerProgress?.progress = progress
+                }
+            }
+            if (player.isPlaying) {
+                handler.postDelayed(this, 1000)
+            }
+        }
+    }
 
     private val playerListener = object : Player.Listener {
         override fun onIsPlayingChanged(isPlaying: Boolean) {
             PictureInPictureCompat.setPictureInPictureParams(requireActivity(), pipParams)
+            
+            handler.removeCallbacks(progressRunnable)
+            if (isPlaying) {
+                handler.post(progressRunnable)
+            }
 
             if (isPlaying && PlayerHelper.sponsorBlockEnabled) {
                 handler.postDelayed(
@@ -630,6 +653,7 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
                     // disable captions temporarily
                     binding.player.updateCurrentSubtitle(null)
                     disableController()
+                    handler.post(progressRunnable)
                     commonPlayerViewModel.setSheetExpand(null)
                     playerBackgroundBinding.sbSkipBtn.isGone = true
 
