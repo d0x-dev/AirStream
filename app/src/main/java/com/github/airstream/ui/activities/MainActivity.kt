@@ -129,7 +129,8 @@ class MainActivity : AbstractPlayerHostActivity() {
 
         // manually apply additional padding for edge-to-edge compatibility
         // see https://developer.android.com/develop/ui/views/layout/edge-to-edge
-        binding.root.onSystemInsets { _, systemBarInsets ->
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+            val systemBarInsets = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
             // there's a possibility that the paddings are not being applied properly when
             // exiting from player's fullscreen. Adding OnGlobalLayoutListener serves as
             // a workaround for this issue
@@ -213,6 +214,7 @@ class MainActivity : AbstractPlayerHostActivity() {
                     binding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
             })
+            insets
         }
         // manually update the bottom bar height in the mini player transition
         binding.bottomNav.addOnLayoutChangeListener { _, _, top, _, bottom, _, oldTop, _, oldBottom ->
@@ -775,6 +777,7 @@ class MainActivity : AbstractPlayerHostActivity() {
         return true
     }
 }
+
 
 
 
