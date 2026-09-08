@@ -432,13 +432,22 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
 
         // manually apply additional padding for edge-to-edge compatibility
         activity?.getSystemInsets()?.let { systemBars ->
-            with(binding.root) {
-                setPadding(
-                    paddingLeft,
-                    paddingTop + systemBars.top,
-                    paddingRight,
-                    paddingBottom
-                )
+            val motionLayout = binding.root as androidx.constraintlayout.motion.widget.MotionLayout
+            
+            val startSet = motionLayout.getConstraintSet(R.id.start)
+            startSet?.constrainHeight(R.id.statusBarBackground, systemBars.top)
+            
+            val endSet = motionLayout.getConstraintSet(R.id.end)
+            endSet?.constrainHeight(R.id.statusBarBackground, systemBars.top)
+            
+            motionLayout.updateState(R.id.start, startSet)
+            motionLayout.updateState(R.id.end, endSet)
+            
+            // Just to be safe, also set layout params
+            binding.statusBarBackground?.let { bg ->
+                bg.layoutParams = bg.layoutParams.apply {
+                    height = systemBars.top
+                }
             }
         }
 

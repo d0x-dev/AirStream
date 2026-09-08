@@ -7,6 +7,13 @@
     android:layout_height="match_parent"
     app:layoutDescription="@xml/player_scene">
 
+    <View
+        android:id="@+id/statusBarBackground"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="?android:colorBackground"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ScrollView
         android:id="@+id/player_scrollView"
         android:layout_width="0dp"
@@ -231,21 +238,21 @@
         app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintEnd_toStartOf="@id/related_container"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/statusBarBackground"
         app:layout_constraintWidth_default="percent"
         app:layout_constraintWidth_percent="@dimen/landscape_player_constraint_width_percentage" />
 
     <RelativeLayout
         android:id="@+id/related_container"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:animateLayoutChanges="true"
         android:background="?android:colorBackground"
         android:descendantFocusability="blocksDescendants"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/main_container"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/statusBarBackground">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/related_rec_view"

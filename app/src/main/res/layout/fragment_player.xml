@@ -7,6 +7,13 @@
     android:layout_height="match_parent"
     app:layoutDescription="@xml/player_scene">
 
+    <View
+        android:id="@+id/statusBarBackground"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="?android:colorBackground"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/player_scrollView"
         android:layout_width="match_parent"
@@ -241,7 +248,7 @@
         app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/statusBarBackground" />
 
     <ProgressBar
         android:id="@+id/miniplayer_progress"
