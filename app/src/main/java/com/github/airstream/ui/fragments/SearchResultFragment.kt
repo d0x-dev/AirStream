@@ -85,7 +85,8 @@ class SearchResultFragment : DynamicLayoutManagerFragment(R.layout.fragment_sear
                 searchResultsAdapter.loadStateFlow.collect {
                     val isLoading = it.source.refresh is LoadState.Loading
                     binding.progress.isVisible = isLoading
-                    binding.searchResultsLayout.isGone = isLoading
+                    binding.searchResultsAppbar.isGone = isLoading
+                    binding.searchRecycler.isGone = isLoading
                 }
             }
         }
