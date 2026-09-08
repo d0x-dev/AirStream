@@ -131,6 +131,12 @@ class MainActivity : AbstractPlayerHostActivity() {
         // see https://developer.android.com/develop/ui/views/layout/edge-to-edge
         androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
             val systemBarInsets = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+            
+            // Apply the status bar height to the dummy space so it scrolls out completely
+            binding.statusBarSpace.layoutParams = binding.statusBarSpace.layoutParams.apply {
+                height = systemBarInsets.top
+            }
+            
             // there's a possibility that the paddings are not being applied properly when
             // exiting from player's fullscreen. Adding OnGlobalLayoutListener serves as
             // a workaround for this issue
