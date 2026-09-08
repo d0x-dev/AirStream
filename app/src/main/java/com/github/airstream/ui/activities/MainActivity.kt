@@ -136,14 +136,7 @@ class MainActivity : AbstractPlayerHostActivity() {
             binding.root.viewTreeObserver.addOnGlobalLayoutListener(object :
                 ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
-                    with(binding.appBarLayout) {
-                        setPadding(
-                            paddingLeft,
-                            systemBarInsets.top,
-                            paddingRight,
-                            paddingBottom
-                        )
-                    }
+                    // Padding is handled by fitsSystemWindows="true" in XML
                     val isPill = PreferenceHelper.getBoolean(PreferenceKeys.PILL_SHAPED_NAV_BAR, false)
                     val marginPx = (24 * resources.displayMetrics.density).toInt()
                       val bottomMarginPx = (12 * resources.displayMetrics.density).toInt()
@@ -782,5 +775,6 @@ class MainActivity : AbstractPlayerHostActivity() {
         return true
     }
 }
+
 
 

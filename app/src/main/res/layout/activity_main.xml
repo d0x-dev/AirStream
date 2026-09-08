@@ -23,6 +23,7 @@
             android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
             android:background="@android:color/transparent">
 
             <com.google.android.material.appbar.MaterialToolbar
@@ -93,3 +94,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.motion.widget.MotionLayout>
+
