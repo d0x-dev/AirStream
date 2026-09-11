@@ -13,9 +13,11 @@ import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.media.session.PlaybackState
 import android.os.Bundle
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.PowerManager
+import android.view.animation.AnimationUtils
 import android.view.KeyEvent
 import android.view.PixelCopy
 import android.view.SurfaceView
@@ -173,6 +175,7 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
 
     private val fullscreenDialog by lazy {
         object : Dialog(requireContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen) {
+            @SuppressLint("GestureBackNavigation")
             @Deprecated("Deprecated in Java", ReplaceWith("onbackpressedispatcher and callback"))
             override fun onBackPressed() {
                 unsetFullscreen()
@@ -319,7 +322,16 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
         override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
             super.onMediaMetadataChanged(mediaMetadata)
 
+            mediaMetadata.title?.toString()?.let {
+                binding.descriptionLayout.setPreviewTitle(it)
+            }
+
             // JSON-encode as work-around for https://github.com/androidx/media/issues/564
+            val metadataVideoId = mediaMetadata.extras?.getString(IntentData.videoId)
+            // Media3 may dispatch the old item's metadata during a queue transition.
+            // Never let it replace the new video's skeleton/details.
+            if (metadataVideoId != null && metadataVideoId != videoId) return
+
             val maybeStreams: Streams? = mediaMetadata.extras?.getString(IntentData.streams)?.let {
                 JsonHelper.json.decodeFromString(it)
             }
@@ -371,6 +383,11 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
                 toggleVideoInfoVisibility(false)
                 disableController()
                 binding.titleTextView.text = ""
+            } else if (_binding != null) {
+                mediaItem.mediaMetadata.title?.toString()
+                    ?.takeIf { it.isNotBlank() }
+                    ?.let(::showDetailsSkeleton)
+                    ?: setDetailsLoading(true)
             }
         }
     }
@@ -468,6 +485,8 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
 
         initializeTransitionLayout()
         initializeOnClickActions()
+        binding.descriptionLayout.setPreviewTitle(playerData.title)
+        setDetailsLoading(true)
 
         if (PlayerHelper.autoFullscreenEnabled && resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             setFullscreen()
@@ -561,7 +580,11 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
             }
         }
 
-        toggleVideoInfoVisibility(false)
+        // Keep the known card title visible; the rest of the details are represented by
+        // the loading skeleton until the stream response arrives.
+        binding.relatedRecView.isInvisible = true
+        binding.playerChannel.isInvisible = true
+        playerBackgroundBinding.videoTransitionProgress.isVisible = true
     }
 
     private fun attachToPlayerService(playerData: PlayerData, startNewSession: Boolean) {
@@ -647,6 +670,7 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
                 if (_binding == null) return
 
                 if (currentId == transitionStartId) {
+                    updatePlayerSurfaceShape(isMiniPlayer = false)
                     commonPlayerViewModel.isMiniPlayerVisible.value = false
                     // re-enable captions
                     binding.player.updateCurrentSubtitle(viewModel.currentCaptionId)
@@ -658,6 +682,7 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
                     // clear search bar focus to avoid keyboard popups
                     baseActivity.clearSearchViewFocus()
                 } else if (currentId == transitionEndId) {
+                    updatePlayerSurfaceShape(isMiniPlayer = true)
                     commonPlayerViewModel.isMiniPlayerVisible.value = true
                     // disable captions temporarily
                     binding.player.updateCurrentSubtitle(null)
@@ -682,10 +707,27 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
             }
 
         binding.playerMotionLayout.progress = 1F
+        updatePlayerSurfaceShape(isMiniPlayer = true)
         binding.playerMotionLayout.transitionToStart()
 
         val activity = requireActivity()
         PictureInPictureCompat.setPictureInPictureParams(activity, pipParams)
+    }
+
+    /** Rounded corners belong exclusively to the compact player card. */
+    private fun updatePlayerSurfaceShape(isMiniPlayer: Boolean) {
+        if (_binding == null) return
+
+        binding.mainContainer.clipToOutline = isMiniPlayer
+        binding.player.clipToOutline = isMiniPlayer
+
+        if (isMiniPlayer) {
+            binding.mainContainer.setBackgroundResource(R.drawable.bg_rounded_card)
+            binding.player.setBackgroundResource(R.drawable.bg_rounded_card)
+        } else {
+            binding.mainContainer.setBackgroundColor(android.graphics.Color.BLACK)
+            binding.player.setBackgroundColor(android.graphics.Color.BLACK)
+        }
     }
 
     private fun closeMiniPlayer() {
@@ -704,7 +746,10 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
             killPlayerFragment()
         }
         playerControlsBinding.closeImageButton.setOnClickListener {
-            killPlayerFragment()
+            binding.playerMotionLayout.setTransitionDuration(250)
+            binding.playerMotionLayout.transitionToEnd()
+            baseActivity.minimizePlayerContainerLayout()
+            baseActivity.requestOrientationChange()
         }
 
         binding.playImageView.setOnClickListener {
@@ -753,8 +798,8 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
         binding.relPlayerPip?.isVisible = isPipAvailable()
 
         binding.relPlayerPip?.setOnClickListener {
-            PictureInPictureCompat.enterPictureInPictureMode(requireActivity(), pipParams)
             isEnteringPiPMode = true
+            PictureInPictureCompat.enterPictureInPictureMode(requireActivity(), pipParams)
         }
 
         binding.relatedRecView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -912,6 +957,10 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
 
         commonPlayerViewModel.setSheetExpand(null)
 
+        // The compact player keeps its rounded card. A full player must not inherit
+        // that outline, otherwise the video has visibly clipped corners.
+        updatePlayerSurfaceShape(isMiniPlayer = false)
+
         openOrCloseFullscreenDialog(true)
 
         binding.player.updateMarginsByFullscreenMode()
@@ -928,6 +977,8 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
         }
 
         openOrCloseFullscreenDialog(false)
+
+        updatePlayerSurfaceShape(isMiniPlayer = binding.playerMotionLayout.progress >= 0.99f)
 
         binding.player.updateMarginsByFullscreenMode()
 
@@ -1174,7 +1225,17 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
      * You many only call this if the video is of the same type as the type of the currently running
      * video, i.e. either both are online or both are offline.
      */
-    fun playNextVideo(nextId: String) {
+    fun playNextVideo(nextId: String, title: String? = null) {
+        // Related-video taps keep this fragment alive. Reset its detail area before
+        // requesting the new stream so no information from the previous video flashes.
+        videoId = nextId
+        arguments?.parcelable<PlayerData>(IntentData.playerData)?.let { currentData ->
+            arguments?.putParcelable(
+                IntentData.playerData,
+                currentData.copy(videoId = nextId, title = title ?: currentData.title)
+            )
+        }
+        showDetailsSkeleton(title)
         playerController.sendCustomCommand(
             AbstractPlayerService.runPlayerActionCommand,
             bundleOf(PlayerCommand.PLAY_VIDEO_BY_ID.name to nextId)
@@ -1194,6 +1255,29 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
         binding.relatedRecView.isInvisible = !show
         binding.playerChannel.isInvisible = !show
         playerBackgroundBinding.videoTransitionProgress.isVisible = !show
+    }
+
+    private fun setDetailsLoading(isLoading: Boolean) {
+        binding.detailsLoadingSkeleton?.let { skeleton ->
+            if (isLoading) {
+                skeleton.isVisible = true
+                skeleton.startAnimation(
+                    AnimationUtils.loadAnimation(requireContext(), R.anim.skeleton_pulse)
+                )
+            } else {
+                skeleton.clearAnimation()
+                skeleton.isGone = true
+            }
+        }
+        binding.playerActionsContainer?.isVisible = !isLoading
+        binding.commentsToggle.isVisible = !isLoading
+        binding.relatedRecView.isVisible = !isLoading
+    }
+
+    private fun showDetailsSkeleton(title: String?) {
+        binding.descriptionLayout.isVisible = true
+        binding.descriptionLayout.setPreviewTitle(title)
+        setDetailsLoading(true)
     }
 
     private fun connectToPlayerView(player: Player) {
@@ -1227,7 +1311,8 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
 
         viewModel.isOrientationChangeInProgress = false
 
-                binding.descriptionLayout.setStreams(streams)
+        binding.descriptionLayout.setStreams(streams)
+        setDetailsLoading(false)
 
         toggleVideoInfoVisibility(true)
 
@@ -1470,7 +1555,10 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback 
     }
 
     fun onUserLeaveHint() {
-        if (shouldStartPiP()) {
+        // Android 12+ enters PiP itself when auto-enter is enabled. Calling enter again
+        // during that transition can leave the activity in an invalid window state.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S && shouldStartPiP()) {
+            isEnteringPiPMode = true
             PictureInPictureCompat.enterPictureInPictureMode(requireActivity(), pipParams)
         }
     }

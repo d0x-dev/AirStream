@@ -12,7 +12,6 @@ import android.widget.ScrollView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
-import androidx.constraintlayout.motion.widget.Key
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
@@ -222,31 +221,6 @@ class MainActivity : AbstractPlayerHostActivity() {
             })
             insets
         }
-        // manually update the bottom bar height in the mini player transition
-        binding.bottomNav.addOnLayoutChangeListener { _, _, top, _, bottom, _, oldTop, _, oldBottom ->
-            val height = bottom - top
-            val oldHeight = oldBottom - oldTop
-            if (height == oldHeight) return@addOnLayoutChangeListener
-
-            val transition = binding.root.getTransition(R.id.bottom_bar_transition)
-            transition.keyFrameList.forEach { keyFrame ->
-                // These frame positions are hardcoded in activity_main_scene.xml!
-                for (key in keyFrame.getKeyFramesForView(binding.bottomNav.id)) {
-                    if (key.framePosition == 1) key.setValue(
-                        Key.TRANSLATION_Y,
-                        binding.bottomNav.height
-                    )
-                }
-                for (key in keyFrame.getKeyFramesForView(binding.container.id)) {
-                    if (key.framePosition == 100) key.setValue(
-                        Key.TRANSLATION_Y,
-                        -(binding.bottomNav.height + (if (PreferenceHelper.getBoolean(PreferenceKeys.PILL_SHAPED_NAV_BAR, false)) ((androidx.core.view.ViewCompat.getRootWindowInsets(binding.root)?.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars())?.bottom ?: 0) + (12 * resources.displayMetrics.density).toInt()) else 0)).toFloat()
-                    )
-                }
-            }
-            binding.root.scene.setTransition(transition)
-        }
-
         // Check update automatically
         if (PreferenceHelper.getBoolean(PreferenceKeys.AUTOMATIC_UPDATE_CHECKS, true)) {
             lifecycleScope.launch(Dispatchers.IO) {
@@ -760,17 +734,16 @@ class MainActivity : AbstractPlayerHostActivity() {
     }
 
     override fun minimizePlayerContainerLayout() {
-        binding.mainMotionLayout.transitionToEnd()
+        // Mini-player positioning is intentionally independent of the navigation bar.
     }
 
     override fun maximizePlayerContainerLayout() {
-        binding.mainMotionLayout.transitionToStart()
+        // Mini-player positioning is intentionally independent of the navigation bar.
     }
 
     override fun setPlayerContainerProgress(progress: Float) {
-        if (!NavBarHelper.hasTabs()) return
-
-        binding.mainMotionLayout.progress = progress
+        // The player owns its own MotionLayout. Do not translate the app shell while
+        // navigating between tabs: that caused the mini-player to dip and delayed taps.
     }
 
     /**

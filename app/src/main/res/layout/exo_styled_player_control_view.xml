@@ -28,7 +28,7 @@
                     android:id="@+id/close_imageButton"
                     style="@style/PlayerControlTop"
                     android:layout_marginEnd="-10dp"
-                    android:src="@drawable/ic_close"
+                    android:src="@drawable/ic_arrow_down"
                     android:tooltipText="@string/tooltip_minimize"
                     app:tint="@android:color/white" />
 
@@ -309,22 +309,24 @@
         <LinearLayout
             android:id="@+id/progress_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="24dp"
             android:layout_gravity="bottom"
-            android:layout_marginHorizontal="10dp"
+            android:clipChildren="false"
             android:translationZ="10dp">
 
             <com.github.airstream.ui.views.ChapterTimeBar
                 android:id="@+id/exo_progress"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingTop="6dp"
+                android:translationY="12dp"
                 app:bar_height="2dp"
-                app:played_color="?attr/colorSecondary"
-                app:scrubber_color="?attr/colorSecondary"
+                app:played_color="#FFFF0033"
+                app:buffered_color="#FF8A8A8A"
+                app:unplayed_color="#FF8A8A8A"
+                app:scrubber_color="#FFFF0033"
                 app:scrubber_dragged_size="16dp"
-                app:scrubber_enabled_size="12dp"
-                app:touch_target_height="35dp" />
+                app:scrubber_enabled_size="14dp"
+                app:touch_target_height="24dp" />
 
         </LinearLayout>
 

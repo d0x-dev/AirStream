@@ -144,7 +144,10 @@ class VideoCardsAdapter(private val columnWidthDp: Float? = null) :
                 if (video.isShort) {
                     NavigationHelper.openShorts(root.context, videoId)
                 } else {
-                    NavigationHelper.navigateVideo(root.context, PlayerData(videoId))
+                    NavigationHelper.navigateVideo(
+                        root.context,
+                        PlayerData(videoId = videoId, title = video.title)
+                    )
                 }
             }
 

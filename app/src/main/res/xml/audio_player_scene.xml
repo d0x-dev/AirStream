@@ -36,6 +36,7 @@
             android:id="@+id/audio_player_container"
             android:layout_width="match_parent"
             android:layout_height="64dp"
+            android:layout_marginBottom="76dp"
             motion:layout_constraintBottom_toBottomOf="parent"
             motion:layout_constraintEnd_toEndOf="parent"
             motion:layout_constraintHorizontal_bias="0.5"

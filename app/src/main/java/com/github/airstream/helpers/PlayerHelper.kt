@@ -417,11 +417,11 @@ object PlayerHelper {
      * Create controls to use in the PiP window
      */
     fun getPiPModeActions(activity: Activity, isPlaying: Boolean): List<RemoteActionCompat> {
-        val audioModeAction = getRemoteAction(
+        val skipPreviousAction = getRemoteAction(
             activity,
-            IconCompat.createWithResource(activity, R.drawable.ic_headphones),
-            R.string.background_mode,
-            PlayerEvent.Background
+            IconCompat.createWithResource(activity, R.drawable.ic_prev),
+            R.string.play_previous,
+            PlayerEvent.Prev
         )
 
 
@@ -453,7 +453,9 @@ object PlayerHelper {
             PlayerEvent.Forward
         )
         return if (alternativePiPControls) {
-            listOf(audioModeAction, playPauseAction, skipNextAction)
+            // Android limits PiP to three custom actions.  Queue navigation is more useful
+            // for music playback than a mode switch, which is already available in the player.
+            listOf(skipPreviousAction, playPauseAction, skipNextAction)
         } else {
             listOf(rewindAction, playPauseAction, forwardAction)
         }

@@ -93,11 +93,30 @@ class CommentsMainFragment : Fragment(R.layout.fragment_comments) {
         binding.commentsRV.adapter = commentPagingAdapter
 
         commentPagingAdapter.addLoadStateListener { loadStates ->
-            binding.progress.isVisible = loadStates.refresh is LoadState.Loading
+            when (val refreshState = loadStates.refresh) {
+                is LoadState.Loading -> {
+                    binding.progress.isVisible = true
+                    binding.errorTV.isVisible = false
+                }
 
-            if (loadStates.append is LoadState.NotLoading && loadStates.append.endOfPaginationReached && commentPagingAdapter.itemCount == 0) {
-                binding.errorTV.text = getString(R.string.no_comments_available)
-                binding.errorTV.isVisible = true
+                is LoadState.Error -> {
+                    // A failed request is not evidence that the video has no comments.
+                    binding.progress.isVisible = false
+                    binding.errorTV.text = getString(R.string.comments_load_failed)
+                    binding.errorTV.isVisible = true
+                    binding.errorTV.setOnClickListener { commentPagingAdapter.retry() }
+                }
+
+                is LoadState.NotLoading -> {
+                    binding.progress.isVisible = false
+                    val isEmpty = commentPagingAdapter.itemCount == 0 &&
+                        loadStates.append.endOfPaginationReached
+                    binding.errorTV.text = getString(
+                        if (isEmpty) R.string.no_comments_available else R.string.comments_load_failed
+                    )
+                    binding.errorTV.isVisible = isEmpty
+                    if (isEmpty) binding.errorTV.setOnClickListener(null)
+                }
             }
         }
 

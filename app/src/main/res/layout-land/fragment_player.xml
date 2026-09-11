@@ -65,6 +65,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         android:text="@string/subscribe"
+                        android:stateListAnimator="@animator/yt_bounce_animator"
                         android:textColor="?colorOnPrimary"
                         android:textSize="14sp"
                         app:backgroundTint="?colorPrimary" />
@@ -75,7 +76,9 @@
                         android:layout_width="44dp"
                         android:layout_height="44dp"
                         android:layout_marginStart="6dp"
-                        app:icon="@drawable/ic_like" />
+                        android:checkable="true"
+                        android:stateListAnimator="@animator/yt_bounce_animator"
+                        app:icon="@drawable/yt_like_selector" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/relPlayer_dislike"
@@ -83,7 +86,9 @@
                         android:layout_width="44dp"
                         android:layout_height="44dp"
                         android:layout_marginStart="6dp"
-                        app:icon="@drawable/ic_dislike" />
+                        android:checkable="true"
+                        android:stateListAnimator="@animator/yt_bounce_animator"
+                        app:icon="@drawable/yt_dislike_selector" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/relPlayer_share"
@@ -91,7 +96,8 @@
                         android:layout_width="44dp"
                         android:layout_height="44dp"
                         android:layout_marginStart="6dp"
-                        app:icon="@drawable/ic_share" />
+                        android:stateListAnimator="@animator/yt_bounce_animator"
+                        app:icon="@drawable/yt_outline_experimental_share_vd_theme_24" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/relPlayer_more"
@@ -99,6 +105,7 @@
                         android:layout_width="44dp"
                         android:layout_height="44dp"
                         android:layout_marginStart="6dp"
+                        android:stateListAnimator="@animator/yt_bounce_animator"
                         app:icon="@drawable/ic_three_dots" />
 
                     <LinearLayout

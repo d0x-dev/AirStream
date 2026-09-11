@@ -58,6 +58,13 @@ class DescriptionLayout(
         binding.playerSponsorBadge.text = SponsorBlockLabelHelper.categoryLabel(category)?.let { context.getString(it) }
     }
 
+    /** Shows the known card title before the complete stream response arrives. */
+    fun setPreviewTitle(title: String?) {
+        binding.playerTitle.text = title.orEmpty()
+        binding.playerTitle.isVisible = !title.isNullOrBlank()
+        binding.playerViewsInfo.isGone = true
+    }
+
     @SuppressLint("SetTextI18n")
     fun setStreams(streams: Streams) {
         this.streams = streams
@@ -73,6 +80,8 @@ class DescriptionLayout(
             textDislike.isVisible = false
 
             playerTitle.text = streams.title
+            playerTitle.isVisible = !streams.title.isNullOrBlank()
+            playerViewsInfo.isVisible = true
             playerDescription.isVisible = false
             metaInfo.isVisible = false
             additionalVideoInfo.isVisible = false

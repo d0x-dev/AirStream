@@ -18,9 +18,6 @@ import com.github.airstream.ui.adapters.VideoCardsAdapter
 import com.github.airstream.ui.models.HomeViewModel
 import com.github.airstream.ui.models.SubscriptionsViewModel
 import com.github.airstream.ui.models.TrendsViewModel
-import com.github.airstream.helpers.PreferenceHelper
-import com.github.airstream.constants.PreferenceKeys
-import com.github.airstream.constants.PreferenceKeys.HOME_TAB_CONTENT
 import com.google.android.material.snackbar.Snackbar
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
@@ -79,8 +76,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private fun fetchHomeFeed() {
         binding.nothingHere.isGone = true
-        val defaultItems = resources.getStringArray(R.array.homeTabItemsValues)
-        // Hardcode loading TRENDING because we use it as the main feed now
+        // Recommendations are the single, predictable home feed. Keeping this explicit
+        // avoids launching unused data requests for sections that are not rendered here.
         val visibleItems = setOf("trending")
 
         homeViewModel.loadHomeFeed(

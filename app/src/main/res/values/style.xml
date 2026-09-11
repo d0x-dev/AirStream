@@ -94,6 +94,10 @@
 
     </style>
 
+    <style name="BottomNavLabel" parent="TextAppearance.Material3.LabelSmall">
+        <item name="android:textSize">10sp</item>
+    </style>
+
     <style name="PlayerControlCenter">
         <item name="android:layout_width">42dp</item>
         <item name="android:layout_height">42dp</item>

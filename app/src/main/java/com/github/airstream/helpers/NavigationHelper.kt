@@ -80,7 +80,7 @@ object NavigationHelper {
 
             try {
                 PlayingQueue.clearAfterCurrent()
-                this.playNextVideo(playerData.videoId.toID())
+                this.playNextVideo(playerData.videoId.toID(), playerData.title)
 
                 if (audioOnlyPlayerRequested) {
                     // switch to audio only player

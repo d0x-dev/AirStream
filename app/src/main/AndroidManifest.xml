@@ -109,28 +109,18 @@
 
         </activity>
 
-                <activity
-            android:name=".ui.activities.SplashActivity"
-            android:exported="true"
-            android:theme="@style/Theme.NoNativeSplash"
-            android:screenOrientation="locked">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
         <activity
             android:name=".ui.activities.MainActivity"
             android:configChanges="keyboard|keyboardHidden|screenSize|smallestScreenSize|screenLayout|orientation|uiMode"
             android:exported="true"
             android:launchMode="singleTask"
-            android:screenOrientation="locked"
             android:supportsPictureInPicture="true"
             android:theme="@style/BaseTheme"
             android:windowSoftInputMode="adjustPan">
-            <!-- allow being recognized as a music player -->
-            
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <activity
