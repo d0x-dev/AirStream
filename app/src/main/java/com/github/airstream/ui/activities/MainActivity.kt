@@ -208,12 +208,7 @@ class MainActivity : AbstractPlayerHostActivity() {
                         binding.bottomNav.setPadding(0, verticalPadding, 0, verticalPadding)
                     } else {
                         with(binding.bottomNav) {
-                            setPadding(
-                                paddingLeft,
-                                paddingTop,
-                                paddingRight,
-                                systemBarInsets.bottom
-                            )
+                            setPadding(0, 0, 0, 0)
                         }
                     }
                     binding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
@@ -235,6 +230,8 @@ class MainActivity : AbstractPlayerHostActivity() {
         val navHostFragment = binding.fragment.getFragment<NavHostFragment>()
         navController = navHostFragment.navController
         binding.bottomNav.setupWithNavController(navController)
+        binding.bottomNav.isItemActiveIndicatorEnabled = false
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(binding.bottomNav) { _, insets -> insets }
 
         // save start tab fragment id and apply navbar style
         startFragmentId = try {
@@ -242,6 +239,7 @@ class MainActivity : AbstractPlayerHostActivity() {
         } catch (_: Exception) {
             R.id.homeFragment
         }
+        binding.bottomNav.isItemActiveIndicatorEnabled = false
 
         // set default tab as start fragment
         navController.graph = navController.navInflater.inflate(R.navigation.nav).also {

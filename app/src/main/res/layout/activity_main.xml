@@ -81,16 +81,16 @@
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNav"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="64dp"
             android:layout_gravity="bottom"
-            android:paddingTop="2dp"
-            android:paddingBottom="2dp"
             app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
             app:itemIconSize="20dp"
-            app:itemPaddingTop="0dp"
+            app:itemPaddingTop="11dp"
             app:itemPaddingBottom="0dp"
+            app:itemTextColor="@android:color/white"
             app:itemTextAppearanceActive="@style/BottomNavLabel"
             app:itemTextAppearanceInactive="@style/BottomNavLabel"
+            app:itemActiveIndicatorStyle="@style/TransparentIndicator"
             app:menu="@menu/bottom_menu"
             app:labelVisibilityMode="labeled" />
 

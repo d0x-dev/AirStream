@@ -96,6 +96,13 @@
 
     <style name="BottomNavLabel" parent="TextAppearance.Material3.LabelSmall">
         <item name="android:textSize">10sp</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="TransparentIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@android:color/transparent</item>
+        <item name="android:width">0dp</item>
+        <item name="android:height">0dp</item>
     </style>
 
     <style name="PlayerControlCenter">
